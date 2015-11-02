@@ -2,14 +2,14 @@ package net.ci010.minecrafthelper;
 
 import net.ci010.minecrafthelper.annotation.Construct;
 import net.ci010.minecrafthelper.data.ContainerMeta;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ServerCommandManager;
+import net.minecraft.init.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.event.FMLConstructionEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,7 +52,8 @@ public class HelperMod
 		while (itr.hasNext())
 		{
 			ContainerMeta meta = itr.next();
-			setActiveContainer(getContainer(meta.modid));
+			setActiveContainer(getModContainer(meta.modid));
+			//TODO make mod class only use public method and move all other class into core package
 			BlockItemRegistry.instance().process(meta);
 			setActiveContainer(theMod);
 		}
@@ -62,6 +63,8 @@ public class HelperMod
 	public void init(FMLInitializationEvent event)
 	{
 		MinecraftForge.EVENT_BUS.register(RegistryHelper.INSTANCE.getAiRemove());
+		//TODO remove this test code
+		RegistryHelper.INSTANCE.registerSittableBlock(Blocks.stone_stairs);
 	}
 
 	@EventHandler
@@ -70,12 +73,20 @@ public class HelperMod
 		RegistryHelper.INSTANCE.close();
 	}
 
-	ModContainer getContainer(String modid)
+	@EventHandler
+	public void serverStarting(FMLServerStartingEvent event)
+	{
+		ServerCommandManager serverCommandManager = (ServerCommandManager) event.getServer().getCommandManager();
+		for (CommandBase cmd : CommandCache.instance())
+			serverCommandManager.registerCommand(cmd);
+	}
+
+	public ModContainer getModContainer(String modid)
 	{
 		return Loader.instance().getIndexedModList().get(modid);
 	}
 
-	void setActiveContainer(ModContainer container)
+	public void setActiveContainer(ModContainer container)
 	{
 		ReflectionHelper.setPrivateValue(LoadController.class,
 				(LoadController) ReflectionHelper.getPrivateValue(Loader.class,

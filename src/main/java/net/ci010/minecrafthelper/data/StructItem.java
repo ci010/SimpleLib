@@ -7,30 +7,30 @@ import net.minecraft.item.Item;
 /**
  * Created by John on 2015/10/29 0029.
  */
-public class DummyBlock implements BlockItemStruct
+public class StructItem implements BlockItemStruct
 {
-	Block block;
+	Item item;
 
-	public DummyBlock(Block block)
+	public StructItem(Item item)
 	{
-		this.block = block;
+		this.item = item;
 	}
 
 	@Override
 	public void setName(String name)
 	{
-		block.setUnlocalizedName(name);
+		this.item.setUnlocalizedName(name);
 	}
 
 	@Override
 	public Block[] blocks()
 	{
-		return new Block[]{this.block};
+		return null;
 	}
 
 	@Override
 	public Item[] items()
 	{
-		return null;
+		return new Item[]{this.item};
 	}
 }

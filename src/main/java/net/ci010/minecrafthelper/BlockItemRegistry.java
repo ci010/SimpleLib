@@ -2,9 +2,10 @@ package net.ci010.minecrafthelper;
 
 import com.google.common.collect.Maps;
 import net.ci010.minecrafthelper.annotation.Construct;
+import net.ci010.minecrafthelper.annotation.OreDic;
 import net.ci010.minecrafthelper.data.ContainerMeta;
-import net.ci010.minecrafthelper.data.DummyBlock;
-import net.ci010.minecrafthelper.data.DummyItem;
+import net.ci010.minecrafthelper.data.StructBlock;
+import net.ci010.minecrafthelper.data.StructItem;
 import net.ci010.minecrafthelper.abstracts.ArgumentHelper;
 import net.ci010.minecrafthelper.abstracts.BlockItemStruct;
 import net.minecraft.block.Block;
@@ -12,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -21,10 +23,7 @@ import java.util.Map;
 
 import static net.ci010.minecrafthelper.HelperMod.LOG;
 
-/**
- * Created by John on 2015/10/29 0029.
- */
-public class BlockItemRegistry
+class BlockItemRegistry
 {
 	private static BlockItemRegistry instance;
 
@@ -39,7 +38,7 @@ public class BlockItemRegistry
 		@Override
 		BlockItemStruct warpStruct(Block target)
 		{
-			return new DummyBlock(target);
+			return new StructBlock(target);
 		}
 	};
 
@@ -48,7 +47,7 @@ public class BlockItemRegistry
 		@Override
 		BlockItemStruct warpStruct(Item target)
 		{
-			return new DummyItem(target);
+			return new StructItem(target);
 		}
 	};
 
@@ -201,9 +200,15 @@ public class BlockItemRegistry
 				continue;
 
 			data.setName(f.getName());
+			OreDic anno = f.getAnnotation(OreDic.class);
+
 			if (data.blocks() != null)
 				for (Block block : data.blocks())
 				{
+					if (anno != null)
+						OreDictionary.registerOre(anno.value().isEmpty() ? block.getUnlocalizedName().substring(5) : anno
+										.value(),
+								block);
 					GameRegistry.registerBlock(block, block.getUnlocalizedName().substring(5));
 					if (HelperMod.proxy.isClient())
 						model.registerBlock(block, block.getUnlocalizedName().substring(5));
@@ -211,6 +216,10 @@ public class BlockItemRegistry
 			if (data.items() != null)
 				for (Item item : data.items())
 				{
+					if (anno != null)
+						OreDictionary.registerOre(anno.value().isEmpty() ? item.getUnlocalizedName().substring(5) : anno
+										.value(),
+								item);
 					GameRegistry.registerItem(item, item.getUnlocalizedName().substring(5));
 					if (HelperMod.proxy.isClient())
 						model.registerItem(item, item.getUnlocalizedName().substring(5));
@@ -245,6 +254,20 @@ public class BlockItemRegistry
 				}
 			}
 		}
+	}
+
+	public void registerBlock(Block block)
+	{
+		GameRegistry.registerBlock(block, block.getUnlocalizedName().substring(5));
+		if (HelperMod.proxy.isClient())
+			model.registerBlock(block, block.getUnlocalizedName().substring(5));
+	}
+
+	public void registerItem(Item item)
+	{
+		GameRegistry.registerItem(item, item.getUnlocalizedName().substring(5));
+		if (HelperMod.proxy.isClient())
+			model.registerItem(item, item.getUnlocalizedName().substring(5));
 	}
 
 	public FieldType getType(Field f)

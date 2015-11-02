@@ -8,6 +8,9 @@ import java.lang.annotation.Target;
 
 import net.ci010.minecrafthelper.abstracts.ArgumentHelper;
 
+/**
+ * The field
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value =
 		{ElementType.FIELD})

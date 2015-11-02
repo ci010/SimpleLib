@@ -9,6 +9,7 @@ import java.util.Set;
 
 import net.ci010.minecrafthelper.data.ContainerMeta;
 import net.ci010.minecrafthelper.network.AbstractMessageHandler;
+import net.minecraft.command.CommandBase;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -78,7 +79,7 @@ public enum RegistryHelper
 			this.containerIdx.get(modid).addField(this.parseContainer(container));
 	}
 
-	Iterator<ContainerMeta> getRegistryInfo()
+	public Iterator<ContainerMeta> getRegistryInfo()
 	{
 		return this.containerIdx.values().iterator();
 	}
@@ -97,13 +98,34 @@ public enum RegistryHelper
 	}
 
 	/**
+	 * Register a new Command
+	 *
+	 * @param cmd
+	 */
+	public void registerCommand(CommandBase cmd)
+	{
+		CommandCache.instance().addCommand(cmd);
+	}
+
+	/**
+	 * Make the block sittable
+	 *
+	 * @param block
+	 */
+	public void registerSittableBlock(Block block)
+	{
+		SitHandler.register(block);
+	}
+
+	/**
 	 * Register new message with its handler class
 	 *
 	 * @param handlerClass The handler class which binds with message class
 	 * @param messageClass The message class
 	 * @param <Message>    The type of message
 	 */
-	public final <Message extends IMessage> void registerMessage(Class<? extends AbstractMessageHandler<Message>> handlerClass, Class<Message> messageClass)
+	public <Message extends IMessage> void registerMessage(Class<? extends AbstractMessageHandler<Message>>
+																   handlerClass, Class<Message> messageClass)
 	{
 		ModNetwork.instance().registerMessage(handlerClass, messageClass);
 	}
