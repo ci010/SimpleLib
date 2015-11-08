@@ -1,5 +1,6 @@
 package net.ci010.minecrafthelper;
 
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
 import net.minecraft.command.CommandBase;
 
@@ -9,12 +10,11 @@ import java.util.Set;
 /**
  * @author ci010
  */
-public class CommandCache implements Iterable<CommandBase>
+public class CommandCache extends RegisterCache<CommandBase>
 {
 	private static CommandCache instance;
 
 	private Set<Class<? extends CommandBase>> unregistered = Sets.newHashSet();
-	private Set<CommandBase> cache = Sets.newHashSet();
 
 	public static CommandCache instance()
 	{
@@ -28,16 +28,10 @@ public class CommandCache implements Iterable<CommandBase>
 		this.unregistered.add(clz);
 	}
 
-	void addCommand(CommandBase cmd)
-	{
-		this.cache.add(cmd);
-	}
-
 	@Override
 	public Iterator<CommandBase> iterator()
 	{
 		Set<CommandBase> temp = Sets.newHashSet();
-		temp.addAll(cache);
 		for (Class<? extends CommandBase> src : unregistered)
 			try
 			{
@@ -51,6 +45,6 @@ public class CommandCache implements Iterable<CommandBase>
 			{
 				e.printStackTrace();
 			}
-		return temp.iterator();
+		return Iterators.concat(temp.iterator(), super.iterator());
 	}
 }

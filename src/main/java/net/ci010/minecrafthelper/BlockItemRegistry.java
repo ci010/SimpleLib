@@ -1,13 +1,13 @@
 package net.ci010.minecrafthelper;
 
 import com.google.common.collect.Maps;
+import net.ci010.minecrafthelper.abstracts.ArgumentHelper;
+import net.ci010.minecrafthelper.abstracts.BlockItemStruct;
 import net.ci010.minecrafthelper.annotation.Construct;
 import net.ci010.minecrafthelper.annotation.OreDic;
 import net.ci010.minecrafthelper.data.ContainerMeta;
 import net.ci010.minecrafthelper.data.StructBlock;
 import net.ci010.minecrafthelper.data.StructItem;
-import net.ci010.minecrafthelper.abstracts.ArgumentHelper;
-import net.ci010.minecrafthelper.abstracts.BlockItemStruct;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Loader;

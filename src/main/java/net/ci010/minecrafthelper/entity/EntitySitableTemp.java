@@ -1,25 +1,40 @@
 package net.ci010.minecrafthelper.entity;
 
+import net.ci010.minecrafthelper.annotation.ModEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 /**
  * @author CI010
  */
+@ModEntity
 public class EntitySitableTemp extends Entity
 {
-	double offset;
+	public int blockPosX;
+	public int blockPosY;
+	public int blockPosZ;
 
-	public EntitySitableTemp(World world, double blockX, double blockY, double blockZ, double offset)
+	public EntitySitableTemp(World world, double blockX, double blockY, double blockZ)
 	{
 		super(world);
-		this.posX = blockX;
-		this.posY = blockY + offset;
-		this.posZ = blockZ;
-		this.offset = offset;
-		setPostionConsideringRotation(blockX, blockY, blockZ, 2, offset);
+		this.noClip = true;
+		this.preventEntitySpawning = true;
+		this.width = 0;
+		this.height = (float) 0.5;
+		this.blockPosX = (int) blockX;
+		this.blockPosY = (int) blockY;
+		this.blockPosZ = (int) blockZ;
+		this.setPosition(blockX + 0.5d, blockY + 0.5, blockZ + 0.5d);
+	}
+
+	public EntitySitableTemp(World world)
+	{
+		super(world);
+		this.noClip = true;
+		this.preventEntitySpawning = true;
+		this.width = 0;
+		this.height = 0;
 	}
 
 	@Override
@@ -29,7 +44,13 @@ public class EntitySitableTemp extends Entity
 	@Override
 	public double getMountedYOffset()
 	{
-		return this.height + this.offset;
+		return this.height;
+	}
+
+	@Override
+	public boolean canBePushed()
+	{
+		return false;
 	}
 
 	@Override
@@ -38,40 +59,14 @@ public class EntitySitableTemp extends Entity
 		return false;
 	}
 
-
-	public void setPostionConsideringRotation(double x, double y, double z, int rotation, double rotationOffset)
-	{
-		switch (rotation)
-		{
-			case 2:
-				z += rotationOffset;
-				break;
-			case 0:
-				z -= rotationOffset;
-				break;
-			case 3:
-				x -= rotationOffset;
-				break;
-			case 1:
-				x += rotationOffset;
-				break;
-		}
-		setPosition(x, y, z);
-	}
-
-
 	@Override
 	protected void entityInit() {}
 
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound tagCompund)
-	{
-		this.offset = tagCompund.getDouble("offset");
-	}
+	{}
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound tagCompound)
-	{
-		tagCompound.setDouble("offset", this.offset);
-	}
+	{}
 }

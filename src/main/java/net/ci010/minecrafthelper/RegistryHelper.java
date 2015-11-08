@@ -1,29 +1,27 @@
 package net.ci010.minecrafthelper;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import net.ci010.minecrafthelper.abstracts.ArgumentHelper;
+import net.ci010.minecrafthelper.abstracts.BlockItemStruct;
+import net.ci010.minecrafthelper.annotation.Construct;
+import net.ci010.minecrafthelper.data.ContainerMeta;
+import net.ci010.minecrafthelper.network.AbstractMessageHandler;
+import net.minecraft.block.Block;
+import net.minecraft.command.CommandBase;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import net.ci010.minecrafthelper.data.ContainerMeta;
-import net.ci010.minecrafthelper.network.AbstractMessageHandler;
-import net.minecraft.command.CommandBase;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
-import net.ci010.minecrafthelper.annotation.Construct;
-import net.ci010.minecrafthelper.abstracts.ArgumentHelper;
-import net.ci010.minecrafthelper.abstracts.BlockItemStruct;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.LoaderState;
 
 import static net.ci010.minecrafthelper.HelperMod.LOG;
 
@@ -45,18 +43,11 @@ public enum RegistryHelper
 		this.containerIdx.put(meta.modid, meta);
 	}
 
-	void setLang(String modid, boolean ifGenerateLang)
+	void setLang(String modid, boolean ifGenerateLang, String... lang)
 	{
-		if (!this.containerIdx.containsKey(modid))
-			this.track(new ContainerMeta(modid).lang(ifGenerateLang).langType(new String[]
-					{"zh_CN", "en_US"}));
-		else
-			this.containerIdx.get(modid).lang(ifGenerateLang).langType(new String[]
-					{"zh_CN", "en_US"});
-	}
-
-	void setLang(String modid, boolean ifGenerateLang, String[] lang)
-	{
+		if (lang == null)
+			lang = new String[]
+					{"zh_CN", "en_US"};
 		if (!this.containerIdx.containsKey(modid))
 			this.track(new ContainerMeta(modid).lang(ifGenerateLang).langType(lang));
 		else
@@ -71,7 +62,7 @@ public enum RegistryHelper
 			this.containerIdx.get(modid).model(ifGenerateModel);
 	}
 
-	void putContainer(String modid, Class<?> container)
+	public void putContainer(String modid, Class<?> container)
 	{
 		if (!this.containerIdx.containsKey(modid))
 			this.track(new ContainerMeta(modid).addField(this.parseContainer(container)));
@@ -104,7 +95,7 @@ public enum RegistryHelper
 	 */
 	public void registerCommand(CommandBase cmd)
 	{
-		CommandCache.instance().addCommand(cmd);
+		CommandCache.instance().add(cmd);
 	}
 
 	/**
