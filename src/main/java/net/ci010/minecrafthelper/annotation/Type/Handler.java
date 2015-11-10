@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.annotation;
+package net.ci010.minecrafthelper.annotation.type;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

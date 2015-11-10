@@ -1,4 +1,7 @@
-package net.ci010.minecrafthelper.annotation;
+package net.ci010.minecrafthelper.annotation.field;
+
+import net.ci010.minecrafthelper.network.AbstractMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,4 +17,5 @@ import java.lang.annotation.Target;
 public @interface OreDic
 {
 	String value() default "";
+
 }

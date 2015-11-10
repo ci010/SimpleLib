@@ -3,6 +3,7 @@ package net.ci010.minecrafthelper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import net.ci010.minecrafthelper.annotation.type.Handler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -12,11 +13,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Set;
 
-class AIRemove
+@Handler
+public class AIRemove
 {
-	private Multimap<Class<? extends EntityLiving>, Class<? extends EntityAIBase>> removeTask = HashMultimap.create();
+	private static Multimap<Class<? extends EntityLiving>, Class<? extends EntityAIBase>> removeTask = HashMultimap
+			.create();
 
-	public void removeAI(Class<? extends EntityLiving> living, Class<? extends EntityAIBase>... ai)
+	public static void removeAI(Class<? extends EntityLiving> living, Class<? extends EntityAIBase>... ai)
 	{
 		for (Class<? extends EntityAIBase> c : ai)
 			removeTask.put(living, c);

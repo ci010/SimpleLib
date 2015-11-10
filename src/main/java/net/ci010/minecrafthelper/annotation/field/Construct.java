@@ -1,6 +1,7 @@
-package net.ci010.minecrafthelper.annotation;
+package net.ci010.minecrafthelper.annotation.field;
 
 import net.ci010.minecrafthelper.abstracts.ArgumentHelper;
+import net.ci010.minecrafthelper.annotation.ConstructOption;
 
 import java.lang.annotation.*;
 

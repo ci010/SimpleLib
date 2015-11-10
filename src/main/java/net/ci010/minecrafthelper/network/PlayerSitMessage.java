@@ -1,7 +1,7 @@
 package net.ci010.minecrafthelper.network;
 
 import net.ci010.minecrafthelper.SitHandler;
-import net.ci010.minecrafthelper.annotation.Message;
+import net.ci010.minecrafthelper.annotation.type.Message;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;

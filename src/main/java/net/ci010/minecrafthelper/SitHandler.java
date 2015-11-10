@@ -1,7 +1,7 @@
 package net.ci010.minecrafthelper;
 
 import com.google.common.collect.Sets;
-import net.ci010.minecrafthelper.annotation.Handler;
+import net.ci010.minecrafthelper.annotation.type.Handler;
 import net.ci010.minecrafthelper.entity.EntitySitableTemp;
 import net.ci010.minecrafthelper.network.PlayerSitMessage;
 import net.minecraft.block.Block;
@@ -91,7 +91,7 @@ public class SitHandler
 		if (event.entityMounting instanceof EntityPlayer && event.entityBeingMounted instanceof EntitySitableTemp)
 		{
 			if (event.isDismounting())
-				if (!event.entity.worldObj.isRemote && event.entityBeingMounted != null)
+				if (!event.entity.worldObj.isRemote)
 					event.entityBeingMounted.setDead();
 		}
 	}

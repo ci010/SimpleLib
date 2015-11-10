@@ -4,11 +4,10 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.ci010.minecrafthelper.abstracts.ArgumentHelper;
 import net.ci010.minecrafthelper.abstracts.BlockItemStruct;
-import net.ci010.minecrafthelper.annotation.Construct;
+import net.ci010.minecrafthelper.annotation.field.Construct;
 import net.ci010.minecrafthelper.data.ContainerMeta;
 import net.ci010.minecrafthelper.network.AbstractMessageHandler;
 import net.minecraft.block.Block;
-import net.minecraft.command.CommandBase;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.Item;
@@ -32,8 +31,6 @@ public enum RegistryHelper
 {
 	INSTANCE;
 
-	private AIRemove aiRemove = new AIRemove();
-
 	private BlockItemRegistry registry = new BlockItemRegistry();
 
 	private Map<String, ContainerMeta> containerIdx = Maps.newHashMap();
@@ -43,23 +40,23 @@ public enum RegistryHelper
 		this.containerIdx.put(meta.modid, meta);
 	}
 
-	void setLang(String modid, boolean ifGenerateLang, String... lang)
+	public void setLang(String modid, String[] lang)
 	{
-		if (lang == null)
+		if (lang == null || lang.length == 0)
 			lang = new String[]
 					{"zh_CN", "en_US"};
 		if (!this.containerIdx.containsKey(modid))
-			this.track(new ContainerMeta(modid).lang(ifGenerateLang).langType(lang));
+			this.track(new ContainerMeta(modid).lang(true).langType(lang));
 		else
-			this.containerIdx.get(modid).lang(ifGenerateLang).langType(lang);
+			this.containerIdx.get(modid).lang(true).langType(lang);
 	}
 
-	void setModel(String modid, boolean ifGenerateModel)
+	public void setModel(String modid)
 	{
 		if (!this.containerIdx.containsKey(modid))
-			this.track(new ContainerMeta(modid).model(ifGenerateModel));
+			this.track(new ContainerMeta(modid).model(true));
 		else
-			this.containerIdx.get(modid).model(ifGenerateModel);
+			this.containerIdx.get(modid).model(true);
 	}
 
 	public void putContainer(String modid, Class<?> container)
@@ -75,8 +72,8 @@ public enum RegistryHelper
 		return this.containerIdx.values().iterator();
 	}
 
-	Set<Field> parseContainer(Class<?> container)
-	{
+	public Set<Field> parseContainer(Class<?> container)
+	{//TODO check permission
 		Set<Field> temp = Sets.newHashSet();
 		for (Field f : container.getFields())
 			if (Modifier.isStatic(f.getModifiers()))
@@ -86,16 +83,6 @@ public enum RegistryHelper
 						f.getName(),
 						container.getName());
 		return temp;
-	}
-
-	/**
-	 * Register a new Command
-	 *
-	 * @param cmd
-	 */
-	public void registerCommand(CommandBase cmd)
-	{
-		CommandCache.instance().add(cmd);
 	}
 
 	/**
@@ -205,7 +192,7 @@ public enum RegistryHelper
 	 */
 	public void removeAI(Class<? extends EntityLiving> living, Class<? extends EntityAIBase>... ai)
 	{
-		this.aiRemove.removeAI(living, ai);
+		AIRemove.removeAI(living, ai);
 	}
 
 	void close()
@@ -214,12 +201,6 @@ public enum RegistryHelper
 		{
 			this.containerIdx = null;
 			this.registry = null;
-			this.aiRemove = null;
 		}
-	}
-
-	AIRemove getAiRemove()
-	{
-		return this.aiRemove;
 	}
 }

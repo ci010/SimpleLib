@@ -9,7 +9,8 @@ import java.lang.annotation.Annotation;
  */
 public class ASMDataUtil
 {
-	public static String getId(ASMDataTable.ASMData data)
+
+	public static String getModId(ASMDataTable.ASMData data)
 	{
 		return data.getCandidate().getContainedMods().get(0).getModId();
 	}

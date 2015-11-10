@@ -3,8 +3,8 @@ package net.ci010.minecrafthelper;
 import com.google.common.collect.Maps;
 import net.ci010.minecrafthelper.abstracts.ArgumentHelper;
 import net.ci010.minecrafthelper.abstracts.BlockItemStruct;
-import net.ci010.minecrafthelper.annotation.Construct;
-import net.ci010.minecrafthelper.annotation.OreDic;
+import net.ci010.minecrafthelper.annotation.field.Construct;
+import net.ci010.minecrafthelper.annotation.field.OreDic;
 import net.ci010.minecrafthelper.data.ContainerMeta;
 import net.ci010.minecrafthelper.data.StructBlock;
 import net.ci010.minecrafthelper.data.StructItem;
@@ -67,6 +67,7 @@ class BlockItemRegistry
 		{
 			Type item = null;
 			Construct ctr = f.getAnnotation(Construct.class);
+			boolean needSetValue = true;
 
 			if (ctr != null)
 			{
@@ -137,6 +138,7 @@ class BlockItemRegistry
 				try
 				{
 					item = (Type) f.get(null);
+					needSetValue = false;
 				}
 				catch (IllegalArgumentException e)
 				{
@@ -153,18 +155,19 @@ class BlockItemRegistry
 				return null;
 			}
 
-			try
-			{
-				f.set(null, item);
-			}
-			catch (IllegalArgumentException e)
-			{
-				e.printStackTrace();
-			}
-			catch (IllegalAccessException e)
-			{
-				e.printStackTrace();
-			}
+			if (needSetValue)
+				try
+				{
+					f.set(null, item);
+				}
+				catch (IllegalArgumentException e)
+				{
+					e.printStackTrace();
+				}
+				catch (IllegalAccessException e)
+				{
+					e.printStackTrace();
+				}
 
 			return this.warpStruct(item);
 		}
