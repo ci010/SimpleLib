@@ -12,4 +12,11 @@ import java.lang.annotation.Target;
 @Target(value =
 		{ElementType.TYPE})
 public @interface Handler
-{}
+{
+	Type value() default Type.All;
+
+	enum Type
+	{
+		FML, Forge, All;
+	}
+}

@@ -34,7 +34,7 @@ public class RegistryBufferManager
 		instance = null;
 	}
 
-	Multimap<Class<? extends FMLStateEvent>, SubscriberInfo> subscriberInfoMap = HashMultimap.create();
+	private Multimap<Class<? extends FMLStateEvent>, SubscriberInfo> subscriberInfoMap = HashMultimap.create();
 
 	class SubscriberInfo
 	{
@@ -54,7 +54,7 @@ public class RegistryBufferManager
 		}
 	}
 
-	public final void load(ASMDataTable table)
+	final void load(ASMDataTable table)
 	{
 		for (ASMDataTable.ASMData data : table.getAll(ASMDelegate.class.getName()))
 		{
@@ -71,7 +71,7 @@ public class RegistryBufferManager
 				if (!method.isAnnotationPresent(Mod.EventHandler.class))
 					continue;
 
-				if (method.getParameterCount() != 1)
+				if (method.getParameterTypes().length != 1)
 					throw new UnsupportedOperationException("The method being subscribed need to have ONLY one parameter!");
 
 				Class<?> methodParam = method.getParameterTypes()[0];
@@ -106,7 +106,7 @@ public class RegistryBufferManager
 		}
 	}
 
-	public void invoke(FMLStateEvent state)
+	void invoke(FMLStateEvent state)
 	{
 		Class<? extends FMLStateEvent> realType = state.getClass();
 
@@ -128,5 +128,14 @@ public class RegistryBufferManager
 				System.out.println(info);
 				e.printStackTrace();
 			}
+
+		if (state instanceof FMLLoadCompleteEvent)
+		{
+			subscriberInfoMap.removeAll(FMLConstructionEvent.class);
+			subscriberInfoMap.removeAll(FMLPreInitializationEvent.class);
+			subscriberInfoMap.removeAll(FMLInitializationEvent.class);
+			subscriberInfoMap.removeAll(FMLPostInitializationEvent.class);
+			subscriberInfoMap.removeAll(FMLLoadCompleteEvent.class);
+		}
 	}
 }

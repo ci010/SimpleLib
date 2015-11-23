@@ -1,7 +1,6 @@
 package net.ci010.minecrafthelper.entity;
 
 import net.ci010.minecrafthelper.annotation.type.ModEntity;
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
@@ -9,7 +8,7 @@ import net.minecraft.world.World;
  * @author CI010
  */
 @ModEntity
-public class EntitySitableTemp extends Entity
+public class EntitySitableTemp extends net.minecraft.entity.Entity
 {
 	public int blockPosX;
 	public int blockPosY;

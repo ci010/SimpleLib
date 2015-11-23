@@ -17,5 +17,4 @@ import java.lang.annotation.Target;
 public @interface OreDic
 {
 	String value() default "";
-
 }

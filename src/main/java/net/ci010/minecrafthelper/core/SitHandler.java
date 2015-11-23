@@ -1,18 +1,22 @@
-package net.ci010.minecrafthelper;
+package net.ci010.minecrafthelper.core;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
+import net.ci010.minecrafthelper.ModNetwork;
 import net.ci010.minecrafthelper.annotation.type.Handler;
 import net.ci010.minecrafthelper.entity.EntitySitableTemp;
 import net.ci010.minecrafthelper.network.PlayerSitMessage;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
@@ -24,13 +28,54 @@ public class SitHandler
 {
 	private static Set<Block> registered = Sets.newHashSet();
 
-	static void register(Block block)
+	class SitBlockDetail
+	{
+		double offsetX, offsetY, offsetZ;
+	}
+
+	class SitBlockInfo
+	{
+		public EntityPlayer player;
+		public BlockPos pos;
+
+		public SitBlockInfo(EntityPlayer player, BlockPos pos)
+		{
+			this.pos = pos;
+			this.player = player;
+		}
+	}
+
+	public static void register(Block block)
+	{
+		register(block, new Predicate<SitBlockInfo>()
+		{
+			@Override
+			public boolean apply(@Nullable SitBlockInfo input)
+			{
+				return input.player.getEquipmentInSlot(0) == null;
+			}
+
+			@Override
+			public boolean equals(@Nullable Object object)
+			{
+				return false;
+			}
+		});
+	}
+
+	public static void register(Block block, Predicate<SitBlockInfo> predicate)
 	{
 		registered.add(block);
 	}
 
-	public static boolean sitOnBlock(World world, double x, double y, double z, EntityPlayer player, EnumFacing face)
+	public static boolean canPlayerSitOnBlock(EntityPlayer player, BlockPos pos)
 	{
+		return registered.contains(player.worldObj.getBlockState(pos).getBlock()) && player.getEquipmentInSlot(0) == null;
+	}
+
+	public static boolean sitOnBlock(World world, BlockPos pos, EntityPlayer player, EnumFacing face)
+	{
+		double x = pos.getX(), y = pos.getY() + 0.5, z = pos.getZ();
 		if (!existingEntity(world, x, y, z, player))
 		{
 			if (!world.isRemote)
@@ -80,8 +125,8 @@ public class SitHandler
 	@SubscribeEvent
 	public void onBlockActive(PlayerInteractEvent event)
 	{
-		if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && !event.entityPlayer.isUsingItem())
-			if (registered.contains(event.world.getBlockState(event.pos).getBlock()))
+		if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+			if (canPlayerSitOnBlock(event.entityPlayer, event.pos))
 				ModNetwork.instance().sendToServer(new PlayerSitMessage(event.pos, event.face));
 	}
 

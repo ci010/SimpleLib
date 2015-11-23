@@ -1,18 +1,20 @@
 package net.ci010.minecrafthelper;
 
-import net.ci010.minecrafthelper.annotation.field.Construct;
+import net.ci010.minecrafthelper.core.CommonProxy;
 import net.ci010.minecrafthelper.data.ContainerMeta;
+import net.ci010.minecrafthelper.util.FMLModUtil;
 import net.minecraft.init.Blocks;
-import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Iterator;
-import java.util.List;
 
 @Mod(modid = HelperMod.MODID, name = HelperMod.NAME, version = HelperMod.VERSION)
 public class HelperMod
@@ -24,7 +26,7 @@ public class HelperMod
 
 	public static final Logger LOG = LogManager.getLogger();
 
-	@SidedProxy(modId = MODID, serverSide = "net.ci010.minecrafthelper.CommonProxy", clientSide = "net.ci010.minecrafthelper.ClientProxy")
+	@SidedProxy(modId = MODID, serverSide = "net.ci010.minecrafthelper.core.CommonProxy", clientSide = "net.ci010.minecrafthelper.core.ClientProxy")
 	public static CommonProxy proxy;
 
 	@EventHandler
@@ -37,25 +39,8 @@ public class HelperMod
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		List<ModContainer> lst = Loader.instance().getActiveModList();
-		ModContainer theMod = Loader.instance().activeModContainer();
-		if (lst.indexOf(theMod) != lst.size() - 1)
-		{
-			lst.remove(theMod);
-			lst.add(theMod);
-			return;
-		}
-//		RegistryHelper.INSTANCE.registerAnnotation(Construct.Float.class, new Construct.FloatHelper());
-		Iterator<ContainerMeta> itr = RegistryHelper.INSTANCE.getRegistryInfo();
-		while (itr.hasNext())
-		{
-			ContainerMeta meta = itr.next();
-			setActiveContainer(getModContainer(meta.modid));
-			//TODO make mod class only use public method and move all other class into core package
-			BlockItemRegistry.instance().process(meta);
-			setActiveContainer(theMod);
-		}
 		RegistryBufferManager.instance().invoke(event);
+
 	}
 
 	@EventHandler
@@ -90,20 +75,5 @@ public class HelperMod
 	{
 		RegistryBufferManager.instance().invoke(event);
 		RegistryBufferManager.close();
-	}
-
-	public ModContainer getModContainer(String modid)
-	{
-		return Loader.instance().getIndexedModList().get(modid);
-	}
-
-	public void setActiveContainer(ModContainer container)
-	{
-		ReflectionHelper.setPrivateValue(LoadController.class,
-				(LoadController) ReflectionHelper.getPrivateValue(Loader.class,
-						Loader.instance(),
-						"modController"),
-				container,
-				"activeContainer");
 	}
 }

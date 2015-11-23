@@ -1,6 +1,4 @@
-package net.ci010.minecrafthelper;
-
-import net.minecraftforge.fml.common.discovery.ASMDataTable;
+package net.ci010.minecrafthelper.core;
 
 public class ClientProxy extends CommonProxy
 {

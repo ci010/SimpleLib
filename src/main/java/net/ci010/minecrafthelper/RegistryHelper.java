@@ -1,10 +1,13 @@
 package net.ci010.minecrafthelper;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.ci010.minecrafthelper.abstracts.ArgumentHelper;
 import net.ci010.minecrafthelper.abstracts.BlockItemStruct;
 import net.ci010.minecrafthelper.annotation.field.Construct;
+import net.ci010.minecrafthelper.core.AIRegistry;
+import net.ci010.minecrafthelper.core.SitHandler;
 import net.ci010.minecrafthelper.data.ContainerMeta;
 import net.ci010.minecrafthelper.network.AbstractMessageHandler;
 import net.minecraft.block.Block;
@@ -31,9 +34,9 @@ public enum RegistryHelper
 {
 	INSTANCE;
 
-	private BlockItemRegistry registry = new BlockItemRegistry();
-
 	private Map<String, ContainerMeta> containerIdx = Maps.newHashMap();
+
+	private Map<Class<? extends Annotation>, ArgumentHelper> annoMap = Maps.newHashMap();
 
 	void track(ContainerMeta meta)
 	{
@@ -59,12 +62,17 @@ public enum RegistryHelper
 			this.containerIdx.get(modid).model(true);
 	}
 
-	public void putContainer(String modid, Class<?> container)
+	public void registerMod(String modid, Class<?> container)
 	{
 		if (!this.containerIdx.containsKey(modid))
 			this.track(new ContainerMeta(modid).addField(this.parseContainer(container)));
 		else
 			this.containerIdx.get(modid).addField(this.parseContainer(container));
+	}
+
+	public Map<Class<? extends Annotation>, ArgumentHelper> getAnnotationMap()
+	{
+		return ImmutableMap.copyOf(this.annoMap);
 	}
 
 	public Iterator<ContainerMeta> getRegistryInfo()
@@ -79,7 +87,7 @@ public enum RegistryHelper
 			if (Modifier.isStatic(f.getModifiers()))
 				temp.add(f);
 			else
-				LOG.info("The field {} in container {} is not static so that it won't be constructed and registered",
+				LOG.info("The field {} in container {} is not static so that it won'registerInit be constructed and registered",
 						f.getName(),
 						container.getName());
 		return temp;
@@ -119,8 +127,8 @@ public enum RegistryHelper
 	 */
 	public void registerAnnotation(Class<? extends Annotation> annotation, ArgumentHelper helper)
 	{
-		if (!registry.map.containsKey(annotation))
-			registry.map.put(annotation, helper);
+		if (!annoMap.containsKey(annotation))
+			annoMap.put(annotation, helper);
 		else
 			throw new IllegalArgumentException("The annotation has already been registerd!");
 	}
@@ -192,15 +200,15 @@ public enum RegistryHelper
 	 */
 	public void removeAI(Class<? extends EntityLiving> living, Class<? extends EntityAIBase>... ai)
 	{
-		AIRemove.removeAI(living, ai);
+		AIRegistry.removeAI(living, ai);
 	}
 
-	void close()
+	public void close()
 	{
 		if (Loader.instance().getLoaderState() == LoaderState.AVAILABLE)
 		{
 			this.containerIdx = null;
-			this.registry = null;
+			this.annoMap = null;
 		}
 	}
 }

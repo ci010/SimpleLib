@@ -6,7 +6,6 @@ import net.ci010.minecrafthelper.annotation.ConstructOption;
 import net.ci010.minecrafthelper.annotation.type.ASMDelegate;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.lang.annotation.Annotation;
 

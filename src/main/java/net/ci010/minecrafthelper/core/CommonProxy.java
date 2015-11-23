@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper;
+package net.ci010.minecrafthelper.core;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;

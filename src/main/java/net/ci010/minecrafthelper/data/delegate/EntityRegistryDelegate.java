@@ -5,10 +5,9 @@ import net.ci010.minecrafthelper.abstracts.RegistryDelegate;
 import net.ci010.minecrafthelper.annotation.type.ASMDelegate;
 import net.ci010.minecrafthelper.annotation.type.ModEntity;
 import net.ci010.minecrafthelper.util.FMLModUtil;
-import net.minecraft.entity.Entity;
+import net.ci010.minecrafthelper.util.GenericUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 import java.util.Map;
@@ -35,7 +34,7 @@ public class EntityRegistryDelegate extends RegistryDelegate<ModEntity>
 	{
 		String modid = this.getModid();
 		ModEntity anno = this.getAnnotation();
-		Class<? extends Entity> clz = (Class<? extends Entity>) this.getAnnotatedClass();
+		Class<? extends net.minecraft.entity.Entity> clz = GenericUtil.cast(this.getAnnotatedClass());
 		String name = anno.name();
 		if (name.equals(""))
 			name = clz.getName();

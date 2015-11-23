@@ -1,5 +1,6 @@
 package net.ci010.minecrafthelper.data.delegate;
 
+import net.ci010.minecrafthelper.HelperMod;
 import net.ci010.minecrafthelper.abstracts.RegistryDelegate;
 import net.ci010.minecrafthelper.annotation.type.ASMDelegate;
 import net.ci010.minecrafthelper.annotation.type.Handler;
@@ -30,9 +31,16 @@ public class HandlerDelegate extends RegistryDelegate<Handler>
 		{
 			e.printStackTrace();
 		}
-
-		System.out.println("Event handler run");
-		MinecraftForge.EVENT_BUS.register(obj);
-		FMLCommonHandler.instance().bus().register(obj);
+		if (obj == null)
+			HelperMod.LOG.fatal("");
+		if (this.getAnnotation().value() == Handler.Type.Forge)
+			MinecraftForge.EVENT_BUS.register(obj);
+		if (this.getAnnotation().value() == Handler.Type.FML)
+			FMLCommonHandler.instance().bus().register(obj);
+		else
+		{
+			MinecraftForge.EVENT_BUS.register(obj);
+			FMLCommonHandler.instance().bus().register(obj);
+		}
 	}
 }

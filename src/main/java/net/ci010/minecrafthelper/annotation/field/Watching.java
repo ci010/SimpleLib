@@ -10,6 +10,4 @@ import java.lang.annotation.Target;
 @Target(value = ElementType.FIELD)
 @Inherited
 public @interface Watching
-{
-
-}
+{}

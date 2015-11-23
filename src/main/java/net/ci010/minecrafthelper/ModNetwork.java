@@ -23,7 +23,7 @@ public class ModNetwork
 	/**
 	 * The SimpleNetworkWrapper instance is used both to register and send
 	 * packets. Since I will be adding wrapper methods, this field is private,
-	 * but you should make it public if you plan on using it directly.
+	 * but you should update it public if you plan on using it directly.
 	 */
 	private final SimpleNetworkWrapper dispatcher;
 
@@ -40,7 +40,8 @@ public class ModNetwork
 	/**
 	 * Registers a message and message handler
 	 */
-	final <Message extends IMessage> void registerMessage(Class<? extends AbstractMessageHandler<Message>> handlerClass, Class<Message> messageClass)
+	final <Message extends IMessage> void registerMessage(Class<? extends AbstractMessageHandler<Message>>
+																  handlerClass, Class<Message> messageClass)
 	{
 		if (AbstractClientMessageHandler.class.isAssignableFrom(handlerClass))
 			dispatcher.registerMessage(handlerClass, messageClass, packetId++, Side.CLIENT);

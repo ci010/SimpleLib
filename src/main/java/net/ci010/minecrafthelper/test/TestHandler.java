@@ -2,6 +2,7 @@ package net.ci010.minecrafthelper.test;
 
 import net.ci010.minecrafthelper.HelperMod;
 import net.ci010.minecrafthelper.annotation.type.Handler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -24,7 +25,7 @@ public class TestHandler
 
 	static int counter = 0;
 
-	@SubscribeEvent
+//	@SubscribeEvent
 	public void onTick(TickEvent.ClientTickEvent event)
 	{
 		if (++counter > 20)

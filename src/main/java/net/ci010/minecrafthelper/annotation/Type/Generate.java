@@ -11,7 +11,14 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value =
 		{ElementType.TYPE})
-public @interface GenModel
+public @interface Generate
 {
+	enum GenerateType
+	{
+		model, language
+	}
 
+	GenerateType[] value();
+
+	String[] supportLang() default "";
 }

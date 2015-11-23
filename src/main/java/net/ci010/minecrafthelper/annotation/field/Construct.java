@@ -6,7 +6,7 @@ import net.ci010.minecrafthelper.annotation.ConstructOption;
 import java.lang.annotation.*;
 
 /**
- * The field
+ * The field annotated by this
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value =

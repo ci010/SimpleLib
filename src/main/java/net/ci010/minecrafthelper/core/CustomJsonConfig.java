@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper;
+package net.ci010.minecrafthelper.core;
 
 import com.google.common.collect.Maps;
 import net.minecraftforge.fml.common.Loader;

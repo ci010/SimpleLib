@@ -1,5 +1,7 @@
 package net.ci010.minecrafthelper.util;
 
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 
 import java.lang.annotation.Annotation;
@@ -9,7 +11,6 @@ import java.lang.annotation.Annotation;
  */
 public class ASMDataUtil
 {
-
 	public static String getModId(ASMDataTable.ASMData data)
 	{
 		return data.getCandidate().getContainedMods().get(0).getModId();
