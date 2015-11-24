@@ -1,12 +1,14 @@
 package net.ci010.minecrafthelper.data;
 
 import com.google.common.collect.Sets;
+import net.ci010.minecrafthelper.abstracts.BlockItemStruct;
 import net.ci010.minecrafthelper.abstracts.ModelHandler;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -17,6 +19,7 @@ public class ContainerMeta
 	public final String modid;
 	private boolean ifGenerateLang, ifGenerateModel;
 	private Set<Field> fields;
+	private Set<BlockItemStruct> registered;
 	private String[] langType;
 	private ModelHandler<Block> blockM;
 	private ModelHandler<Item> item;
@@ -25,6 +28,24 @@ public class ContainerMeta
 	{
 		this.modid = modid;
 		this.fields = Sets.newHashSet();
+		this.registered = Sets.newHashSet();
+	}
+
+	public void add(BlockItemStruct struct)
+	{
+		this.registered.add(struct);
+	}
+
+	public Iterable<BlockItemStruct> getRegistered()
+	{
+		return new Iterable<BlockItemStruct>()
+		{
+			@Override
+			public Iterator<BlockItemStruct> iterator()
+			{
+				return registered.iterator();
+			}
+		};
 	}
 
 	public ModelHandler<Item> getItemModelHandler()

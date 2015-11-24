@@ -34,6 +34,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
+import org.lwjgl.Sys;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -51,7 +52,6 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 	private Maker<Block, BlockItemStruct> blockMaker;
 	private Maker<Item, BlockItemStruct> itemMaker;
 	private Maker<BlockItemStruct, BlockItemStruct> maker;
-	private Multimap<String, BlockItemStruct> postReg = HashMultimap.create();
 
 	@Mod.EventHandler
 	public void construct(FMLConstructionEvent event)
@@ -94,6 +94,7 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 		{
 			ContainerMeta meta = itr.next();
 			FMLModUtil.setActiveContainer(FMLModUtil.getModContainer(meta.modid));
+			System.out.println("start " + meta.modid);
 			this.registerInit(meta);
 			FMLModUtil.setActiveContainer(theMod);
 		}
@@ -107,7 +108,16 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 			BlockItemStruct data = this.parseField(f);
 			if (data == null)//TODO log
 				continue;
-			this.postReg.put(meta.modid, data);
+			meta.add(data);
+
+			StringBuilder builder = new StringBuilder(f.getName());
+			for (int i = 0; i < builder.length(); ++i)
+				if (Character.isUpperCase(builder.charAt(i)))
+				{
+					builder.setCharAt(i, Character.toLowerCase(builder.charAt(i)));
+					builder.insert(i - 1, ".");
+				}
+			String name = builder.toString();
 			data.setName(f.getName());
 			OreDic anno = f.getAnnotation(OreDic.class);
 
@@ -115,19 +125,17 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 				for (Block block : data.blocks())
 				{
 					if (anno != null)
-						OreDictionary.registerOre(anno.value().isEmpty() ? block.getUnlocalizedName().substring(5) : anno
-										.value(),
-								block);
-					GameRegistry.registerBlock(block, block.getUnlocalizedName().substring(5));
+						OreDictionary.registerOre(anno.value().isEmpty() ? name : anno.value(), block);
+					GameRegistry.registerBlock(block, name);
 				}
 			if (data.items() != null)
 				for (Item item : data.items())
 				{
 					if (anno != null)
-						OreDictionary.registerOre(anno.value().isEmpty() ? item.getUnlocalizedName().substring(5) : anno
+						OreDictionary.registerOre(anno.value().isEmpty() ? name : anno
 										.value(),
 								item);
-					GameRegistry.registerItem(item, item.getUnlocalizedName().substring(5));
+					GameRegistry.registerItem(item, name);
 				}
 		}
 	}
@@ -135,7 +143,6 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		System.out.println("BLOCK Reg init");
 		ModContainer theMod = Loader.instance().activeModContainer();
 		if (HelperMod.proxy.isClient())
 		{
@@ -144,20 +151,19 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 			{
 				ContainerMeta meta = itr.next();
 				FMLModUtil.setActiveContainer(FMLModUtil.getModContainer(meta.modid));
-				for (BlockItemStruct data : postReg.get(meta.modid))
+				for (BlockItemStruct data : meta.getRegistered())
 				{
 					if (data.blocks() != null)
 						for (Block block : data.blocks())
 							if (meta.getBlockModelHandler() == null || !meta.getBlockModelHandler().handle(block))
 								this.registerModel(Item.getItemFromBlock(block), meta.modid, block.getUnlocalizedName()
-										.substring(5));
+										.substring(5).replace(".", "_"));
 					if (data.items() != null)
 						for (Item item : data.items())
 							if (meta.getItemModelHandler() == null || !meta.getItemModelHandler().handle(item))
-								this.registerModel(item, meta.modid, item.getUnlocalizedName().substring(5));
+								this.registerModel(item, meta.modid, item.getUnlocalizedName().substring(5).replace(".", "_"));
 					if (meta.needModel() || meta.needLang())
 					{
-						System.out.println("NEED");
 						FileGenerator g = new FileGenerator(meta.modid);
 						if (meta.needModel())
 							try

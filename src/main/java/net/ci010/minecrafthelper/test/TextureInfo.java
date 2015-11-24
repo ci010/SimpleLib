@@ -5,15 +5,42 @@ import net.minecraft.util.ResourceLocation;
 /**
  * @author ci010
  */
-public interface TextureInfo
+public class TextureInfo
 {
-	ResourceLocation getTexture();
+	private ResourceLocation location;
+	private int u, v, width, height;
 
-	int getU();
+	public TextureInfo(ResourceLocation location, int u, int v, int width, int height)
+	{
+		this.location = location;
+		this.u = u;
+		this.v = v;
+		this.width = width;
+		this.height = height;
+	}
 
-	int getV();
+	public ResourceLocation getTexture()
+	{
+		return location;
+	}
 
-	int getWidth();
+	public int getU()
+	{
+		return u;
+	}
 
-	int getHeight();
+	public int getV()
+	{
+		return v;
+	}
+
+	public int getWidth()
+	{
+		return width;
+	}
+
+	public int getHeight()
+	{
+		return height;
+	}
 }

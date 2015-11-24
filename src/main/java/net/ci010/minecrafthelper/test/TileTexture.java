@@ -1,50 +1,28 @@
 package net.ci010.minecrafthelper.test;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 
 /**
  * @author ci010
  */
-public class TileTexture implements TextureInfo
+public class TileTexture extends Gui implements GuiComponent
 {
-	private ResourceLocation location;
-	private int u, v, width, height;
+	private TextureInfo texture;
+	private int x, y;
 
-	public TileTexture(ResourceLocation location, int u, int v, int width, int height)
+	public TileTexture(TextureInfo texture, int x, int y)
 	{
-		this.location = location;
-		this.u = u;
-		this.v = v;
-		this.width = width;
-		this.height = height;
-	}
-	@Override
-	public ResourceLocation getTexture()
-	{
-		return location;
+		this.texture = texture;
+		this.x = x;
+		this.y = y;
 	}
 
 	@Override
-	public int getU()
+	public void draw()
 	{
-		return u;
-	}
-
-	@Override
-	public int getV()
-	{
-		return v;
-	}
-
-	@Override
-	public int getWidth()
-	{
-		return width;
-	}
-
-	@Override
-	public int getHeight()
-	{
-		return height;
+		Minecraft.getMinecraft().getTextureManager().bindTexture(texture.getTexture());
+		this.drawTexturedModalRect(x, y, texture.getU(), texture.getV(), texture.getWidth(), texture.getHeight());
 	}
 }

@@ -19,7 +19,6 @@ public class GenerationDelegate extends RegistryDelegate<Generate>
 	@Mod.EventHandler
 	public void construct(FMLConstructionEvent event)
 	{
-		System.out.println("GEnerate");
 		Generate anno = this.getAnnotation();
 		Generate.GenerateType[] types = anno.value();
 		int length = types.length;

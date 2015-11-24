@@ -7,7 +7,7 @@ import net.minecraft.client.gui.Gui;
  */
 public class ModBar extends Gui implements GuiComponent
 {
-	private SimpleComponent background;
+	private TileTexture background;
 	private TextureInfo bar;
 	private int x, y;
 	private T target;
@@ -22,12 +22,13 @@ public class ModBar extends Gui implements GuiComponent
 
 	public ModBar setBackground(TextureInfo background, int xOffset, int yOffset)
 	{
-		this.background = new SimpleComponent(background, x + xOffset, y + yOffset);
+		this.background = new TileTexture(background, x + xOffset, y + yOffset);
 		return this;
 	}
 
 	public void draw()
 	{
+		//TODO handle the other direction
 		if (this.background != null)
 			background.draw();
 		DrawUtil.bindToTexture(bar);

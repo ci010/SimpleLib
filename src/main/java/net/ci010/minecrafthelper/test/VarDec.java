@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 /**
  * @author ci010
  */
-public abstract class VarDec extends Process.Var<Integer> implements Process
+public abstract class VarDec extends VarInteger implements Process
 {
 	@Override
 	public void update()

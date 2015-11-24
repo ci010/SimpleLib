@@ -21,6 +21,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import scala.collection.generic.Growable;
 
 @SideOnly(Side.CLIENT)
 public class FileGenerator
@@ -106,6 +107,10 @@ public class FileGenerator
 			for (Block block : data.blocks())
 			{
 				String name = block.getUnlocalizedName().substring(5).replace(".", "_");
+				if(block instanceof Growable)
+				{
+
+				}
 				File blockState = new File(dirBlockState, name.concat(".json"));
 				File modelBlock = new File(dirModelBlock, name.concat(".json"));
 				File modelItem = new File(dirModelItem, name.concat(".json"));
