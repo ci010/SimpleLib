@@ -1,11 +1,9 @@
 package net.ci010.minecrafthelper.test;
 
-import java.lang.reflect.Field;
-
 /**
  * @author ci010
  */
-public abstract class VarDec extends VarInteger implements Process
+public abstract class VarDec extends VarInteger implements MachineProcess
 {
 	@Override
 	public void update()

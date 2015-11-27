@@ -66,6 +66,11 @@ public class ModNetwork
 		dispatcher.sendTo(message, player);
 	}
 
+	public final void sendTo(IMessage message)
+	{
+		this.sendToServer(message);
+	}
+
 	/**
 	 * Send this message to everyone within a certain range of a point. See
 	 * {@link SimpleNetworkWrapper#sendToDimension(IMessage, int)}
