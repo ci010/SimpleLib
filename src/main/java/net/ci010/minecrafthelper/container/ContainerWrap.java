@@ -22,7 +22,6 @@ public abstract class ContainerWrap extends Container implements VarSync.Listene
 {
 	private TileEntityWrap tileEntityWrap;
 	private VarInteger[] varIntegers;
-	private List<VarItemHolder> varItemHolders;
 
 	public VarSync getVar(int idx)
 	{
@@ -32,6 +31,7 @@ public abstract class ContainerWrap extends Container implements VarSync.Listene
 	public ContainerWrap(InventoryPlayer player, TileEntityWrap tileEntityWrap)
 	{
 		this.tileEntityWrap = tileEntityWrap;
+		//TODO handle the varInteger from tile
 		int index;
 		for (index = 0; index < 3; ++index)
 			for (int offset = 0; offset < 9; ++offset)
@@ -49,6 +49,13 @@ public abstract class ContainerWrap extends Container implements VarSync.Listene
 			if (o instanceof EntityPlayerMP)
 				players.add((EntityPlayerMP) o);
 		return players;
+	}
+
+	@Override
+	public void onCraftGuiOpened(ICrafting iCrafting)
+	{
+		for (int i = 0; i < varIntegers.length; ++i)
+			iCrafting.sendProgressBarUpdate(this, i, varIntegers[i].getData());
 	}
 
 	@Override
