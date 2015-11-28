@@ -3,6 +3,7 @@ package net.ci010.minecrafthelper.wrap;
 import com.google.common.collect.Lists;
 import net.ci010.minecrafthelper.test.VarInteger;
 import net.ci010.minecrafthelper.test.VarSync;
+import net.ci010.minecrafthelper.test.VarSyncMessageBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * @author ci010
  */
-public abstract class ContainerWrap extends Container implements VarSync.Listener
+public abstract class ContainerWrap extends Container implements VarSyncMessageBase.Listener
 {
 	private VarInteger[] varIntegers;
 

@@ -14,20 +14,21 @@ import net.minecraft.util.IChatComponent;
 /**
  * @author ci010
  */
-public abstract class TileEntityWrap extends TileEntity implements IInventory, IUpdatePlayerListBox
+public class TileEntityWrap extends TileEntity implements IInventory, IUpdatePlayerListBox
 {
 	ItemStack[] stacks;
 	VarInteger[] integers;
 	MachineProcess[] process;
 
-	private String id;
+	private String name;
 
-	public TileEntityWrap(String id, ItemStack[] stacks, VarInteger[] integers, MachineProcess[] process)
+	public TileEntityWrap load(String name, ItemStack[] stacks, VarInteger[] integers, MachineProcess[] process)
 	{
-		super();
+		this.stacks = stacks;
 		this.process = process;
 		this.integers = integers;
-		this.id = id;
+		this.name = name;
+		return this;
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public abstract class TileEntityWrap extends TileEntity implements IInventory, I
 	@Override
 	public String getCommandSenderName()
 	{
-		return id;
+		return name;
 	}
 
 	@Override
@@ -173,6 +174,7 @@ public abstract class TileEntityWrap extends TileEntity implements IInventory, I
 	public void readFromNBT(NBTTagCompound tag)
 	{
 		super.readFromNBT(tag);
+		this.name = tag.getString("machine_name");
 		NBTTagList tagList = tag.getTagList(this.getCommandSenderName(), 10);
 		this.stacks = new ItemStack[this.getSizeInventory()];
 		for (int i = 0; i < tagList.tagCount(); ++i)
@@ -183,9 +185,10 @@ public abstract class TileEntityWrap extends TileEntity implements IInventory, I
 				this.stacks[slot] = ItemStack.loadItemStackFromNBT(temp);
 		}
 		int[] ints = tag.getIntArray("VarInt");
+		this.integers = new VarInteger[ints.length];
 		for (int i = 0; i < ints.length; ++i)
-			integers[i].setData(ints[i]);
-		//TODO check this
+			integers[i] = new VarInteger(ints[i]);
+		Machine.linkTileEntityProcess(this);
 	}
 
 
@@ -193,20 +196,22 @@ public abstract class TileEntityWrap extends TileEntity implements IInventory, I
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		super.writeToNBT(tag);
+		tag.setString("machine_name", this.name);
+
 		int[] arr = new int[this.integers.length];
 		for (int i = 0; i < this.integers.length; ++i)
 			arr[i] = integers[i].getData();
 		tag.setIntArray("VarInt", arr);
 
-		NBTTagList tagList = new NBTTagList();
+		NBTTagList stackList = new NBTTagList();
 		for (int i = 0; i < this.stacks.length; ++i)
 			if (this.stacks[i] != null)
 			{
 				NBTTagCompound tagCompound = new NBTTagCompound();
 				tagCompound.setByte("Slot", (byte) i);
 				this.stacks[i].writeToNBT(tagCompound);
-				tagList.appendTag(tagCompound);
+				stackList.appendTag(tagCompound);
 			}
-		tag.setTag(this.getCommandSenderName(), tagList);
+		tag.setTag(this.getCommandSenderName(), stackList);
 	}
 }

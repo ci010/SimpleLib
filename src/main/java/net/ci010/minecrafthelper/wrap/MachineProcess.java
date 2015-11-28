@@ -1,13 +1,15 @@
 package net.ci010.minecrafthelper.wrap;
 
 import net.ci010.minecrafthelper.test.UpdateSafe;
+import net.ci010.minecrafthelper.test.VarSync;
+import net.minecraft.nbt.NBTBase;
 
 /**
  * @author ci010
  */
-public interface MachineProcess extends UpdateSafe
+public abstract class MachineProcess implements UpdateSafe
 {
-	void preUpdate();
+	public abstract void preUpdate();
 
-	void postUpdate();
+	public abstract void postUpdate();
 }

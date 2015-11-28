@@ -17,6 +17,7 @@ public class MachineInfo
 {
 	/**
 	 * Name of the MachineInfo associated with tileEntity too.
+	 * This one should be unique
 	 */
 	String name;
 
