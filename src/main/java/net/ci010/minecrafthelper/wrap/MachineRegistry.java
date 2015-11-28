@@ -1,7 +1,7 @@
-package net.ci010.minecrafthelper.test;
+package net.ci010.minecrafthelper.wrap;
 
-import net.ci010.minecrafthelper.container.ContainerWrap;
-import net.ci010.minecrafthelper.tileentity.TileEntityWrap;
+import net.ci010.minecrafthelper.wrap.ContainerWrap;
+import net.ci010.minecrafthelper.wrap.TileEntityWrap;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
