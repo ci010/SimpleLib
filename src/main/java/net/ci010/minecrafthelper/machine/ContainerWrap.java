@@ -1,9 +1,9 @@
-package net.ci010.minecrafthelper.wrap;
+package net.ci010.minecrafthelper.machine;
 
 import com.google.common.collect.Lists;
-import net.ci010.minecrafthelper.test.VarInteger;
-import net.ci010.minecrafthelper.test.VarSync;
-import net.ci010.minecrafthelper.test.VarSyncMessageBase;
+import net.ci010.minecrafthelper.data.VarInteger;
+import net.ci010.minecrafthelper.data.VarSync;
+import net.ci010.minecrafthelper.data.VarSyncMessageBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -71,9 +71,6 @@ public abstract class ContainerWrap extends Container implements VarSyncMessageB
 	{
 		super.detectAndSendChanges();
 		//TODO try to use generic to handle all varSync, try to recreate items tck
-//		for (VarInteger i : varIntegers)
-//			if (i.shouldUpdate())
-//				i.update();
 		int num = -1;
 		for (VarInteger i : varIntegers)
 			if (i.isDirty() && ++num != -1)

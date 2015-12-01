@@ -1,13 +1,11 @@
-package net.ci010.minecrafthelper.container;
+package net.ci010.minecrafthelper.minecraft;
 
 import com.google.common.collect.Lists;
-import net.ci010.minecrafthelper.tileentity.TileEntityReflectWrap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -33,17 +31,13 @@ public class ContainerReflectWrap extends Container
 				this.addSlotToContainer(new Slot(inv, offset + index * 9 + 9, 8 + offset * 18, 84 + index * 18));
 		for (index = 0; index < 9; ++index)
 			this.addSlotToContainer(new Slot(inv, index, 8 + index * 18, 142));
+		
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn)
 	{
 		return true;
-	}
-
-	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
-	{
-		return null;
 	}
 
 	@Override

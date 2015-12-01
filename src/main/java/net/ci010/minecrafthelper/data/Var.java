@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.test;
+package net.ci010.minecrafthelper.data;
 
 /**
  * @author ci010

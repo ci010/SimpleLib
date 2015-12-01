@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.tileentity;
+package net.ci010.minecrafthelper.minecraft;
 
 import com.google.common.collect.Lists;
 import net.ci010.minecrafthelper.annotation.field.Watching;

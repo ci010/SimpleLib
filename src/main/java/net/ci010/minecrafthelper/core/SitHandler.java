@@ -4,7 +4,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
 import net.ci010.minecrafthelper.ModNetwork;
 import net.ci010.minecrafthelper.annotation.type.Handler;
-import net.ci010.minecrafthelper.entity.EntitySitableTemp;
+import net.ci010.minecrafthelper.minecraft.EntitySitableTemp;
 import net.ci010.minecrafthelper.network.PlayerSitMessage;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;

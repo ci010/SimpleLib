@@ -1,14 +1,24 @@
-package net.ci010.minecrafthelper.wrap;
+package net.ci010.minecrafthelper.machine;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.ci010.minecrafthelper.HelperMod;
-import net.ci010.minecrafthelper.test.GuiComponent;
-import net.ci010.minecrafthelper.test.GuiContainerWrap;
-import net.ci010.minecrafthelper.test.VarInteger;
+import net.ci010.minecrafthelper.data.VarInteger;
+import net.ci010.minecrafthelper.gui.Drawable;
+import net.ci010.minecrafthelper.gui.GuiComponent;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -17,60 +27,50 @@ import java.util.Map;
 /**
  * @author ci010
  */
-public class Machine
+public class Machine extends InteractiveComponent
 {
 	static Map<String, Machine> map = Maps.newHashMap();
-	static List<Machine> list = Lists.newArrayList();
-	String name;
 
-	private Class<? extends MachineProcess>[] clz;
-	MachineInfo.ProcessInfo[] info;
-	MachineInfo.Gui gui;
-	int numOfProcess, numOfStack, numOfInt, numOfSync;
-
-	public Machine(MachineInfo info)
+	Machine(MachineBuilder info)
 	{
+		super(info);
 		if (map.containsKey(info.name))
 		{
 			HelperMod.LOG.fatal("Name duplication! There has already been a machine named {}!", info.name);
 			return;
 		}
-		this.name = info.name;
-		//TODO copy this integer to the tileentity and allocate with container
-		this.numOfProcess = info.processInfoMap.size();
-		this.clz = new Class[numOfProcess];
-		this.info = new MachineInfo.ProcessInfo[numOfProcess];
-		int idx = -1;
-		numOfInt = numOfStack = numOfSync = 0;
-		for (Map.Entry<Class<? extends MachineProcess>, MachineInfo.ProcessInfo> entry : info.processInfoMap.entrySet())
+		map.put(name, this);
+
+		GameRegistry.registerBlock(new BlockContainer(info.material)
 		{
-			this.clz[++idx] = entry.getKey();
-			MachineInfo.ProcessInfo temp = entry.getValue();
-			numOfInt += temp.integers.size();
-			numOfStack += temp.stacks.size();
-			numOfSync += temp.sync.size();
-			this.info[idx] = temp;
-		}
+			@Override
+			public TileEntity createNewTileEntity(World worldIn, int meta)
+			{
+				return getTileEntity();
+			}
 
-		map.put(this.name, this);
-		list.add(this);
+			@Override
+			public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
+			{
+				interactWith(playerIn, pos);
+				return true;
+			}
+		}, "block.".concat(this.name));
 	}
-
 
 	public TileEntityWrap getTileEntity()
 	{
-		MachineProcess[] procs = new MachineProcess[numOfProcess];
+		Process[] procs = new Process[numOfProcess];
 		int stackConut = -1, integerCount = -1;
 		ItemStack[] stacks = new ItemStack[this.numOfInt];
 		VarInteger[] integers = new VarInteger[this.numOfInt];
 
 		for (int i = 0; i < numOfProcess; ++i)
 		{
-			MachineProcess proc;
-			MachineInfo.ProcessInfo vars = this.info[i];
+			Process proc;
+			MachineBuilder.ProcessInfo vars = this.info[i];
 			try
 			{
-				int num = -1;
 				proc = this.clz[i].newInstance();
 				procs[i] = proc;
 				for (Field integer : vars.integers)
@@ -91,41 +91,34 @@ public class Machine
 		return new TileEntityWrap().load(name, stacks, integers, procs);
 	}
 
-	public ContainerWrap getContainer(EntityPlayer player, TileEntityWrap tile)
+
+	@Override
+	public Container getContainer(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
-		return new ContainerWrap(player.inventory, tile.integers)
+		return new ContainerWrap(player.inventory, ((TileEntityWrap) world.getTileEntity(new BlockPos(x, y, z)))
+				.integers)
 		{
 			@Override
 			public boolean canInteractWith(EntityPlayer playerIn)
 			{
-				//TODO check the usage of this
 				return true;
 			}
 		};
 	}
 
-	public GuiContainer getGuiContainer(EntityPlayer player, TileEntityWrap tile)
+	public static void init()
 	{
-		return new GuiContainerWrap(getContainer(player, tile))
-		{
-			@Override
-			protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
-			{
-				//TODO handle the front ground
-				for (GuiComponent guiComponent : gui.gui)
-					guiComponent.draw();
-			}
-		};
+		GameRegistry.registerTileEntity(TileEntityWrap.class, "tileEntityWrap");
 	}
 
 	static void linkTileEntityProcess(TileEntityWrap tile)
 	{
 		Machine machine = map.get(tile.getCommandSenderName());
-		MachineProcess[] procs = new MachineProcess[machine.numOfProcess];
+		Process[] procs = new Process[machine.numOfProcess];
 		for (int i = 0; i < machine.numOfProcess; ++i)
 		{
-			MachineProcess proc;
-			MachineInfo.ProcessInfo vars = machine.info[i];
+			Process proc;
+			MachineBuilder.ProcessInfo vars = machine.info[i];
 			try
 			{
 				proc = machine.clz[i].newInstance();
@@ -146,4 +139,5 @@ public class Machine
 			}
 		}
 	}
+
 }

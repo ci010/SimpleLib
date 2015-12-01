@@ -1,6 +1,6 @@
-package net.ci010.minecrafthelper.wrap;
+package net.ci010.minecrafthelper.machine;
 
-import net.ci010.minecrafthelper.test.VarInteger;
+import net.ci010.minecrafthelper.data.VarInteger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -18,11 +18,11 @@ public class TileEntityWrap extends TileEntity implements IInventory, IUpdatePla
 {
 	ItemStack[] stacks;
 	VarInteger[] integers;
-	MachineProcess[] process;
+	Process[] process;
 
 	private String name;
 
-	public TileEntityWrap load(String name, ItemStack[] stacks, VarInteger[] integers, MachineProcess[] process)
+	public TileEntityWrap load(String name, ItemStack[] stacks, VarInteger[] integers, Process[] process)
 	{
 		this.stacks = stacks;
 		this.process = process;
@@ -40,12 +40,12 @@ public class TileEntityWrap extends TileEntity implements IInventory, IUpdatePla
 	@Override
 	public void update()
 	{
-		for (MachineProcess proces : process)
+		for (Process proces : process)
 			proces.preUpdate();
-		for (MachineProcess proces : process)
+		for (Process proces : process)
 			if (proces.shouldUpdate())
 				proces.update();
-		for (MachineProcess proces : process)
+		for (Process proces : process)
 			proces.postUpdate();
 	}
 

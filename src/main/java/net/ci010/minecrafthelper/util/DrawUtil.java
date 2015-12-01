@@ -1,5 +1,6 @@
-package net.ci010.minecrafthelper.test;
+package net.ci010.minecrafthelper.util;
 
+import net.ci010.minecrafthelper.gui.TextureInfo;
 import net.minecraft.client.Minecraft;
 
 /**

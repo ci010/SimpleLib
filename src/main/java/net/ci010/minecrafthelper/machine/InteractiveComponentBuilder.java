@@ -1,8 +1,12 @@
-package net.ci010.minecrafthelper.wrap;
+package net.ci010.minecrafthelper.machine;
 
-import com.google.common.collect.*;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import net.ci010.minecrafthelper.HelperMod;
-import net.ci010.minecrafthelper.test.*;
+import net.ci010.minecrafthelper.data.VarInteger;
+import net.ci010.minecrafthelper.data.VarSync;
+import net.ci010.minecrafthelper.gui.GuiComponent;
 import net.minecraft.item.ItemStack;
 
 import java.lang.reflect.Field;
@@ -13,60 +17,28 @@ import java.util.Set;
 /**
  * @author ci010
  */
-public class MachineInfo
+public abstract class InteractiveComponentBuilder
 {
 	/**
-	 * Name of the MachineInfo associated with tileEntity too.
 	 * This one should be unique
 	 */
 	String name;
+	List<GuiComponent> gui = Lists.newArrayList();
+	public Map<Class<? extends Process>, ProcessInfo> processInfoMap = Maps.newHashMap();
 
-	Gui gui = new Gui();
-
-	class Gui
+	public InteractiveComponentBuilder addGui(GuiComponent component)
 	{
-		List<GuiComponent> gui = Lists.newArrayList();
-
-		public Gui setBackground(TileTexture texture)
-		{
-			gui.add(texture);
-			return this;
-		}
-
-		public Gui addString(String s, int x, int y)
-		{
-			gui.add(new GuiString(s, x, y));
-			return this;
-		}
-
-		public Gui addDynamicString(VarInteger var, int x, int y)
-		{
-
-			return this;
-		}
-
-		public Gui addBar(ModBar bar)
-		{
-			this.gui.add(bar);
-			return this;
-		}
+		this.gui.add(component);
+		return this;
 	}
 
-	public MachineInfo.Gui getGui()
-	{
-		return this.gui;
-	}
-
-
-	public MachineInfo setName(String s)
+	public InteractiveComponentBuilder setName(String s)
 	{
 		this.name = s;
 		return this;
 	}
 
-	Map<Class<? extends MachineProcess>, ProcessInfo> processInfoMap = Maps.newHashMap();
-
-	public MachineInfo addProcess(Class<? extends MachineProcess> process)
+	public InteractiveComponentBuilder addProcess(Class<? extends Process> process)
 	{
 		try
 		{
@@ -109,7 +81,7 @@ public class MachineInfo
 
 	public class ProcessInfo
 	{
-		Set<Field> stacks, integers, sync;
+		public Set<Field> stacks, integers, sync;
 
 		ProcessInfo add(Field f, int type)
 		{
@@ -132,4 +104,6 @@ public class MachineInfo
 			return this;
 		}
 	}
+
+	public abstract InteractiveComponent build();
 }

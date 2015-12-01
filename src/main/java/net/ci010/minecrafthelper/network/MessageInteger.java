@@ -2,7 +2,7 @@ package net.ci010.minecrafthelper.network;
 
 import io.netty.buffer.ByteBuf;
 import net.ci010.minecrafthelper.annotation.type.Message;
-import net.ci010.minecrafthelper.container.ContainerWrap;
+import net.ci010.minecrafthelper.machine.ContainerWrap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;

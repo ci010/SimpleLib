@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.entity;
+package net.ci010.minecrafthelper.minecraft;
 
 import net.ci010.minecrafthelper.annotation.type.ModEntity;
 import net.minecraft.nbt.NBTTagCompound;

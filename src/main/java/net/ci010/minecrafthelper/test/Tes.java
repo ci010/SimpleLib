@@ -1,5 +1,7 @@
 package net.ci010.minecrafthelper.test;
 
+import net.ci010.minecrafthelper.machine.Process;
+
 import java.util.Collection;
 
 /**
