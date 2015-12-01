@@ -1,13 +1,12 @@
-package net.ci010.minecrafthelper.test;
+package net.ci010.minecrafthelper.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * @author ci010
  */
-public class TileTexture extends Gui implements GuiComponent
+public class TileTexture extends Gui implements Drawable
 {
 	private TextureInfo texture;
 	private int x, y;
