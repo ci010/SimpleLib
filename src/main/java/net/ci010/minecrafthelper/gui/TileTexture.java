@@ -6,10 +6,9 @@ import net.minecraft.client.gui.Gui;
 /**
  * @author ci010
  */
-public class TileTexture extends Gui implements Drawable
+public class TileTexture extends GuiComponent
 {
 	private TextureInfo texture;
-	private int x, y;
 
 	public TileTexture(TextureInfo texture, int x, int y)
 	{
@@ -23,5 +22,17 @@ public class TileTexture extends Gui implements Drawable
 	{
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture.getTexture());
 		this.drawTexturedModalRect(x, y, texture.getU(), texture.getV(), texture.getWidth(), texture.getHeight());
+	}
+
+	@Override
+	public int getWidth()
+	{
+		return texture.getWidth();
+	}
+
+	@Override
+	public int getHeight()
+	{
+		return texture.getHeight();
 	}
 }
