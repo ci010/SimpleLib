@@ -3,6 +3,7 @@ package net.ci010.minecrafthelper.machine;
 import com.google.common.collect.Lists;
 import net.ci010.minecrafthelper.HelperMod;
 import net.ci010.minecrafthelper.gui.*;
+import net.ci010.minecrafthelper.network.GuiHandler;
 import net.ci010.minecrafthelper.util.GuiUtil;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
