@@ -1,20 +1,17 @@
 package net.ci010.minecrafthelper;
 
 import net.ci010.minecrafthelper.core.CommonProxy;
-import net.ci010.minecrafthelper.data.ContainerMeta;
-import net.ci010.minecrafthelper.util.FMLModUtil;
+import net.ci010.minecrafthelper.gui.GuiDefaultBackground;
+import net.ci010.minecrafthelper.gui.GuiString;
+import net.ci010.minecrafthelper.machine.MachineInfo;
 import net.minecraft.init.Blocks;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Iterator;
 
 @Mod(modid = HelperMod.MODID, name = HelperMod.NAME, version = HelperMod.VERSION)
 public class HelperMod
@@ -40,7 +37,6 @@ public class HelperMod
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		RegistryBufferManager.instance().invoke(event);
-
 	}
 
 	@EventHandler

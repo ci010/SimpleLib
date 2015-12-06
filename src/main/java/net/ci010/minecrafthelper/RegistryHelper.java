@@ -9,6 +9,8 @@ import net.ci010.minecrafthelper.annotation.field.Construct;
 import net.ci010.minecrafthelper.core.AIRegistry;
 import net.ci010.minecrafthelper.core.SitHandler;
 import net.ci010.minecrafthelper.data.ContainerMeta;
+import net.ci010.minecrafthelper.data.StructBlock;
+import net.ci010.minecrafthelper.data.StructItem;
 import net.ci010.minecrafthelper.network.AbstractMessageHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLiving;
@@ -68,6 +70,38 @@ public enum RegistryHelper
 			this.track(new ContainerMeta(modid).addField(this.parseContainer(container)));
 		else
 			this.containerIdx.get(modid).addField(this.parseContainer(container));
+	}
+
+	public void registerBlock(String modid, Block block, String name)
+	{
+		if (!this.containerIdx.containsKey(modid))
+			this.track(new ContainerMeta(modid).addUnregistered(new StructBlock(block), name, false));
+		else
+			this.containerIdx.get(modid).addUnregistered(new StructBlock(block), name, false);
+	}
+
+	public void registerBlock(String modid, Block block, String name, String ore)
+	{
+		if (!this.containerIdx.containsKey(modid))
+			this.track(new ContainerMeta(modid).addUnregistered(new StructBlock(block), name, ore));
+		else
+			this.containerIdx.get(modid).addUnregistered(new StructBlock(block), name, ore);
+	}
+
+	public void registerItem(String modid, Item item, String name)
+	{
+		if (!this.containerIdx.containsKey(modid))
+			this.track(new ContainerMeta(modid).addUnregistered(new StructItem(item), name, false));
+		else
+			this.containerIdx.get(modid).addUnregistered(new StructItem(item), name, false);
+	}
+
+	public void registerItem(String modid, Item item, String name, String ore)
+	{
+		if (!this.containerIdx.containsKey(modid))
+			this.track(new ContainerMeta(modid).addUnregistered(new StructItem(item), name, ore));
+		else
+			this.containerIdx.get(modid).addUnregistered(new StructItem(item), name, ore);
 	}
 
 	public Map<Class<? extends Annotation>, ArgumentHelper> getAnnotationMap()

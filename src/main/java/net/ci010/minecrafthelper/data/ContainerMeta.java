@@ -19,7 +19,7 @@ public class ContainerMeta
 	public final String modid;
 	private boolean ifGenerateLang, ifGenerateModel;
 	private Set<Field> fields;
-	private Set<BlockItemStruct> registered;
+	private Set<BasicInfo> unregistered;
 	private String[] langType;
 	private ModelHandler<Block> blockM;
 	private ModelHandler<Item> item;
@@ -28,24 +28,7 @@ public class ContainerMeta
 	{
 		this.modid = modid;
 		this.fields = Sets.newHashSet();
-		this.registered = Sets.newHashSet();
-	}
-
-	public void add(BlockItemStruct struct)
-	{
-		this.registered.add(struct);
-	}
-
-	public Iterable<BlockItemStruct> getRegistered()
-	{
-		return new Iterable<BlockItemStruct>()
-		{
-			@Override
-			public Iterator<BlockItemStruct> iterator()
-			{
-				return registered.iterator();
-			}
-		};
+		this.unregistered = Sets.newHashSet();
 	}
 
 	public ModelHandler<Item> getItemModelHandler()
@@ -108,4 +91,36 @@ public class ContainerMeta
 		return this.fields;
 	}
 
+	public ContainerMeta addUnregistered(BlockItemStruct struct, String name, boolean needOre)
+	{
+		this.unregistered.add(new BasicInfo(struct, name, null, needOre));
+		return this;
+	}
+
+	public ContainerMeta addUnregistered(BlockItemStruct struct, String name, String ore)
+	{
+		this.unregistered.add(new BasicInfo(struct, name, ore, true));
+		return this;
+	}
+
+	public Iterable<BasicInfo> getUnregistered()
+	{
+		return this.unregistered;
+	}
+
+	public class BasicInfo
+	{
+		public BlockItemStruct struct;
+		public String name;
+		public boolean needOre;
+		public String oreDicName;
+
+		public BasicInfo(BlockItemStruct struct, String name, String oreDicName, boolean needOre)
+		{
+			this.struct = struct;
+			this.name = name;
+			this.oreDicName = oreDicName;
+			this.needOre = needOre;
+		}
+	}
 }

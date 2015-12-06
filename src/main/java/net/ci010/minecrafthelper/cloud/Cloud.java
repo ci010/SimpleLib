@@ -18,9 +18,9 @@ public class Cloud extends InteractiveComponent implements IUpdatePlayerListBox
 {
 	private VarInteger[] integers;
 	private Process[] process;
-	private ItemStack[] stacks;
+	private ItemStack[] stacks;// TODO: 2015/12/5 use ItemHolder 
 
-	public Cloud(InteractiveComponentBuilder info)
+	public Cloud(InteractiveComponentInfo info)
 	{
 		super(info);
 
@@ -32,7 +32,7 @@ public class Cloud extends InteractiveComponent implements IUpdatePlayerListBox
 		for (int i = 0; i < numOfProcess; ++i)
 		{
 			Process proc;
-			InteractiveComponentBuilder.ProcessInfo vars = this.info[i];
+			InteractiveComponentInfo.ProcessInfo vars = this.info[i];
 			try
 			{
 				proc = this.clz[i].newInstance();

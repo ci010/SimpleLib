@@ -1,6 +1,5 @@
 package net.ci010.minecrafthelper.data.delegate;
 
-import net.ci010.minecrafthelper.ModNetwork;
 import net.ci010.minecrafthelper.RegistryHelper;
 import net.ci010.minecrafthelper.abstracts.RegistryDelegate;
 import net.ci010.minecrafthelper.annotation.type.ASMDelegate;

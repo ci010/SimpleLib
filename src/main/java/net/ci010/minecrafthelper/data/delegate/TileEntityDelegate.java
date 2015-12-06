@@ -4,6 +4,7 @@ import net.ci010.minecrafthelper.abstracts.RegistryDelegate;
 import net.ci010.minecrafthelper.annotation.type.ASMDelegate;
 import net.ci010.minecrafthelper.annotation.type.ModTileEntity;
 import net.ci010.minecrafthelper.util.GenericUtil;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 @ASMDelegate
 public class TileEntityDelegate extends RegistryDelegate<ModTileEntity>
 {
+	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
 	{
 		Class<? extends net.minecraft.tileentity.TileEntity> tile = GenericUtil.cast(this.getAnnotatedClass());

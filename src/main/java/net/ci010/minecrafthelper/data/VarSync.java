@@ -11,7 +11,6 @@ public abstract class VarSync<T> extends Var<T>
 	public final Side side = FMLCommonHandler.instance().getSide();
 	protected boolean dirty;
 
-
 	public boolean isDirty()
 	{
 		return this.dirty;
@@ -22,6 +21,4 @@ public abstract class VarSync<T> extends Var<T>
 		this.dirty = true;
 		super.setData(data);
 	}
-
-
 }

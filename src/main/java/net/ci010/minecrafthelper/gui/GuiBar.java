@@ -1,8 +1,11 @@
 package net.ci010.minecrafthelper.gui;
 
-import net.ci010.minecrafthelper.util.DrawUtil;
+import net.ci010.minecrafthelper.util.GuiUtil;
 
 /**
+ * The bar-like Component.
+ * The effect of this is like the progress bar in furnace.
+ *
  * @author ci010
  */
 public class GuiBar extends GuiComponent
@@ -22,25 +25,33 @@ public class GuiBar extends GuiComponent
 		this.dir = Direction.toRight;
 	}
 
+	/**
+	 * @param direction The direction of the bar will move.
+	 * @return this
+	 */
 	public GuiBar setDirection(Direction direction)
 	{
 		this.dir = direction;
 		return this;
 	}
 
+	/**
+	 * @param background The texture of the background of the bar.
+	 * @param xOffset The offset related to the x position of this bar.
+	 * @param yOffset The offset related to the y position of this bar.
+	 * @return this
+	 */
 	public GuiBar setBackground(TextureInfo background, int xOffset, int yOffset)
 	{
 		this.background = new TileTexture(background, x + xOffset, y + yOffset);
 		return this;
 	}
 
-
 	public void draw()
 	{
-		//TODO handle the other direction
 		if (this.background != null)
 			background.draw();
-		DrawUtil.bindToTexture(texture);
+		GuiUtil.bindToTexture(texture);
 		switch (this.dir)
 		{
 			case toRight:
@@ -64,11 +75,27 @@ public class GuiBar extends GuiComponent
 		}
 	}
 
+	@Override
+	public int getWidth()
+	{
+		return background.getWidth();
+	}
+
+	@Override
+	public int getHeight()
+	{
+		return background.getHeight();
+	}
+
 	public enum Direction
 	{
 		toRight, toLeft, toTop, toBottom;
 	}
 
+	/**
+	 * This interface provides the percentage of the progress.
+	 * For instance, if the it return 0.5, the bar will be drawn in half.
+	 */
 	interface Catcher
 	{
 		float getPercentage();

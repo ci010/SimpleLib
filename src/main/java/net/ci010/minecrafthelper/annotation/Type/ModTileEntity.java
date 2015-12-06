@@ -13,5 +13,8 @@ import java.lang.annotation.Target;
 		{ElementType.TYPE})
 public @interface ModTileEntity
 {
+	/**
+	 * @return the name of the tileEntity
+	 */
 	String value() default "";
 }

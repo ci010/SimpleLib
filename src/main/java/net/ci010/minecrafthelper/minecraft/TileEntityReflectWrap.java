@@ -108,11 +108,11 @@ public abstract class TileEntityReflectWrap extends TileEntity implements IInven
 	}
 
 	@Override
-	public void setInventorySlotContents(int var1, ItemStack var2)
+	public void setInventorySlotContents(int i, ItemStack stack)
 	{
-		this.stack[var1] = var2;
-		if (var2 != null && var2.stackSize > this.getInventoryStackLimit())
-			var2.stackSize = this.getInventoryStackLimit();
+		this.stack[i] = stack;
+		if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+			stack.stackSize = this.getInventoryStackLimit();
 	}
 
 	@Override

@@ -1,8 +1,5 @@
 package net.ci010.minecrafthelper.gui;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-
 /**
  * @author ci010
  */
@@ -20,8 +17,7 @@ public class TileTexture extends GuiComponent
 	@Override
 	public void draw()
 	{
-		Minecraft.getMinecraft().getTextureManager().bindTexture(texture.getTexture());
-		this.drawTexturedModalRect(x, y, texture.getU(), texture.getV(), texture.getWidth(), texture.getHeight());
+		this.drawTexture(texture);
 	}
 
 	@Override

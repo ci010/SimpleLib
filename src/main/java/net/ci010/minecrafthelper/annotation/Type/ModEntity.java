@@ -22,4 +22,12 @@ public @interface ModEntity
 	int updateFrequency() default 3;
 
 	boolean sendsVelocityUpdates() default true;
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(value =
+			{ElementType.TYPE})
+	@interface Render
+	{
+		Class<? extends net.minecraft.client.renderer.entity.Render> value();
+	}
 }

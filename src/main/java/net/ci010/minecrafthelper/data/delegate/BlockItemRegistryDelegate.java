@@ -1,9 +1,5 @@
 package net.ci010.minecrafthelper.data.delegate;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import net.ci010.minecrafthelper.HelperMod;
 import net.ci010.minecrafthelper.RegistryHelper;
 import net.ci010.minecrafthelper.abstracts.ArgumentHelper;
@@ -34,12 +30,10 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-import org.lwjgl.Sys;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -62,7 +56,6 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		System.out.println("BLOCK Reg pre");
 		Map<Class<? extends Annotation>, ArgumentHelper> temp = RegistryHelper.INSTANCE.getAnnotationMap();
 		blockMaker = new MakerStruct<Block>(temp)
 		{
@@ -95,21 +88,18 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 			ContainerMeta meta = itr.next();
 			FMLModUtil.setActiveContainer(FMLModUtil.getModContainer(meta.modid));
 			System.out.println("start " + meta.modid);
-			this.registerInit(meta);
+			this.collect(meta);
 			FMLModUtil.setActiveContainer(theMod);
 		}
 	}
 
-
-	private void registerInit(ContainerMeta meta)
+	private void collect(ContainerMeta meta)
 	{
 		for (Field f : meta.getFields())
 		{
 			BlockItemStruct data = this.parseField(f);
 			if (data == null)//TODO log
 				continue;
-			meta.add(data);
-
 			StringBuilder builder = new StringBuilder(f.getName());
 			for (int i = 0; i < builder.length(); ++i)
 				if (Character.isUpperCase(builder.charAt(i)))
@@ -118,24 +108,34 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 					builder.insert(i - 1, ".");
 				}
 			String name = builder.toString();
-			data.setName(f.getName());
+			String ore = null;
 			OreDic anno = f.getAnnotation(OreDic.class);
+			if (anno != null)
+				ore = anno.value().equals("") ? null : anno.value();
+			meta.addUnregistered(data, name, ore);
+		}
+	}
 
-			if (data.blocks() != null)
-				for (Block block : data.blocks())
+	private void build(ContainerMeta meta)
+	{
+		for (ContainerMeta.BasicInfo basicInfo : meta.getUnregistered())
+		{
+			basicInfo.struct.setName(basicInfo.name);
+			if (basicInfo.struct.blocks() != null)
+				for (Block block : basicInfo.struct.blocks())
 				{
-					if (anno != null)
-						OreDictionary.registerOre(anno.value().isEmpty() ? name : anno.value(), block);
-					GameRegistry.registerBlock(block, name);
+					GameRegistry.registerBlock(block, basicInfo.name);
+					if (basicInfo.needOre)
+						OreDictionary.registerOre(basicInfo.oreDicName == null ? block.getUnlocalizedName().substring(5) :
+								basicInfo.oreDicName, block);
 				}
-			if (data.items() != null)
-				for (Item item : data.items())
+			if (basicInfo.struct.items() != null)
+				for (Item item : basicInfo.struct.items())
 				{
-					if (anno != null)
-						OreDictionary.registerOre(anno.value().isEmpty() ? name : anno
-										.value(),
-								item);
-					GameRegistry.registerItem(item, name);
+					GameRegistry.registerItem(item, basicInfo.name);
+					if (basicInfo.needOre)
+						OreDictionary.registerOre(basicInfo.oreDicName == null ? item.getUnlocalizedName().substring(5) :
+								basicInfo.oreDicName, item);
 				}
 		}
 	}
@@ -144,51 +144,54 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 	public void init(FMLInitializationEvent event)
 	{
 		ModContainer theMod = Loader.instance().activeModContainer();
-		if (HelperMod.proxy.isClient())
+
 		{
 			Iterator<ContainerMeta> itr = RegistryHelper.INSTANCE.getRegistryInfo();
 			while (itr.hasNext())
 			{
 				ContainerMeta meta = itr.next();
 				FMLModUtil.setActiveContainer(FMLModUtil.getModContainer(meta.modid));
-				for (BlockItemStruct data : meta.getRegistered())
-				{
-					if (data.blocks() != null)
-						for (Block block : data.blocks())
-							if (meta.getBlockModelHandler() == null || !meta.getBlockModelHandler().handle(block))
-								this.registerModel(Item.getItemFromBlock(block), meta.modid, block.getUnlocalizedName()
-										.substring(5).replace(".", "_"));
-					if (data.items() != null)
-						for (Item item : data.items())
-							if (meta.getItemModelHandler() == null || !meta.getItemModelHandler().handle(item))
-								this.registerModel(item, meta.modid, item.getUnlocalizedName().substring(5).replace(".", "_"));
-					if (meta.needModel() || meta.needLang())
+				this.build(meta);
+				if (HelperMod.proxy.isClient())
+					for (ContainerMeta.BasicInfo basicInfo : meta.getUnregistered())
 					{
-						FileGenerator g = new FileGenerator(meta.modid);
-						if (meta.needModel())
-							try
-							{
-								g.model(data);
-							}
-							catch (IOException e)
-							{
-								e.printStackTrace();
-							}
-						if (meta.needLang())
+						BlockItemStruct data = basicInfo.struct;
+						if (data.blocks() != null)
+							for (Block block : data.blocks())
+								if (meta.getBlockModelHandler() == null || !meta.getBlockModelHandler().handle(block))
+									this.registerModel(Item.getItemFromBlock(block), meta.modid, block.getUnlocalizedName()
+											.substring(5).replace(".", "_"));
+						if (data.items() != null)
+							for (Item item : data.items())
+								if (meta.getItemModelHandler() == null || !meta.getItemModelHandler().handle(item))
+									this.registerModel(item, meta.modid, item.getUnlocalizedName().substring(5).replace(".", "_"));
+						if (meta.needModel() || meta.needLang())
 						{
-							g.setLangType(meta.langType());
-							g.lang(data);
-							try
+							FileGenerator g = new FileGenerator(meta.modid);
+							if (meta.needModel())
+								try
+								{
+									g.model(data);
+								}
+								catch (IOException e)
+								{
+									e.printStackTrace();
+								}
+							if (meta.needLang())
 							{
-								g.writeLang();
-							}
-							catch (IOException e)
-							{
-								e.printStackTrace();
+								g.setLangType(meta.langType());
+								g.lang(data);
+								try
+								{
+									g.writeLang();
+								}
+								catch (IOException e)
+								{
+									e.printStackTrace();
+								}
 							}
 						}
 					}
-				}
 				FMLModUtil.setActiveContainer(theMod);
 			}
 		}
@@ -220,5 +223,4 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 			ModelBakery.addVariantName(target, modId + ":" + sub);
 		}
 	}
-
 }

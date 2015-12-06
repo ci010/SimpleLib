@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gson.Gson;
+import net.minecraft.block.IGrowable;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 
 import com.google.common.collect.Lists;
@@ -53,7 +54,6 @@ public class FileGenerator
 		File dirTexutre = getDir(modF, "textures");
 		dirTextureBlock = getDir(dirTexutre, "blocks");
 		dirTextureItem = getDir(dirTexutre, "items");
-		System.out.println("fileGEN");
 	}
 
 	public FileGenerator setLangType(String[] str)
@@ -107,7 +107,7 @@ public class FileGenerator
 			for (Block block : data.blocks())
 			{
 				String name = block.getUnlocalizedName().substring(5).replace(".", "_");
-				if(block instanceof Growable)
+				if(block instanceof IGrowable)
 				{
 
 				}

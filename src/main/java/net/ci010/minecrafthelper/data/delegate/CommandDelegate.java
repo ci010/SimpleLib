@@ -8,7 +8,6 @@ import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * @author ci010
