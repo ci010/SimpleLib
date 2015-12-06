@@ -1,6 +1,9 @@
 package net.ci010.minecrafthelper.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+
+import static net.ci010.minecrafthelper.util.GuiUtil.slot;
 
 /**
  * @author ci010
@@ -8,6 +11,7 @@ import net.minecraft.client.gui.Gui;
 public abstract class GuiComponent extends Gui implements Drawable
 {
 	protected int x, y;
+	private MouseProperty property;
 
 	public Type type()
 	{
@@ -17,6 +21,25 @@ public abstract class GuiComponent extends Gui implements Drawable
 	public enum Type
 	{
 		front, back
+	}
+
+	public boolean hasMouseListener()
+	{
+		return property != null;
+	}
+
+	public MouseProperty getMouseListener()
+	{
+		if (property == null)
+			property = new MouseProperty();
+		return property;
+	}
+
+	public GuiComponent setPos(int x, int y)
+	{
+		this.x = x;
+		this.y = y;
+		return this;
 	}
 
 	public int getX()
@@ -33,16 +56,15 @@ public abstract class GuiComponent extends Gui implements Drawable
 
 	public abstract int getHeight();
 
-	/**
-	 * button: 1-left, 2-middle, 3-right
-	 */
-	interface MouseListener
+	protected void bindToTexture(TextureInfo info)
 	{
-		void actionPerform(int x, int y, int button);
+		Minecraft.getMinecraft().getTextureManager().bindTexture(info.getTexture());
 	}
 
-	public interface MouseClick extends MouseListener {}
-
-	public interface MouseRelease extends MouseListener {}
-
+	protected void drawTexture(TextureInfo info)
+	{
+		this.bindToTexture(info);
+		this.drawTexturedModalRect(x, y, info.getU(), info.getV(), info
+				.getHeight(), info.getWidth());
+	}
 }
