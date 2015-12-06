@@ -5,9 +5,10 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.ci010.minecrafthelper.HelperMod;
 import net.ci010.minecrafthelper.data.VarInteger;
+import net.ci010.minecrafthelper.data.VarItemHolder;
 import net.ci010.minecrafthelper.data.VarSync;
 import net.ci010.minecrafthelper.gui.GuiComponent;
-import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Loader;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -15,30 +16,79 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * The Builder mush build in {@link net.minecraftforge.fml.common.event.FMLInitializationEvent}
+ *
  * @author ci010
  */
-public abstract class InteractiveComponentBuilder
+public abstract class InteractiveComponentInfo
 {
 	/**
 	 * This one should be unique
 	 */
 	String name;
+	String modid;
 	List<GuiComponent> gui = Lists.newArrayList();
-	public Map<Class<? extends Process>, ProcessInfo> processInfoMap = Maps.newHashMap();
+	List<SlotInfo> slotInfos = Lists.newArrayList();
+	Map<Class<? extends Process>, ProcessInfo> processInfoMap = Maps.newHashMap();
 
-	public InteractiveComponentBuilder addGui(GuiComponent component)
+	public InteractiveComponentInfo setInfo(String modid, String name)
+	{
+		this.name = name;
+		this.modid = modid;
+		return this;
+	}
+
+	/**
+	 * Add a GuiComponent to this InteractiveComponent.
+	 * <p>The position of the GuiComponent is relative to the xSize.
+	 * <p>See {@link InteractiveComponentInfo#setGuiSize(int, int)}
+	 *
+	 * @param component The GuiComponent will be added.
+	 * @return The builder
+	 */
+	public InteractiveComponentInfo addGui(GuiComponent component)
 	{
 		this.gui.add(component);
 		return this;
 	}
 
-	public InteractiveComponentBuilder setName(String s)
+	/**
+	 * Warning! this will affect the aline of your GuiComponents.
+	 * <p>The positions of the GuiComponents are all relative to the guiLeft/guiTop.
+	 * <p>guiLeft = (screenResolution - xSize)/2
+	 * <p>guiRight = (screenResolution - ySize)/2
+	 *
+	 * @param xSize The x size of your gui
+	 * @param ySize The y size of your gui
+	 * @return The builder
+	 */
+	public InteractiveComponentInfo setGuiSize(int xSize, int ySize)
 	{
-		this.name = s;
+		// TODO: 2015/12/5
 		return this;
 	}
 
-	public InteractiveComponentBuilder addProcess(Class<? extends Process> process)
+	/**
+	 * Add a slot to the InteractiveComponent.
+	 *
+	 * @param name The name should match the name of the {@link VarItemHolder#name} in the processes you added to this InteractiveComponent
+	 * @param x    The x position of the slot.
+	 * @param y    The y position of the slot.
+	 * @return The builder
+	 */
+	public InteractiveComponentInfo addSlot(String name, int x, int y)
+	{
+		slotInfos.add(new SlotInfo(name, x, y));
+		return this;
+	}
+
+	/**
+	 * Add a process to the InteractiveComponent.
+	 *
+	 * @param process The Process will be add to this InteractiveComponent.
+	 * @return The builder
+	 */
+	public InteractiveComponentInfo addProcess(Class<? extends Process> process)
 	{
 		try
 		{
@@ -60,7 +110,7 @@ public abstract class InteractiveComponentBuilder
 					HelperMod.LOG.fatal("should be accessible");
 					return this;
 				}
-				if (ItemStack.class.isAssignableFrom(type))
+				if (VarItemHolder.class.isAssignableFrom(type))
 					if (!processInfoMap.containsKey(process))
 						processInfoMap.put(process, new ProcessInfo().add(field, 1));
 					else
@@ -77,6 +127,19 @@ public abstract class InteractiveComponentBuilder
 			}
 		}
 		return this;
+	}
+
+	public class SlotInfo
+	{
+		public String name;
+		public int x, y;
+
+		public SlotInfo(String name, int x, int y)
+		{
+			this.name = name;
+			this.x = x;
+			this.y = y;
+		}
 	}
 
 	public class ProcessInfo
@@ -104,6 +167,4 @@ public abstract class InteractiveComponentBuilder
 			return this;
 		}
 	}
-
-	public abstract InteractiveComponent build();
 }

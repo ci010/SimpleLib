@@ -2,11 +2,10 @@ package net.ci010.minecrafthelper.machine;
 
 import com.google.common.collect.Lists;
 import net.ci010.minecrafthelper.HelperMod;
-import net.ci010.minecrafthelper.gui.Drawable;
-import net.ci010.minecrafthelper.gui.GuiComponent;
+import net.ci010.minecrafthelper.gui.*;
+import net.ci010.minecrafthelper.util.GuiUtil;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,25 +21,28 @@ public abstract class InteractiveComponent implements ContainerProvider
 {
 	protected String name;
 	protected Class<? extends Process>[] clz;
-	protected MachineBuilder.ProcessInfo[] info;
+	protected InteractiveComponentInfo.ProcessInfo[] info;
+	protected InteractiveComponentInfo.SlotInfo[] slotInfo;
 	@SideOnly(Side.CLIENT)
-	protected Drawable[] front, back;
+	protected boolean adjusted;
+	@SideOnly(Side.CLIENT)
+	protected GuiComponent[] front, back;
 	protected int id, numOfProcess, numOfSync, numOfInt, numOfStack;
 
-	public InteractiveComponent(InteractiveComponentBuilder info)
+	protected InteractiveComponent(InteractiveComponentInfo info)
 	{
 		this.id = GuiHandler.addContainerProvider(this);
 		this.name = info.name;
 
 		this.numOfProcess = info.processInfoMap.size();
 		this.clz = new Class[numOfProcess];
-		this.info = new InteractiveComponentBuilder.ProcessInfo[numOfProcess];
+		this.info = new InteractiveComponentInfo.ProcessInfo[numOfProcess];
 
 		int idx = -1;
 		numOfSync = 0;
-		for (Map.Entry<Class<? extends Process>, InteractiveComponentBuilder.ProcessInfo> entry : info.processInfoMap.entrySet())
+		for (Map.Entry<Class<? extends Process>, InteractiveComponentInfo.ProcessInfo> entry : info.processInfoMap.entrySet())
 		{
-			InteractiveComponentBuilder.ProcessInfo temp = entry.getValue();
+			InteractiveComponentInfo.ProcessInfo temp = entry.getValue();
 			numOfSync += temp.sync.size();
 			numOfInt += temp.integers.size();
 			numOfStack += temp.stacks.size();
@@ -49,16 +51,27 @@ public abstract class InteractiveComponent implements ContainerProvider
 			this.info[idx] = temp;
 		}
 
+		slotInfo = info.slotInfos.toArray(new InteractiveComponentInfo.SlotInfo[info.slotInfos.size()]);
+
 		if (HelperMod.proxy.isClient())
 		{
-			List<Drawable> front = Lists.newArrayList(), back = Lists.newArrayList();
+			List<GuiComponent> front = Lists.newArrayList(), back = Lists.newArrayList();
 			for (GuiComponent component : info.gui)
 				if (component.type() == GuiComponent.Type.back)
 					back.add(component);
 				else
 					front.add(component);
-			this.front = (Drawable[]) front.toArray();
-			this.back = (Drawable[]) back.toArray();
+
+			for (InteractiveComponentInfo.SlotInfo s : slotInfo)
+				back.add(new TileTexture(GuiUtil.slot, s.x, s.y));
+			int index, magic = 8;// 8 is default
+			for (index = 0; index < 9; ++index)
+				back.add(new TileTexture(GuiUtil.slot, magic + index * 18, 142));
+			for (index = 0; index < 3; ++index)
+				for (int offset = 0; offset < 9; ++offset)
+					back.add(new TileTexture(GuiUtil.slot, magic + offset * 18, 84 + index * 18));
+			this.front = front.toArray(new GuiComponent[front.size()]);
+			this.back = back.toArray(new GuiComponent[back.size()]);
 		}
 	}
 
@@ -79,10 +92,25 @@ public abstract class InteractiveComponent implements ContainerProvider
 		return new GuiContainerWrap(getContainer(ID, player, world, x, y, z))
 		{
 			@Override
+			public void initGui()
+			{
+				super.initGui();
+				if (!adjusted)
+				{
+					for (GuiComponent comp : back)
+						comp.setPos(this.guiLeft + comp.getX() - 1, this.guiTop + comp.getY() - 1);
+					for (GuiComponent comp : front)
+						comp.setPos(this.guiLeft + comp.getX() - 1, this.guiTop + comp.getY() - 1);
+					adjusted = true;
+				}
+			}
+
+			@Override
 			protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 			{
 				for (Drawable guiComponent : front)
 					guiComponent.draw();
+
 			}
 
 			@Override
@@ -90,6 +118,29 @@ public abstract class InteractiveComponent implements ContainerProvider
 			{
 				for (Drawable guiComponent : back)
 					guiComponent.draw();
+			}
+
+			@Override
+			public void drawScreen(int mouseX, int mouseY, float partialTicks)
+			{
+				super.drawScreen(mouseX, mouseY, partialTicks);
+				current = null;
+				for (GuiComponent component : back)
+					if (this.include(component, mouseX, mouseY))
+					{
+						this.current = component;
+						break;
+					}
+				if (current == null)
+					for (GuiComponent component : front)
+						if (this.include(component, mouseX, mouseY))
+						{
+							this.current = component;
+							return;
+						}
+				if (current != null)
+					if (current.hasMouseListener())
+						current.getMouseListener().onHovered();
 			}
 		};
 	}

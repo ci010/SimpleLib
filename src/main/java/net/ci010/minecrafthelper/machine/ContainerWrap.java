@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -35,10 +36,13 @@ public abstract class ContainerWrap extends Container implements VarSyncMessageB
 		for (index = 0; index < 3; ++index)
 			for (int offset = 0; offset < 9; ++offset)
 				this.addSlotToContainer(new Slot(player, offset + index * 9 + 9, 8 + offset * 18, 84 + index * 18));
-		index = -1;
-//		for (VarItemHolder holder : holders)
-//			this.addSlotToContainer(new Slot(tileEntityWrap, ++index, 0, 0));
-		//TODO handle the position
+	}
+
+	public ContainerWrap loadSlots(IInventory inventory, List<String> namespace, InteractiveComponentInfo.SlotInfo[] slot)
+	{
+		for (InteractiveComponentInfo.SlotInfo slotInfo : slot)
+			this.addSlotToContainer(new Slot(inventory, namespace.indexOf(slotInfo.name), slotInfo.x, slotInfo.y));
+		return this;
 	}
 
 	@Override

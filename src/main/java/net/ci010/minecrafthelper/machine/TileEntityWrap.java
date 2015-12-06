@@ -1,6 +1,9 @@
 package net.ci010.minecrafthelper.machine;
 
+import com.google.common.collect.Lists;
+import net.ci010.minecrafthelper.annotation.type.ModTileEntity;
 import net.ci010.minecrafthelper.data.VarInteger;
+import net.ci010.minecrafthelper.data.VarItemHolder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -11,23 +14,30 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
+import java.util.List;
+
 /**
  * @author ci010
  */
+@ModTileEntity
 public class TileEntityWrap extends TileEntity implements IInventory, IUpdatePlayerListBox
 {
-	ItemStack[] stacks;
+	VarItemHolder[] stacks;
 	VarInteger[] integers;
 	Process[] process;
+	List<String> namespace;
 
 	private String name;
 
-	public TileEntityWrap load(String name, ItemStack[] stacks, VarInteger[] integers, Process[] process)
+	public TileEntityWrap load(String name, VarItemHolder[] stacks, VarInteger[] integers, Process[] process)
 	{
 		this.stacks = stacks;
 		this.process = process;
 		this.integers = integers;
 		this.name = name;
+		namespace = Lists.newArrayList();
+		for (VarItemHolder stack : this.stacks)
+			namespace.add(stack.getName());
 		return this;
 	}
 
@@ -40,6 +50,8 @@ public class TileEntityWrap extends TileEntity implements IInventory, IUpdatePla
 	@Override
 	public void update()
 	{
+		if (process == null)
+			return;
 		for (Process proces : process)
 			proces.preUpdate();
 		for (Process proces : process)
@@ -64,7 +76,7 @@ public class TileEntityWrap extends TileEntity implements IInventory, IUpdatePla
 	@Override
 	public ItemStack getStackInSlot(int num)
 	{
-		return stacks[num];
+		return stacks[num].getData();
 	}
 
 	@Override
@@ -79,17 +91,17 @@ public class TileEntityWrap extends TileEntity implements IInventory, IUpdatePla
 		if (this.stacks[index] != null)
 		{
 			ItemStack stack;
-			if (this.stacks[index].stackSize <= size)
+			if (this.stacks[index].getData().stackSize <= size)
 			{
-				stack = this.stacks[index];
+				stack = this.stacks[index].getData();
 				this.stacks[index] = null;
 				return stack;
 			}
 			else
 			{
-				stack = this.stacks[index].splitStack(size);
-				if (this.stacks[index].stackSize == 0)
-					this.stacks[index] = null;
+				stack = this.stacks[index].getData().splitStack(size);
+				if (this.stacks[index].getData().stackSize == 0)
+					this.stacks[index].setData(null);
 				return stack;
 			}
 		}
@@ -101,7 +113,7 @@ public class TileEntityWrap extends TileEntity implements IInventory, IUpdatePla
 	public void clear()
 	{
 		for (int i = 0; i < this.stacks.length; ++i)
-			this.stacks[i] = null;
+			this.stacks[i].setData(null);
 	}
 
 	@Override
@@ -154,8 +166,8 @@ public class TileEntityWrap extends TileEntity implements IInventory, IUpdatePla
 	{
 		if (this.stacks[par1] != null)
 		{
-			ItemStack itemstack = this.stacks[par1];
-			this.stacks[par1] = null;
+			ItemStack itemstack = this.stacks[par1].getData();
+			this.stacks[par1].setData(null);
 			return itemstack;
 		}
 		else
@@ -163,11 +175,11 @@ public class TileEntityWrap extends TileEntity implements IInventory, IUpdatePla
 	}
 
 	@Override
-	public void setInventorySlotContents(int var1, ItemStack var2)
+	public void setInventorySlotContents(int index, ItemStack stack)
 	{
-		this.stacks[var1] = var2;
-		if (var2 != null && var2.stackSize > this.getInventoryStackLimit())
-			var2.stackSize = this.getInventoryStackLimit();
+		this.stacks[index].setData(stack);
+		if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+			stack.stackSize = this.getInventoryStackLimit();
 	}
 
 	@Override
@@ -176,13 +188,13 @@ public class TileEntityWrap extends TileEntity implements IInventory, IUpdatePla
 		super.readFromNBT(tag);
 		this.name = tag.getString("machine_name");
 		NBTTagList tagList = tag.getTagList(this.getCommandSenderName(), 10);
-		this.stacks = new ItemStack[this.getSizeInventory()];
+		this.stacks = new VarItemHolder[tagList.tagCount()];
 		for (int i = 0; i < tagList.tagCount(); ++i)
 		{
 			NBTTagCompound temp = tagList.getCompoundTagAt(i);
 			byte slot = temp.getByte("Slot");
 			if (slot >= 0 && slot < this.stacks.length)
-				this.stacks[slot] = ItemStack.loadItemStackFromNBT(temp);
+				this.stacks[slot].setData(ItemStack.loadItemStackFromNBT(temp));
 		}
 		int[] ints = tag.getIntArray("VarInt");
 		this.integers = new VarInteger[ints.length];
@@ -209,7 +221,7 @@ public class TileEntityWrap extends TileEntity implements IInventory, IUpdatePla
 			{
 				NBTTagCompound tagCompound = new NBTTagCompound();
 				tagCompound.setByte("Slot", (byte) i);
-				this.stacks[i].writeToNBT(tagCompound);
+				this.stacks[i].getData().writeToNBT(tagCompound);
 				stackList.appendTag(tagCompound);
 			}
 		tag.setTag(this.getCommandSenderName(), stackList);
