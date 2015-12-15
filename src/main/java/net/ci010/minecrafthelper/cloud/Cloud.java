@@ -1,8 +1,10 @@
 package net.ci010.minecrafthelper.cloud;
 
 import net.ci010.minecrafthelper.data.VarInteger;
-import net.ci010.minecrafthelper.machine.*;
-import net.ci010.minecrafthelper.machine.Process;
+import net.ci010.minecrafthelper.interactive.ContainerWrap;
+import net.ci010.minecrafthelper.interactive.InteractiveComponent;
+import net.ci010.minecrafthelper.interactive.InteractiveMeta;
+import net.ci010.minecrafthelper.interactive.Process;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -20,7 +22,7 @@ public class Cloud extends InteractiveComponent implements IUpdatePlayerListBox
 	private Process[] process;
 	private ItemStack[] stacks;// TODO: 2015/12/5 use ItemHolder 
 
-	public Cloud(InteractiveComponentInfo info)
+	public Cloud(InteractiveMeta info)
 	{
 		super(info);
 
@@ -32,7 +34,7 @@ public class Cloud extends InteractiveComponent implements IUpdatePlayerListBox
 		for (int i = 0; i < numOfProcess; ++i)
 		{
 			Process proc;
-			InteractiveComponentInfo.ProcessInfo vars = this.info[i];
+			InteractiveMeta.ProcessInfo vars = this.info[i];
 			try
 			{
 				proc = this.clz[i].newInstance();

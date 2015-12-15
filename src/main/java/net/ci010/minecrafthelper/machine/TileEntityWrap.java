@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.ci010.minecrafthelper.annotation.type.ModTileEntity;
 import net.ci010.minecrafthelper.data.VarInteger;
 import net.ci010.minecrafthelper.data.VarItemHolder;
+import net.ci010.minecrafthelper.interactive.Process;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -24,7 +25,7 @@ public class TileEntityWrap extends TileEntity implements IInventory, IUpdatePla
 {
 	VarItemHolder[] stacks;
 	VarInteger[] integers;
-	Process[] process;
+	net.ci010.minecrafthelper.interactive.Process[] process;
 	List<String> namespace;
 
 	private String name;

@@ -1,11 +1,11 @@
 package net.ci010.minecrafthelper.machine;
 
-import com.google.common.collect.Maps;
-import net.ci010.minecrafthelper.HelperMod;
 import net.ci010.minecrafthelper.RegistryHelper;
 import net.ci010.minecrafthelper.data.VarInteger;
 import net.ci010.minecrafthelper.data.VarItemHolder;
-import net.minecraft.block.Block;
+import net.ci010.minecrafthelper.interactive.ContainerWrap;
+import net.ci010.minecrafthelper.interactive.InteractiveComponent;
+import net.ci010.minecrafthelper.interactive.Process;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.BlockPos;
@@ -13,36 +13,27 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.lang.reflect.Field;
-import java.util.Map;
 
 /**
  * @author ci010
  */
 public class Machine extends InteractiveComponent
 {
-	static Map<String, Machine> map = Maps.newHashMap();
 	BlockMachine block;
 
 	Machine(MachineInfo info)
 	{
 		super(info);
-		if (map.containsKey(info.name))
-		{
-			HelperMod.LOG.fatal("Name duplication! There has already been a machine named {}!", info.name);
-			return;
-		}
-		map.put(name, this);
-
 		this.block = info.block;
 		if (this.block == null)
 			this.block = new BlockMachine();
 		block.machine = this;
-		RegistryHelper.INSTANCE.registerBlock(info.modid, block, name);
+		RegistryHelper.INSTANCE.registerBlock(info.getModId(), block, name);
 	}
 
 	public TileEntityWrap getTileEntity()
 	{
-		Process[] procs = new Process[numOfProcess];
+		net.ci010.minecrafthelper.interactive.Process[] procs = new Process[numOfProcess];
 		int stackConut = -1, integerCount = -1;
 		VarItemHolder[] stacks = new VarItemHolder[this.numOfStack];
 		VarInteger[] integers = new VarInteger[this.numOfInt];
@@ -94,33 +85,32 @@ public class Machine extends InteractiveComponent
 		GameRegistry.registerTileEntity(TileEntityWrap.class, "tileEntityWrap");
 	}
 
-	static void linkTileEntityProcess(TileEntityWrap tile)
-	{
-		Machine machine = map.get(tile.getCommandSenderName());
-		Process[] procs = new Process[machine.numOfProcess];
-		for (int i = 0; i < machine.numOfProcess; ++i)
-		{
-			Process proc;
-			MachineInfo.ProcessInfo vars = machine.info[i];
-			try
-			{
-				proc = machine.clz[i].newInstance();
-				if (vars.integers != null)
-					for (Field integer : vars.integers)
-						integer.set(proc, tile.integers[machine.numOfInt]);
-				if (vars.stacks != null)
-					for (Field stack : vars.stacks)
-						stack.set(proc, tile.stacks[machine.numOfStack]);
-			}
-			catch (InstantiationException e)
-			{
-				e.printStackTrace();
-			}
-			catch (IllegalAccessException e)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
+//	static void linkTileEntityProcess(TileEntityWrap tile)
+//	{
+//		Machine machine = map.get(tile.getCommandSenderName());
+//		Process[] procs = new Process[machine.numOfProcess];
+//		for (int i = 0; i < machine.numOfProcess; ++i)
+//		{
+//			Process proc;
+//			MachineInfo.ProcessInfo vars = machine.info[i];
+//			try
+//			{
+//				proc = machine.clz[i].newInstance();
+//				if (vars.integers != null)
+//					for (Field integer : vars.integers)
+//						integer.set(proc, tile.integers[machine.numOfInt]);
+//				if (vars.stacks != null)
+//					for (Field stack : vars.stacks)
+//						stack.set(proc, tile.stacks[machine.numOfStack]);
+//			}
+//			catch (InstantiationException e)
+//			{
+//				e.printStackTrace();
+//			}
+//			catch (IllegalAccessException e)
+//			{
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 }

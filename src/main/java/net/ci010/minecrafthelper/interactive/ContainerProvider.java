@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.machine;
+package net.ci010.minecrafthelper.interactive;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;

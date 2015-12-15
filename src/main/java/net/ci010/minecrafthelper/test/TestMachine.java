@@ -4,7 +4,7 @@ import net.ci010.minecrafthelper.annotation.type.ModMachine;
 import net.ci010.minecrafthelper.gui.GuiDefaultBackground;
 import net.ci010.minecrafthelper.gui.GuiString;
 import net.ci010.minecrafthelper.machine.MachineInfo;
-import net.ci010.minecrafthelper.machine.Process;
+import net.ci010.minecrafthelper.interactive.Process;
 
 /**
  * @author ci010

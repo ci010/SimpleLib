@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.machine;
+package net.ci010.minecrafthelper.interactive;
 
 import com.google.common.collect.Lists;
 import net.ci010.minecrafthelper.data.VarInteger;
@@ -38,9 +38,9 @@ public abstract class ContainerWrap extends Container implements VarSyncMessageB
 				this.addSlotToContainer(new Slot(player, offset + index * 9 + 9, 8 + offset * 18, 84 + index * 18));
 	}
 
-	public ContainerWrap loadSlots(IInventory inventory, List<String> namespace, InteractiveComponentInfo.SlotInfo[] slot)
+	public ContainerWrap loadSlots(IInventory inventory, List<String> namespace, InteractiveMeta.SlotInfo[] slot)
 	{
-		for (InteractiveComponentInfo.SlotInfo slotInfo : slot)
+		for (InteractiveMeta.SlotInfo slotInfo : slot)
 			this.addSlotToContainer(new Slot(inventory, namespace.indexOf(slotInfo.name), slotInfo.x, slotInfo.y));
 		return this;
 	}

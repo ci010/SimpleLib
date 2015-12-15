@@ -1,8 +1,11 @@
-package net.ci010.minecrafthelper.machine;
+package net.ci010.minecrafthelper.interactive;
 
 import com.google.common.collect.Lists;
 import net.ci010.minecrafthelper.HelperMod;
-import net.ci010.minecrafthelper.gui.*;
+import net.ci010.minecrafthelper.gui.Drawable;
+import net.ci010.minecrafthelper.gui.GuiComponent;
+import net.ci010.minecrafthelper.gui.GuiContainerWrap;
+import net.ci010.minecrafthelper.gui.TileTexture;
 import net.ci010.minecrafthelper.network.GuiHandler;
 import net.ci010.minecrafthelper.util.GuiUtil;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -22,28 +25,28 @@ public abstract class InteractiveComponent implements ContainerProvider
 {
 	protected String name;
 	protected Class<? extends Process>[] clz;
-	protected InteractiveComponentInfo.ProcessInfo[] info;
-	protected InteractiveComponentInfo.SlotInfo[] slotInfo;
+	protected InteractiveMeta.ProcessInfo[] info;
+	protected InteractiveMeta.SlotInfo[] slotInfo;
 	@SideOnly(Side.CLIENT)
 	protected boolean adjusted;
 	@SideOnly(Side.CLIENT)
 	protected GuiComponent[] front, back;
 	protected int id, numOfProcess, numOfSync, numOfInt, numOfStack;
 
-	protected InteractiveComponent(InteractiveComponentInfo info)
+	protected InteractiveComponent(InteractiveMeta info)
 	{
 		this.id = GuiHandler.addContainerProvider(this);
 		this.name = info.name;
 
 		this.numOfProcess = info.processInfoMap.size();
 		this.clz = new Class[numOfProcess];
-		this.info = new InteractiveComponentInfo.ProcessInfo[numOfProcess];
+		this.info = new InteractiveMeta.ProcessInfo[numOfProcess];
 
 		int idx = -1;
 		numOfSync = 0;
-		for (Map.Entry<Class<? extends Process>, InteractiveComponentInfo.ProcessInfo> entry : info.processInfoMap.entrySet())
+		for (Map.Entry<Class<? extends Process>, InteractiveMeta.ProcessInfo> entry : info.processInfoMap.entrySet())
 		{
-			InteractiveComponentInfo.ProcessInfo temp = entry.getValue();
+			InteractiveMeta.ProcessInfo temp = entry.getValue();
 			numOfSync += temp.sync.size();
 			numOfInt += temp.integers.size();
 			numOfStack += temp.stacks.size();
@@ -52,7 +55,7 @@ public abstract class InteractiveComponent implements ContainerProvider
 			this.info[idx] = temp;
 		}
 
-		slotInfo = info.slotInfos.toArray(new InteractiveComponentInfo.SlotInfo[info.slotInfos.size()]);
+		slotInfo = info.slotInfos.toArray(new InteractiveMeta.SlotInfo[info.slotInfos.size()]);
 
 		if (HelperMod.proxy.isClient())
 		{
@@ -63,7 +66,7 @@ public abstract class InteractiveComponent implements ContainerProvider
 				else
 					front.add(component);
 
-			for (InteractiveComponentInfo.SlotInfo s : slotInfo)
+			for (InteractiveMeta.SlotInfo s : slotInfo)
 				back.add(new TileTexture(GuiUtil.slot, s.x, s.y));
 			int index, magic = 8;// 8 is default
 			for (index = 0; index < 9; ++index)

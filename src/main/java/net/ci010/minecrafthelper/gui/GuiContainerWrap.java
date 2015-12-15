@@ -1,7 +1,5 @@
 package net.ci010.minecrafthelper.gui;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -11,7 +9,6 @@ import net.minecraft.inventory.Container;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author ci010

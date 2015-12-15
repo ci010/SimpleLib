@@ -1,6 +1,7 @@
-package net.ci010.minecrafthelper.machine;
+package net.ci010.minecrafthelper.interactive;
 
 import net.ci010.minecrafthelper.abstracts.UpdateSafe;
+import net.ci010.minecrafthelper.interactive.InteractiveComponent;
 
 /**
  * This interface indicates a core updatable logic.

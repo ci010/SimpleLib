@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.machine;
+package net.ci010.minecrafthelper.interactive;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -8,7 +8,6 @@ import net.ci010.minecrafthelper.data.VarInteger;
 import net.ci010.minecrafthelper.data.VarItemHolder;
 import net.ci010.minecrafthelper.data.VarSync;
 import net.ci010.minecrafthelper.gui.GuiComponent;
-import net.minecraftforge.fml.common.Loader;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -20,33 +19,43 @@ import java.util.Set;
  *
  * @author ci010
  */
-public abstract class InteractiveComponentInfo
+public abstract class InteractiveMeta
 {
 	/**
 	 * This one should be unique
 	 */
-	String name;
-	String modid;
+	protected String name;
+	protected String modid;
 	List<GuiComponent> gui = Lists.newArrayList();
 	List<SlotInfo> slotInfos = Lists.newArrayList();
 	Map<Class<? extends Process>, ProcessInfo> processInfoMap = Maps.newHashMap();
 
-	public InteractiveComponentInfo setInfo(String modid, String name)
+	public InteractiveMeta setInfo(String modid, String name)
 	{
 		this.name = name;
 		this.modid = modid;
 		return this;
 	}
 
+	public String getName()
+	{
+		return name;
+	}
+
+	public String getModId()
+	{
+		return modid;
+	}
+
 	/**
 	 * Add a GuiComponent to this InteractiveComponent.
 	 * <p>The position of the GuiComponent is relative to the xSize.
-	 * <p>See {@link InteractiveComponentInfo#setGuiSize(int, int)}
+	 * <p>See {@link InteractiveMeta#setGuiSize(int, int)}
 	 *
 	 * @param component The GuiComponent will be added.
 	 * @return The builder
 	 */
-	public InteractiveComponentInfo addGui(GuiComponent component)
+	public InteractiveMeta addGui(GuiComponent component)
 	{
 		this.gui.add(component);
 		return this;
@@ -62,7 +71,7 @@ public abstract class InteractiveComponentInfo
 	 * @param ySize The y size of your gui
 	 * @return The builder
 	 */
-	public InteractiveComponentInfo setGuiSize(int xSize, int ySize)
+	public InteractiveMeta setGuiSize(int xSize, int ySize)
 	{
 		// TODO: 2015/12/5
 		return this;
@@ -76,7 +85,7 @@ public abstract class InteractiveComponentInfo
 	 * @param y    The y position of the slot.
 	 * @return The builder
 	 */
-	public InteractiveComponentInfo addSlot(String name, int x, int y)
+	public InteractiveMeta addSlot(String name, int x, int y)
 	{
 		slotInfos.add(new SlotInfo(name, x, y));
 		return this;
@@ -88,7 +97,7 @@ public abstract class InteractiveComponentInfo
 	 * @param process The Process will be add to this InteractiveComponent.
 	 * @return The builder
 	 */
-	public InteractiveComponentInfo addProcess(Class<? extends Process> process)
+	public InteractiveMeta addProcess(Class<? extends Process> process)
 	{
 		try
 		{

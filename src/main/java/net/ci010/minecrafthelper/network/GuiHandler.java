@@ -2,9 +2,8 @@ package net.ci010.minecrafthelper.network;
 
 import com.google.common.collect.Lists;
 import net.ci010.minecrafthelper.annotation.type.ModGuiHandler;
-import net.ci010.minecrafthelper.machine.ContainerProvider;
+import net.ci010.minecrafthelper.interactive.ContainerProvider;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
