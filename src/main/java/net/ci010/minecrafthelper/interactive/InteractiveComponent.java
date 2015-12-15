@@ -14,6 +14,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.util.Timer;
 
 import java.util.List;
 import java.util.Map;
@@ -95,12 +96,15 @@ public abstract class InteractiveComponent implements ContainerProvider
 	{
 		return new GuiContainerWrap(getContainer(ID, player, world, x, y, z))
 		{
+			private Timer timer;
+
 			@Override
 			public void initGui()
 			{
 				super.initGui();
 				if (!adjusted)
 				{
+					timer = new Timer();
 					for (GuiComponent comp : back)
 						comp.setPos(this.guiLeft + comp.getX() - 1, this.guiTop + comp.getY() - 1);
 					for (GuiComponent comp : front)
@@ -128,11 +132,19 @@ public abstract class InteractiveComponent implements ContainerProvider
 			public void drawScreen(int mouseX, int mouseY, float partialTicks)
 			{
 				super.drawScreen(mouseX, mouseY, partialTicks);
-				current = null;
+				if (current != null)
+					if (this.include(current, mouseX, mouseY))
+					{
+						if (current.hasMouseListener())
+							current.getMouseListener().onHovered(timer.getTime());
+						return;
+					}
+
 				for (GuiComponent component : back)
 					if (this.include(component, mouseX, mouseY))
 					{
 						this.current = component;
+						timer.reset();
 						break;
 					}
 				if (current == null)
@@ -140,11 +152,9 @@ public abstract class InteractiveComponent implements ContainerProvider
 						if (this.include(component, mouseX, mouseY))
 						{
 							this.current = component;
+							timer.reset();
 							return;
 						}
-				if (current != null)
-					if (current.hasMouseListener())
-						current.getMouseListener().onHovered();
 			}
 		};
 	}

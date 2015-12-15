@@ -1,57 +1,44 @@
 package net.ci010.minecrafthelper.gui;
 
-import com.google.common.collect.Lists;
-
-import java.util.List;
-
 /**
  * @author ci010
  */
 public class MouseProperty
 {
-	List<MouseListener> clicks, release;
-	List<Hover> hovers;
+	private MouseListener click, release;
+	private Hover hover;
 
 	public void onClick(int button)
 	{
-		if (clicks != null)
-			for (MouseListener click : clicks)
-				click.actionPerform(button);
+		if (click != null)
+			click.actionPerform(button);
 	}
 
 	public void onRelease(int button)
 	{
 		if (release != null)
-			for (MouseListener release : clicks)
-				release.actionPerform(button);
+			release.actionPerform(button);
 	}
 
-	public void onHovered()
+	public void onHovered(float time)
 	{
-		if (hovers != null)
-			for (Hover hover : hovers)
-				hover.onHover();
+		if (hover != null && time >= hover.delay())
+			hover.onHover();
 	}
 
-	public void addClickListener(MouseClick listener)
+	public void setClickListener(MouseClick listener)
 	{
-		if (this.clicks == null)
-			clicks = Lists.newArrayList();
-		clicks.add(listener);
+		click = listener;
 	}
 
-	public void addReleaseListener(MouseRelease listener)
+	public void setReleaseListener(MouseRelease listener)
 	{
-		if (this.release == null)
-			release = Lists.newArrayList();
-		release.add(listener);
+		release = listener;
 	}
 
-	public void addHoverListener(Hover listener)
+	public void setHoverListener(Hover listener)
 	{
-		if (this.hovers == null)
-			hovers = Lists.newArrayList();
-		hovers.add(listener);
+		hover = listener;
 	}
 
 	public interface Hover
