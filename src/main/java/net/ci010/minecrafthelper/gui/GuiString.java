@@ -1,19 +1,19 @@
 package net.ci010.minecrafthelper.gui;
 
 import net.ci010.minecrafthelper.util.GuiUtil;
-import org.lwjgl.Sys;
+import net.minecraft.util.StatCollector;
 
 /**
  * @author ci010
  */
 public class GuiString extends GuiComponent
 {
-	private String string;
-	private int x, y, width = 0, height, color;
+	protected String key;
+	protected int x, y, width = 0, height, color;
 
-	public GuiString(String string, int x, int y)
+	public GuiString(String key, int x, int y)
 	{
-		this.string = string;
+		this.key = key;
 		this.x = x;
 		this.y = y;
 		this.height = 8;
@@ -54,13 +54,12 @@ public class GuiString extends GuiComponent
 				System.out.println("WTF");
 				return;
 			}
-			if (this.string == null)
+			if (this.key == null)
 			{
 				System.out.println("holy shit");
 				return;
-
 			}
 		}
-		this.drawString(GuiUtil.font(), string, x, y, color);
+		this.drawString(GuiUtil.font(), StatCollector.translateToLocal(key), x, y, color);
 	}
 }
