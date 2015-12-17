@@ -6,12 +6,14 @@ import net.minecraft.util.BlockPos;
 import java.util.List;
 
 /**
+ * The implementation of Pattern3D into BlockPos.
+ *
  * @author ci010
  */
 public class Pattern3DBlockPos extends Pattern3D<BlockPos>
 {
 	@Override
-	public BlockPos nextBlock(BlockPos pos, int direction)
+	public BlockPos nextPosition(BlockPos pos, int direction)
 	{
 		switch (direction)
 		{
@@ -42,11 +44,17 @@ public class Pattern3DBlockPos extends Pattern3D<BlockPos>
 		super(pos);
 	}
 
-	public List<BlockPos> transferTo(BlockPos pos)
+	/**
+	 * Transfer the pattern to a specific coordination.
+	 *
+	 * @param origin The block position will be transfer to.
+	 * @return The actual block positions.
+	 */
+	public List<BlockPos> transferTo(BlockPos origin)
 	{
 		List<BlockPos> result = Lists.newArrayList();
 		for (BlockPos blockPos : sub)
-			result.add(blockPos.add(pos));
+			result.add(blockPos.add(origin));
 		return result;
 	}
 }
