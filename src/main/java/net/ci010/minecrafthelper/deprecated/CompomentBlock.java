@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.data;
+package net.ci010.minecrafthelper.deprecated;
 
 import net.ci010.minecrafthelper.abstracts.MinecraftComponent;
 import net.minecraft.block.Block;
