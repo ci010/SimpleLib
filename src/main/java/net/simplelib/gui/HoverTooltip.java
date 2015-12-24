@@ -1,6 +1,8 @@
 package net.simplelib.gui;
 
 /**
+ * Basic implementation of showing tooltip while mouse hovers.
+ *
  * @author ci010
  */
 public abstract class HoverTooltip implements MouseProperty.Hover
