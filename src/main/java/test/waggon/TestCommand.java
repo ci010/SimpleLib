@@ -1,11 +1,11 @@
 package test.waggon;
 
-import net.ci010.minecrafthelper.annotation.type.ModCommand;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.world.World;
+import net.simplelib.annotation.type.ModCommand;
 
 /**
  * @author ci010

@@ -1,6 +1,5 @@
 package test.waggon;
 
-import net.ci010.minecrafthelper.annotation.type.ModEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.item.ItemStack;
@@ -8,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
+import net.simplelib.annotation.type.ModEntity;
 
 /**
  * @author ci010
