@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.machine.multi;
+package net.simplelib.interactive.machine;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

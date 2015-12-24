@@ -1,11 +1,11 @@
-package net.ci010.minecrafthelper.machine;
+package net.simplelib.interactive.machine;
 
-import net.ci010.minecrafthelper.HelperMod;
-import net.ci010.minecrafthelper.abstracts.RegistryDelegate;
-import net.ci010.minecrafthelper.annotation.type.ASMDelegate;
-import net.ci010.minecrafthelper.annotation.type.ModMachine;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.simplelib.HelperMod;
+import net.simplelib.abstracts.RegistryDelegate;
+import net.simplelib.annotation.type.ASMDelegate;
+import net.simplelib.annotation.type.ModMachine;
 
 /**
  * @author ci010
@@ -21,9 +21,7 @@ public class MachineDelegate extends RegistryDelegate<ModMachine>
 		try
 		{
 			MachineInfo info = (MachineInfo) this.getAnnotatedClass().newInstance();
-			info.modid = this.getModid();
-			info.name = this.getAnnotatedClass().getSimpleName();
-			new Machine(info);
+			new MachineMetadata(info, this.getModid());
 		}
 		catch (InstantiationException e)
 		{

@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.machine;
+package net.simplelib.interactive.machine;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -9,13 +9,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.simplelib.interactive.InteractiveEntityUpdate;
 
 /**
  * @author ci010
  */
 public class BlockMachine extends BlockContainer
 {
-	Machine machine;
+	MachineMetadata machine;
 
 	protected BlockMachine(Material materialIn)
 	{
@@ -44,6 +45,6 @@ public class BlockMachine extends BlockContainer
 	@Override
 	public final TileEntity createNewTileEntity(World worldIn, int meta)
 	{
-		return machine.getTileEntity();
+		return new TileEntityDummy().load((InteractiveEntityUpdate) machine.createEntity());
 	}
 }

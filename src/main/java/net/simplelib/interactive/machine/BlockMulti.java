@@ -1,6 +1,6 @@
-package net.ci010.minecrafthelper.machine.multi;
+package net.simplelib.interactive.machine;
 
-import net.ci010.minecrafthelper.machine.BlockMachine;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
@@ -9,8 +9,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-import java.util.List;
-
 /**
  * @author ci010
  */
@@ -18,7 +16,7 @@ public class BlockMulti extends BlockMachine
 {
 	MachineMetaMulti machine;
 	final PropertyBool ENABLE = PropertyBool.create("enable");
-	protected List<BlockPos> subs;    //Pattern3D
+	protected ImmutableList<BlockPos> subs;    //Pattern3D
 
 	public BlockMulti()
 	{

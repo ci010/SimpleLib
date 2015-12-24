@@ -1,20 +1,19 @@
-package net.ci010.minecrafthelper.machine.multi;
+package net.simplelib.interactive.machine;
 
 import com.google.common.collect.Lists;
-import net.ci010.minecrafthelper.machine.BlockMachine;
-import net.ci010.minecrafthelper.machine.MachineInfo;
 import net.minecraft.util.BlockPos;
+import net.simplelib.interactive.Interactive;
 
 import java.util.List;
 
 /**
  * @author ci010
  */
-public class MachineMultiInfo extends MachineInfo
+public abstract class MachineMultiInfo implements Interactive
 {
-	List<BlockPos> pattern;
-	BlockMulti block;
-	BlockSubMachine sub;
+	protected List<BlockPos> pattern;
+	protected BlockMulti block;
+	protected BlockSubMachine sub;
 
 	public MachineMultiInfo addToPattern(BlockPos pos)
 	{
@@ -24,7 +23,6 @@ public class MachineMultiInfo extends MachineInfo
 		return this;
 	}
 
-	@Override
 	public MachineMultiInfo setBlock(BlockMachine block)
 	{
 		if (block instanceof BlockMulti)
