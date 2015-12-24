@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.util;
+package net.simplelib.util;
 
 import com.google.common.collect.Lists;
 import org.lwjgl.util.vector.Vector2f;

@@ -1,6 +1,6 @@
-package net.ci010.minecrafthelper.util;
+package net.simplelib.util;
 
-import net.ci010.minecrafthelper.gui.GuiComponent;
+import net.simplelib.gui.GuiComponent;
 import org.lwjgl.util.vector.Vector2f;
 
 /**
@@ -43,7 +43,7 @@ public class Range
 
 
 	/**
-	 * Maybe I could make an interface that has the standard to get all the elements fulfilling the requirement of
+	 * Maybe I could make an interface that has the standard to getMeta all the elements fulfilling the requirement of
 	 * creating a new RangeSquare.
 	 *
 	 * @param gui

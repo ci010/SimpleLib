@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.util;
+package net.simplelib.util;
 
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -11,20 +11,47 @@ import static net.minecraftforge.fml.relauncher.ReflectionHelper.getPrivateValue
 import static net.minecraftforge.fml.relauncher.ReflectionHelper.setPrivateValue;
 
 /**
+ * This class contains several helper methods to modify the basic ability of player.
+ *
  * @author ci010
  */
 public class PlayerModify
 {
-	public static void modifyHealth(EntityPlayer player, double factor, Type type)
+	/**
+	 * @param player The player will be modified.
+	 * @param factor The value of factor.
+	 * @param type   The type of modification.
+	 */
+	public static void modifyMaxHealth(EntityPlayer player, double factor, Type type)
 	{
 		modifyShareAttr(SharedMonsterAttributes.maxHealth, "mod_health", player, factor, type);
 	}
 
+	public static double getMaxHealth(EntityPlayer player)
+	{
+		return player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getAttributeValue();
+	}
+
+	/**
+	 * @param player The player will be modified.
+	 * @param factor The value of factor.
+	 * @param type   The type of modification.
+	 */
 	public static void modifyAttack(EntityPlayer player, double factor, Type type)
 	{
 		modifyShareAttr(SharedMonsterAttributes.attackDamage, "mod_attack", player, factor, type);
 	}
 
+	public static double getAttack(EntityPlayer player)
+	{
+		return player.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
+	}
+
+	/**
+	 * @param player The player will be modified.
+	 * @param factor The value of factor.
+	 * @param type   The type of modification.
+	 */
 	public static void modifyMoveSpeed(EntityPlayer player, double factor, Type type)
 	{
 		modifyShareAttr(SharedMonsterAttributes.movementSpeed, "mod_speed", player, factor, type);
@@ -48,6 +75,11 @@ public class PlayerModify
 		player.capabilities.readCapabilitiesFromNBT(nbtTagCompound);
 	}
 
+	/**
+	 * @param player The player will be modified.
+	 * @param factor The value of factor.
+	 * @param type   The type of modification.
+	 */
 	public static void modifyJumpSpeed(EntityPlayer player, double factor, Type type)
 	{
 		switch (type)
@@ -80,12 +112,16 @@ public class PlayerModify
 		IAttributeInstance attr = player.getEntityAttribute(attribute);
 		AttributeModifier mod;
 		if (type == Type.set)
-			mod = new AttributeModifier(id, Math.abs(attr.getAttributeValue() - factor), Type.add.operation);
+			mod = new AttributeModifier(id, attr.getAttributeValue() - factor, Type.add.operation);
 		else
 			mod = new AttributeModifier(id, factor, type.operation);
 		attr.applyModifier(mod);
 	}
 
+	/**
+	 * Several modification type.
+	 * <p>See the enum to get more specific information.</>
+	 */
 	public enum Type
 	{
 		set(-1),
@@ -110,7 +146,7 @@ public class PlayerModify
 
 		int operation;
 
-		private Type(int operation)
+		Type(int operation)
 		{
 			this.operation = operation;
 		}

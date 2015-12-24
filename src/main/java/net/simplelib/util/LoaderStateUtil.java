@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.util;
+package net.simplelib.util;
 
 import com.google.common.collect.EnumHashBiMap;
 import net.minecraftforge.fml.common.LoaderState;
@@ -27,11 +27,19 @@ public class LoaderStateUtil
 		states.put(LoaderState.SERVER_STOPPED, FMLServerStoppedEvent.class);
 	}
 
+	/**
+	 * @param state A {@link FMLStateEvent}
+	 * @return The {@link LoaderState} referred by that {@link FMLStateEvent}.
+	 */
 	public static LoaderState getState(Class<? extends FMLStateEvent> state)
 	{
 		return states.inverse().get(state);
 	}
 
+	/**
+	 * @param state A {@link LoaderState}
+	 * @return The {@link FMLStateEvent} referred by that {@link LoaderState}.
+	 */
 	public static Class<? extends FMLStateEvent> getState(LoaderState state)
 	{
 		return states.get(state);

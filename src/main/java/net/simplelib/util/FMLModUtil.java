@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.util;
+package net.simplelib.util;
 
 import net.minecraftforge.fml.common.LoadController;
 import net.minecraftforge.fml.common.Loader;
@@ -10,11 +10,20 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
  */
 public class FMLModUtil
 {
+	/**
+	 * @param modid The mod's id.
+	 * @return The ModContainer referred by that mod id.
+	 */
 	public static ModContainer getModContainer(String modid)
 	{
 		return Loader.instance().getIndexedModList().get(modid);
 	}
 
+	/**
+	 * Warning, this method break into the Loader and LoadController. It will change the current active ModContainer.
+	 *
+	 * @param container The mod container will be changed into.
+	 */
 	public static void setActiveContainer(ModContainer container)
 	{
 		ReflectionHelper.setPrivateValue(LoadController.class,

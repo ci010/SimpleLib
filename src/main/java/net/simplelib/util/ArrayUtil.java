@@ -1,4 +1,4 @@
-package net.ci010.minecrafthelper.util;
+package net.simplelib.util;
 
 /**
  * @author ci010

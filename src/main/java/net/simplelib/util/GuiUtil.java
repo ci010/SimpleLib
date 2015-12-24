@@ -1,11 +1,10 @@
-package net.ci010.minecrafthelper.util;
+package net.simplelib.util;
 
-import net.ci010.minecrafthelper.gui.TextureInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
+import net.simplelib.gui.TextureInfo;
 
 /**
  * @author ci010
