@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.simplelib.abstracts.NBTSeril;
 import net.simplelib.data.VarSync;
 
@@ -15,10 +16,17 @@ import java.util.List;
  */
 public class InteractiveEntity implements NBTSeril
 {
+	protected World world;
 	protected String id;
 	protected ImmutableList<VarSync> sync;
 	protected ImmutableMap<String, Inventory> inventories;
 	protected List<InventoryManager.Info> infoList;
+
+	protected InteractiveEntity(String id, World world)
+	{
+		this.id = id;
+		this.world = world;
+	}
 
 	public ContainerCommon loadToContainer(ContainerCommon container)
 	{
@@ -38,11 +46,6 @@ public class InteractiveEntity implements NBTSeril
 				slots.add(new SlotStrong(inventory = inventories.get("default"), info.rule, inventory.namespace
 						.indexOf(info.id), info.x, info.y));
 		return container.loadSlots(slots).load(ImmutableList.copyOf(sync));
-	}
-
-	protected InteractiveEntity(String id)
-	{
-		this.id = id;
 	}
 
 	protected InteractiveEntity loadInventory(ImmutableMap<String, Inventory> inventories)

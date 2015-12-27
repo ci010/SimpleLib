@@ -15,11 +15,11 @@ import java.lang.reflect.Type;
 @Handler
 public class StatusManager
 {
-	private Multimap<Type, StatusProvider> map = HashMultimap.create();
+	private static Multimap<Type, StatusProvider> map = HashMultimap.create();
 
-	public void registerStatus(StatusProvider provider)
+	public static void registerStatus(StatusProvider provider)
 	{
-		this.map.put(GenericUtil.getGenericType(provider), provider);
+		map.put(GenericUtil.getGenericType(provider), provider);
 	}
 
 	@SubscribeEvent

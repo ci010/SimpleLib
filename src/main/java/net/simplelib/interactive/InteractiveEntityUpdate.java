@@ -3,6 +3,7 @@ package net.simplelib.interactive;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.simplelib.data.VarInteger;
 import net.simplelib.data.VarSync;
@@ -18,9 +19,9 @@ public class InteractiveEntityUpdate extends InteractiveEntity implements IUpdat
 	protected List<Process> processes;
 	protected List<VarInteger> integers;
 
-	protected InteractiveEntityUpdate(String name)
+	protected InteractiveEntityUpdate(String name, World world)
 	{
-		super(name);
+		super(name, world);
 	}
 
 	@Override
@@ -40,13 +41,16 @@ public class InteractiveEntityUpdate extends InteractiveEntity implements IUpdat
 	@Override
 	public void update()
 	{
-		for (Process proces : processes)
-			proces.preUpdate();
-		for (Process proces : processes)
-			if (proces.shouldUpdate())
-				proces.update();
-		for (Process proces : processes)
-			proces.postUpdate();
+		if (!world.isRemote)
+		{
+			for (Process proces : processes)
+				proces.preUpdate();
+			for (Process proces : processes)
+				if (proces.shouldUpdate())
+					proces.update();
+			for (Process proces : processes)
+				proces.postUpdate();
+		}
 	}
 
 	@Override

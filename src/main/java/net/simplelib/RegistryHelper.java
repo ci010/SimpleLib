@@ -1,6 +1,7 @@
 package net.simplelib;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
@@ -9,16 +10,13 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.simplelib.abstracts.ArgumentHelper;
-import net.simplelib.abstracts.BlockItemStruct;
 import net.simplelib.annotation.field.Construct;
-import net.simplelib.data.ContainerMeta;
-import net.simplelib.data.StructBlock;
-import net.simplelib.data.StructItem;
 import net.simplelib.network.AbstractMessageHandler;
-import net.simplelib.registry.AIRegistry;
-import net.simplelib.registry.SitHandler;
+import net.simplelib.registry.*;
+import net.simplelib.util.FMLModUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -43,9 +41,28 @@ public enum RegistryHelper
 		this.containerIdx.put(meta.modid, meta);
 	}
 
+	private String currentModid;
+	ModContainer container;
+
+	public void start(ContainerMeta meta)
+	{
+		FMLModUtil.setActiveContainer(FMLModUtil.getModContainer(currentModid = meta.modid));
+	}
+
+	public void end()
+	{
+		FMLModUtil.setActiveContainer(container);
+		currentModid = container.getModId();
+	}
+
+	public String currentMod()
+	{
+		return this.currentModid;
+	}
+
 	public void setLang(String modid, String[] lang)
 	{
-		if (lang == null || lang.length == 0)
+		if (lang == null || lang.length == 0 || lang[0].equals(""))
 			lang = new String[]
 					{"zh_CN", "en_US"};
 		if (!this.containerIdx.containsKey(modid))
@@ -72,34 +89,34 @@ public enum RegistryHelper
 
 	public void registerBlock(String modid, Block block, String name)
 	{
-		if (!this.containerIdx.containsKey(modid))
-			this.track(new ContainerMeta(modid).addUnregistered(new StructBlock(block), name, false));
-		else
-			this.containerIdx.get(modid).addUnregistered(new StructBlock(block), name, false);
+		this.registerBlock(modid, block, name, null);
 	}
 
 	public void registerBlock(String modid, Block block, String name, String ore)
 	{
-		if (!this.containerIdx.containsKey(modid))
-			this.track(new ContainerMeta(modid).addUnregistered(new StructBlock(block), name, ore));
-		else
-			this.containerIdx.get(modid).addUnregistered(new StructBlock(block), name, ore);
+		ImmutableSet temp = ImmutableSet.of(new Namespace(name,
+				new ComponentBlock(block)).setOreName(ore));
+		this.register(modid, temp);
 	}
 
 	public void registerItem(String modid, Item item, String name)
 	{
-		if (!this.containerIdx.containsKey(modid))
-			this.track(new ContainerMeta(modid).addUnregistered(new StructItem(item), name, false));
-		else
-			this.containerIdx.get(modid).addUnregistered(new StructItem(item), name, false);
+		this.registerItem(modid, item, name, null);
 	}
 
 	public void registerItem(String modid, Item item, String name, String ore)
 	{
+		ImmutableSet temp = ImmutableSet.of(new Namespace(name,
+				new ComponentItem(item)).setOreName(ore));
+		this.register(modid, temp);
+	}
+
+	private void register(String modid, ImmutableSet set)
+	{
 		if (!this.containerIdx.containsKey(modid))
-			this.track(new ContainerMeta(modid).addUnregistered(new StructItem(item), name, ore));
+			this.track(new ContainerMeta(modid).addUnregistered(set));
 		else
-			this.containerIdx.get(modid).addUnregistered(new StructItem(item), name, ore);
+			this.containerIdx.get(modid).addUnregistered(set);
 	}
 
 	public Map<Class<? extends Annotation>, ArgumentHelper> getAnnotationMap()
@@ -179,7 +196,7 @@ public enum RegistryHelper
 
 	/**
 	 * Register containers. All the static fields with type assigning from
-	 * {@link Item}/ {@link Block}/{@link BlockItemStruct} in these containers
+	 * {@link Item}/ {@link Block}/{@link net.simplelib.annotation.type.BlockItemContainer} in these containers
 	 * will be registered.
 	 *
 	 * @param ifGenerateLang  If your mod need to generate language files

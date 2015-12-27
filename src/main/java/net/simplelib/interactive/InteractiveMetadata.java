@@ -56,7 +56,7 @@ public abstract class InteractiveMetadata implements GuiHandler.ContainerProvide
 		registerMap.put(this.id, this);
 	}
 
-	public InteractiveEntity createEntity()
+	public InteractiveEntity createEntity(World world)
 	{
 		InteractiveEntity entity = null;
 		if (this.slots != null)
@@ -107,10 +107,11 @@ public abstract class InteractiveMetadata implements GuiHandler.ContainerProvide
 				{
 					e.printStackTrace();
 				}
-				entity = new InteractiveEntityUpdate("interactive_".concat(this.id)).loadProcess(processes, ints, nbts);
+				entity = new InteractiveEntityUpdate("interactive_".concat(this.id), world).loadProcess(processes, ints,
+						nbts);
 			}
 			if (entity == null)
-				entity = new InteractiveEntity("interactive_".concat(this.id));
+				entity = new InteractiveEntity("interactive_".concat(this.id), world);
 			entity.loadInventory(inventories);
 		}
 		return entity;

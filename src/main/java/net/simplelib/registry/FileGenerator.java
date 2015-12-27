@@ -1,16 +1,25 @@
 package net.simplelib.registry;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import net.minecraft.block.Block;
-import net.minecraft.block.IGrowable;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.util.IRegistry;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.simplelib.abstracts.BlockItemStruct;
+import net.simplelib.annotation.type.Handler;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 
 import java.io.BufferedWriter;
@@ -19,38 +28,42 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @SideOnly(Side.CLIENT)
 public class FileGenerator
 {
-	static File mc = ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "mcDataDir");
-	static File f = getDir(mc, "FakeAsset");
-	File modF, dirBlockState, dirModel, dirModelBlock, dirModelItem, dirTextureBlock, dirTextureItem, dirLang,
+	private static boolean inited;
+	public static final File mc = ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "mcDataDir");
+
+	private static Map<String, FileGenerator> generators = Maps.newHashMap();
+	private static File assets = getDir(mc, "FakeAsset");
+
+	private File modFile, dirBlockState, dirModelBlock, dirModelItem, dirTextureBlock, dirTextureItem, dirLang,
 			standardItem;
 	/**
 	 * The support language type of the mod.
 	 */
-	Set<File> fileLang = Sets.newHashSet();
+	private Set<File> fileLang = Sets.newHashSet();
 	/**
 	 * The keys needed to be localized.
 	 */
-	List<String> nodes = Lists.newArrayList(), missingBlock = Lists.newArrayList(), missingItem = Lists.newArrayList();
-
-	String domain;
+	private List<String> langNodes = Lists.newArrayList(), missingBlock = Lists.newArrayList(), missingItem = Lists
+			.newArrayList();
 
 	public FileGenerator(String id)
 	{
-		this.domain = id;
-		modF = getDir(f, domain);
-		dirBlockState = getDir(modF, "blockstates");
-		dirModel = getDir(modF, "models");
+		modFile = getDir(assets, id);
+		dirBlockState = getDir(modFile, "blockstates");
+		File dirModel = getDir(modFile, "models");
 		dirModelBlock = getDir(dirModel, "block");
 		dirModelItem = getDir(dirModel, "item");
-		dirLang = getDir(modF, "lang");
-		File dirTexutre = getDir(modF, "textures");
+		dirLang = getDir(modFile, "lang");
+		File dirTexutre = getDir(modFile, "textures");
 		dirTextureBlock = getDir(dirTexutre, "blocks");
 		dirTextureItem = getDir(dirTexutre, "items");
+		generators.put(id, this);
 	}
 
 	public FileGenerator setLangType(String[] str)
@@ -76,9 +89,9 @@ public class FileGenerator
 	{
 		for (File lang : fileLang)
 		{
-			BufferedWriter writer = new BufferedWriter(new FileWriterWithEncoding(lang, "UTF-8"));
-			Collections.sort(nodes);
-			for (String name : nodes)
+			BufferedWriter writer = new BufferedWriter(new FileWriterWithEncoding(lang, "UTF-8", inited));
+			Collections.sort(langNodes);
+			for (String name : langNodes)
 			{
 				writer.write(name);
 				writer.newLine();
@@ -88,107 +101,19 @@ public class FileGenerator
 		}
 	}
 
-	public void lang(BlockItemStruct data)
+	public void lang(String unlocalizedName)
 	{
-		if (data.blocks() != null)
-			for (Block block : data.blocks())
-				nodes.add(block.getUnlocalizedName().concat(".id="));
-		if (data.items() != null)
-			for (Item item : data.items())
-				nodes.add(item.getUnlocalizedName().concat(".id="));
+		langNodes.add(unlocalizedName.concat(".name="));
 	}
 
-	public void model(BlockItemStruct data) throws IOException
+	public void lang(Block block)
 	{
-		if (data.blocks() != null)
-			for (Block block : data.blocks())
-			{
-				String name = block.getUnlocalizedName().substring(5).replace(".", "_");
-				if(block instanceof IGrowable)
-				{
+		this.lang(block.getUnlocalizedName());
+	}
 
-				}
-				File blockState = new File(dirBlockState, name.concat(".json"));
-				File modelBlock = new File(dirModelBlock, name.concat(".json"));
-				File modelItem = new File(dirModelItem, name.concat(".json"));
-
-				if (!blockState.exists())
-					blockState.createNewFile();
-				if (!modelBlock.exists())
-					modelBlock.createNewFile();
-				if (!modelItem.exists())
-					modelItem.createNewFile();
-
-				FileWriter writer = new FileWriter(blockState);
-				writer.write("{\n" +
-						"    \"variants\": {\n" +
-						"        \"normal\": { \"model\": \"".concat(domain) + ":".concat(name) + "\" }\n" +
-						"    }\n" +
-						"}");
-				writer.close();
-				writer = new FileWriter(modelBlock);
-				writer.write("{\n" +
-						"    \"parent\": \"block/cube_all\",\n" +
-						"    \"textures\": {\n" +
-						"        \"all\": \"".concat(domain) + ":blocks/".concat(name) + "\"\n" +
-						"    }\n" +
-						"}");
-				writer.close();
-				writer = new FileWriter(modelItem);
-				writer.write("{\n" +
-						"    \"parent\": \"".concat(domain) + ":block/".concat(name) + "\",\n" +
-						"    \"display\": {\n" +
-						"        \"thirdperson\": {\n" +
-						"            \"rotation\": [ 10, -45, 170 ],\n" +
-						"            \"translation\": [ 0, 1.5, -2.75 ],\n" +
-						"            \"scale\": [ 0.375, 0.375, 0.375 ]\n" +
-						"        }\n" +
-						"    }\n" +
-						"}");
-				writer.close();
-				if (!new File(dirTextureBlock, name.concat(".png")).exists())
-					this.missingBlock.add(name);
-			}
-		if (data.items() != null)
-			for (Item item : data.items())
-			{
-				FileWriter writer;
-				if (this.standardItem == null)
-					standardItem = new File(dirModelItem, "standard_item.json");
-
-				writer = new FileWriter(standardItem);
-				writer.write("{\n" +
-						"    \"parent\":\"builtin/generated\",\n" +
-						"    \"display\": {\n" +
-						"        \"thirdperson\": {\n" +
-						"            \"rotation\": [ -90, 0, 0 ],\n" +
-						"            \"translation\": [ 0, 1, -3 ],\n" +
-						"            \"scale\": [ 0.55, 0.55, 0.55 ]\n" +
-						"        },\n" +
-						"        \"firstperson\": {\n" +
-						"            \"rotation\": [ 0, -135, 25 ],\n" +
-						"            \"translation\": [ 0, 4, 2 ],\n" +
-						"            \"scale\": [ 1.7, 1.7, 1.7 ]\n" +
-						"        }\n" +
-						"    }\n" +
-						"}");
-				String name = item.getUnlocalizedName().substring(5).replace('.', '_');
-				File model = new File(dirModelItem, name.concat("" + ".json"));
-				if (!model.exists())
-				{
-					model.createNewFile();
-
-					writer = new FileWriter(model);
-					writer.write("{\n" +
-							"    \"parent\":\"".concat(domain) + ":item/standard_item\",\n" +
-							"    \"textures\": {\n" +
-							"        \"layer0\":\"".concat(domain) + ":items/".concat(name) + "\"\n" +
-							"    }\n" +
-							"}");
-					if (!new File(dirTextureItem, name.concat(".png")).exists())
-						this.missingItem.add(name);
-				}
-			}
+	public void lang(Item item)
+	{
+		this.lang(item.getUnlocalizedName());
 	}
 
 	@Override
@@ -196,15 +121,16 @@ public class FileGenerator
 	{
 		super.finalize();
 		Gson gson = new Gson();
-		File miss = new File(modF, "missing_texture.json");
+		File miss = new File(modFile, "missing_texture.json");
 		if (!miss.exists())
 			miss.createNewFile();
-		FileWriter writer = new FileWriter(miss);
+		FileWriter writer = new FileWriter(miss, inited);
 		writer.write("Block:\n");
 		writer.write(gson.toJson(this.missingBlock));
 		writer.write("\nItem:\n");
 		writer.write(gson.toJson(this.missingItem));
 		writer.close();
+		inited = true;
 	}
 
 	private static File getDir(File parent, String name)
@@ -214,4 +140,258 @@ public class FileGenerator
 			f.mkdirs();
 		return f;
 	}
+//			Map<RegistryDelegate<Block>, IStateMapper> map = ReflectionHelper.getPrivateValue(ModelLoader.class, null,
+//					"customStateMappers");
+//			for (Map.Entry<RegistryDelegate<Block>, IStateMapper> entry : map.entrySet())
+//			{
+//				RegistryDelegate<Block> key = entry.getKey();
+//				IStateMapper value = entry.getValue();
+//
+//
+//			}
+
+	@Handler
+	public static class FileHandler
+	{
+		static ModelResourceLocation MISS = new ModelResourceLocation("builtin/missing", "missing");
+
+		@SubscribeEvent
+		public void onModelPost(ModelBakeEvent event)
+		{
+			List<BlockStateCollection> list = Lists.newArrayList();
+			Set<ModelResourceLocation> set = ReflectionHelper.getPrivateValue(ModelLoader.class, event.modelLoader,
+					"missingVariants");
+			IRegistry modelReg = event.modelRegistry;
+
+			Object missingModel = modelReg.getObject(MISS);
+			for (ModelResourceLocation missing : set)
+			{
+				BlockStateCollection temp = new BlockStateCollection(missing.getResourceDomain(), missing
+						.getResourcePath());
+				if (list.contains(temp))
+					list.get(list.indexOf(temp)).addVar(missing.getVariant());
+				else
+					list.add(temp.addVar(missing.getVariant()));
+			}
+			Gson gson = this.buildGson();
+			for (BlockStateCollection state : list)
+			{
+				FileGenerator generator = generators.get(state.domain);
+				File stateFile = new File(generator.dirBlockState, state.path.concat(".json"));
+				try
+				{
+					if (!stateFile.exists())
+						stateFile.createNewFile();
+					FileWriter writer = new FileWriter(stateFile);
+					writer.write(gson.toJson(state).replace('`', '='));
+					writer.flush();
+					writer.close();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+				for (String s : state.varPath)
+				{
+					File modelFile = new File(generator.dirModelBlock, state.domain.concat(s).concat(".json"));
+					BlockModelSimpleInfo info = new BlockModelSimpleInfo();
+					info.texture = state.domain.concat(":").concat(s).concat("_").concat("texture");
+					try
+					{
+						if (!modelFile.exists())
+							modelFile.createNewFile();
+						FileWriter writer = new FileWriter(modelFile);
+						writer.write(gson.toJson(info));
+						writer.flush();
+						writer.close();
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+				}
+				File itemModelFile = new File(generator.dirModelItem, state.path.concat(".json"));
+				ItemModelSimpleInfo info = new ItemModelSimpleInfo();
+				info.thirdperson = new PersonView();
+				info.thirdperson.rotation = new int[]{10, -45, 170};
+				info.thirdperson.translation = new float[]{0f, 1.5f, -2.75f};
+				info.thirdperson.scale = new float[]{0.375f, 0.375f, 0.375f};
+
+				try
+				{
+					if (!itemModelFile.exists())
+						itemModelFile.createNewFile();
+					FileWriter writer = new FileWriter(itemModelFile);
+					writer.write(gson.toJson(info));
+					writer.flush();
+					writer.close();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+//				String out = gson.toJson(state).replace('`', '=');
+//				System.out.println(out);
+			}
+			standard = null;
+			generators = null;
+		}
+
+		private Gson buildGson()
+		{
+			GsonBuilder builder = new GsonBuilder();
+			builder.registerTypeAdapter(BlockStateCollection.class,
+					new TypeAdapter<BlockStateCollection>()
+					{
+						@Override
+						public void write(JsonWriter out, BlockStateCollection value) throws IOException
+						{
+							out.setIndent("  ");
+							out.beginObject();
+							out.name("variants").beginObject();
+							for (int i = 0; i < value.vars.size(); ++i)
+							{
+								String var = value.vars.get(i);
+								String varPth = value.varPath.get(i);
+								var = var.replace('=', '`');
+								out.name(var).beginObject();
+								out.name("model").value(value.domain.concat(":").concat(varPth)).endObject();
+							}
+							out.endObject().endObject();
+						}
+
+						@Override
+						public BlockStateCollection read(JsonReader in) throws IOException {return null;}
+					}).registerTypeAdapter(BlockModelSimpleInfo.class,
+					new TypeAdapter<BlockModelSimpleInfo>()
+					{
+						@Override
+						public void write(JsonWriter out, BlockModelSimpleInfo value) throws IOException
+						{
+							out.setIndent("  ");
+							out.beginObject();
+							out.name("parent").value(value.parent);
+							out.name("textures").beginObject();
+							out.name("all").value(value.texture);
+							out.endObject().endObject();
+						}
+
+						@Override
+						public BlockModelSimpleInfo read(JsonReader in) throws IOException {return null;}
+					}).registerTypeAdapter(ItemModelSimpleInfo.class,
+					new TypeAdapter<ItemModelSimpleInfo>()
+					{
+						@Override
+						public void write(JsonWriter out, ItemModelSimpleInfo value) throws IOException
+						{
+							out.setIndent("  ");
+							out.beginObject();
+							out.name("parent").value(value.parent);
+							out.name("display").beginObject();
+							this.write("thirdperson", out, value.thirdperson);
+							if (value.firstperson != null)
+								this.write("firstperson", out, value.firstperson);
+							out.endObject().endObject();
+						}
+
+						private void write(String name, JsonWriter out, PersonView view) throws IOException
+						{
+							out.setIndent("  ");
+							out.name(name).beginObject();
+							out.name("rotation").beginArray();
+							for (int i : view.rotation)
+								out.value(i);
+							out.endArray();
+							out.name("translation").beginArray();
+							for (float i : view.translation)
+								out.value(i);
+							out.endArray();
+							out.name("scale").beginArray();
+							for (float v : view.scale)
+								out.value(v);
+							out.endArray().endObject();
+						}
+
+						@Override
+						public ItemModelSimpleInfo read(JsonReader in) throws IOException {return null;}
+					});
+			return builder.create();
+		}
+	}
+
+	private static class ItemModelSimpleInfo
+	{
+		String parent;
+		PersonView thirdperson, firstperson;
+	}
+
+	private static class PersonView
+	{
+		int[] rotation;
+		float[] scale, translation;
+	}
+
+	private static class BlockModelSimpleInfo
+	{
+		String parent = "block/cube_all", texture;
+	}
+
+	private static ItemModelSimpleInfo standard = new ItemModelSimpleInfo()
+	{
+		{
+			parent = "builtin/generated";
+			thirdperson = new PersonView();
+			thirdperson.rotation = new int[]{-90, 0, 0};
+			thirdperson.translation = new float[]{0, 1, -3};
+			thirdperson.scale = new float[]{0.55f, 0.55f, 0.55f};
+			firstperson = new PersonView();
+			firstperson.rotation = new int[]{0, -135, 25};
+			firstperson.translation = new float[]{0, 4, 2};
+			firstperson.scale = new float[]{1.7f, 1.7f, 1.7f};
+		}
+	};
+
+	private static class BlockStateCollection
+	{
+		String domain, path;
+		List<String> vars;
+		List<String> varPath;
+
+		public BlockStateCollection(String domain, String path)
+		{
+			this.domain = domain;
+			this.path = path;
+			vars = Lists.newArrayList();
+			varPath = Lists.newArrayList();
+		}
+
+		BlockStateCollection addVar(String var)
+		{
+			this.vars.add(var);
+			int idx = var.indexOf("=");
+			if (idx != -1)
+				this.varPath.add(path.concat("_").concat(var.substring(var.indexOf("=") + 1)));
+			else
+				this.varPath.add(path);
+			return this;
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (obj instanceof BlockStateCollection)
+			{
+				BlockStateCollection stat = (BlockStateCollection) obj;
+				return stat.domain.equals(domain) && stat.path.equals(path);
+			}
+			return super.equals(obj);
+		}
+
+		@Override
+		public String toString()
+		{
+			return domain.concat(":").concat(path);
+		}
+	}
+
 }

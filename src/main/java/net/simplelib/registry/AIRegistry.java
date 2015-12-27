@@ -9,9 +9,8 @@ import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.simplelib.annotation.type.Handler;
+import net.simplelib.util.GenericUtil;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 @Handler
@@ -20,7 +19,7 @@ public class AIRegistry
 	private static Multimap<Class<? extends EntityLiving>, Class<? extends EntityAIBase>> removeTask = HashMultimap
 			.create();
 
-	private static Multimap<Class<? extends EntityLiving>, AIConstruct> registered = HashMultimap.create();
+	private static Multimap<Class<? extends EntityLiving>, AIProvider> register = HashMultimap.create();
 
 	public static void removeAI(Class<? extends EntityLiving> living, Class<? extends EntityAIBase>... ai)
 	{
@@ -28,35 +27,10 @@ public class AIRegistry
 			removeTask.put(living, c);
 	}
 
-	public static void registerAI(Class<? extends EntityLiving> living, int priority, Class<? extends EntityAIBase>
-			ai, Object... args)
+	public static void registerAI(AIProvider provider)
 	{
-		int len = args.length;
-		Class<?>[] argsType = new Class[len];
-		for (int i = 0; i > len; i++)
-			argsType[i] = args[i].getClass();
-		try
-		{
-			registered.put(living, new AIConstruct(ai.getDeclaredConstructor(argsType), args, priority));
-		}
-		catch (NoSuchMethodException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	static class AIConstruct
-	{
-		Constructor<? extends EntityAIBase> constructor;
-		Object[] args;
-		int priority;
-
-		public AIConstruct(Constructor<? extends EntityAIBase> constructor, Object[] args, int priority)
-		{
-			this.constructor = constructor;
-			this.args = args;
-			this.priority = priority;
-		}
+		Class<? extends EntityLiving> clz = GenericUtil.getGenericTypeTo(provider);
+		register.put(clz, provider);
 	}
 
 	@SubscribeEvent
@@ -79,26 +53,9 @@ public class AIRegistry
 				for (EntityAIBase ai : removed)
 					living.tasks.removeTask(ai);
 			}
-			if (registered.containsKey(clz))
-			{
-				for (AIConstruct info : registered.get(clz))
-					try
-					{
-						((EntityLiving) e.entity).tasks.addTask(info.priority, info.constructor.newInstance(info.args));
-					}
-					catch (InstantiationException e1)
-					{
-						e1.printStackTrace();
-					}
-					catch (IllegalAccessException e1)
-					{
-						e1.printStackTrace();
-					}
-					catch (InvocationTargetException e1)
-					{
-						e1.printStackTrace();
-					}
-			}
+			if (register.containsKey(clz))
+				for (AIProvider provider : register.get(clz))
+					((EntityLiving) e.entity).tasks.addTask(provider.priority(), provider.createAI((EntityLiving) e.entity));
 		}
 	}
 }

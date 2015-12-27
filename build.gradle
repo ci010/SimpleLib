@@ -22,13 +22,13 @@ group= "net.ci010.minecraft.simplelib" // http://maven.apache.org/guides/mini/gu
 archivesBaseName = "simplelib"
 
 minecraft {
-    version = "1.8-11.14.3.1450"
+    version = minecraft_version + "-" + forge_version
 	if (file('../minecraft').exists()){
 		runDir = "../minecraft"
 	} else {
 		runDir = "assets"
 	}
-	mappings = "snapshot_20151029"
+    mappings = mcp_mapping_version
 }
 
 dependencies {

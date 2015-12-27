@@ -111,13 +111,12 @@ public class ContainerCommon extends Container implements Inventory.Listener, Va
 		super.detectAndSendChanges();
 		int num;
 		for (EntityPlayerMP player : getPlayers())
-			if (varIntegers != null)
-				for (num = 0; num < varIntegers.size(); ++num)
-				{
-					VarInteger i = varIntegers.get(num);
-					if (i.isDirty())
-						player.sendProgressBarUpdate(this, num, i.getData());
-				}
+			for (num = 0; num < varIntegers.size(); ++num)
+			{
+				VarInteger i = varIntegers.get(num);
+				if (i.isDirty())
+					player.sendProgressBarUpdate(this, num, i.getData());
+			}
 	}
 
 	@Override

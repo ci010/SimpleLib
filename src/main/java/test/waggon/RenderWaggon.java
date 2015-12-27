@@ -24,14 +24,24 @@ public class RenderWaggon extends Render
 	public void doRender(Entity entity, double x, double y, double z, float entityYaw, float partialTicks)
 	{
 		super.doRender(entity, x, y, z, entityYaw, partialTicks);
+		EntityWaggon waggon = (EntityWaggon) entity;
+		double nextX = insert(x, waggon.lastTickPosX, partialTicks), nextY = insert(y, waggon.lastTickPosY, partialTicks), nextZ =
+				insert(z, waggon.lastTickPosZ, partialTicks);
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x, y, z);
+		GlStateManager.translate(nextX, nextY, nextZ);
+		//		GlStateManager.translate(x, y, z);
+
 		GlStateManager.enableAlpha();
 		GlStateManager.scale(0.1, 0.1, 0.1);
 		this.bindEntityTexture(entity);
 		this.model.render(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 		GlStateManager.disableAlpha();
 		GlStateManager.popMatrix();
+	}
+
+	private double insert(double current, double last, float partial)
+	{
+		return last + (current - last) * partial;
 	}
 
 	private static final ResourceLocation cowTextures = new ResourceLocation("textures/entity/cow/cow.png");

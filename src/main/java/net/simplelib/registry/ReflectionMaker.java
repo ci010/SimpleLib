@@ -136,7 +136,7 @@ public abstract class ReflectionMaker<Input, Output>
 				e.printStackTrace();
 			}
 
-		return this.warpStruct(item);
+		return this.warp(f, item);
 	}
 
 	/**
@@ -145,5 +145,5 @@ public abstract class ReflectionMaker<Input, Output>
 	 * @param target The value of the field.
 	 * @return The standard output for this value.
 	 */
-	protected abstract Output warpStruct(Input target);
+	protected abstract Output warp(Field f, Input target);
 }

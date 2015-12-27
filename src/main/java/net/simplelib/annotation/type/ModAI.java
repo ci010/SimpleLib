@@ -6,10 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author CI010
+ * @author ci010
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value =
 		{ElementType.TYPE})
-public @interface EventHandler
-{}
+public @interface ModAI
+{
+}
