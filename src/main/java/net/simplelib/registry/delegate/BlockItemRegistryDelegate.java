@@ -1,39 +1,30 @@
 package net.simplelib.registry.delegate;
 
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
+import net.simplelib.CommonLogger;
 import net.simplelib.HelperMod;
 import net.simplelib.RegistryHelper;
 import net.simplelib.abstracts.ArgumentHelper;
-import net.simplelib.abstracts.BlockItemStruct;
 import net.simplelib.abstracts.RegistryDelegate;
 import net.simplelib.annotation.field.OreDic;
 import net.simplelib.annotation.type.ASMDelegate;
 import net.simplelib.annotation.type.BlockItemContainer;
-import net.simplelib.data.ContainerMeta;
-import net.simplelib.data.StructBlock;
-import net.simplelib.data.StructItem;
-import net.simplelib.registry.FileGenerator;
-import net.simplelib.registry.MakerStruct;
-import net.simplelib.registry.ReflectionMaker;
-import net.simplelib.util.FMLModUtil;
+import net.simplelib.annotation.type.BlockItemStruct;
+import net.simplelib.registry.*;
+import test.NameFormattor;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -43,9 +34,9 @@ import java.util.Map;
 @ASMDelegate
 public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContainer>
 {
-	private ReflectionMaker<Block, BlockItemStruct> blockMaker;
-	private ReflectionMaker<Item, BlockItemStruct> itemMaker;
-	private ReflectionMaker<BlockItemStruct, BlockItemStruct> maker;
+	private ReflectionMaker<Block, ImmutableSet<Namespace>> blockMaker;
+	private ReflectionMaker<Item, ImmutableSet<Namespace>> itemMaker;
+	private ReflectionMaker<Object, ImmutableSet<Namespace>> maker;
 
 	@Mod.EventHandler
 	public void construct(FMLConstructionEvent event)
@@ -60,36 +51,68 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 		blockMaker = new MakerStruct<Block>(temp)
 		{
 			@Override
-			protected BlockItemStruct warpStruct(Block target)
+			protected ImmutableSet<Namespace> warp(Field f, Block target)
 			{
-				return new StructBlock(target);
+				Namespace space = Namespace.newSpace(f.getName(), target);
+				String ore = null;
+				OreDic anno = f.getAnnotation(OreDic.class);
+				if (anno != null)
+					ore = anno.value();
+				space.setOreName(ore);
+				return ImmutableSet.of(space);
 			}
 		};
 		itemMaker = new MakerStruct<Item>(temp)
 		{
 			@Override
-			protected BlockItemStruct warpStruct(Item target)
+			protected ImmutableSet<Namespace> warp(Field f, Item target)
 			{
-				return new StructItem(target);
+				Namespace space = Namespace.newSpace(f.getName(), target);
+				String ore = null;
+				OreDic anno = f.getAnnotation(OreDic.class);
+				if (anno != null)
+					ore = anno.value();
+				space.setOreName(ore);
+				return ImmutableSet.of(space);
 			}
 		};
-		maker = new MakerStruct<BlockItemStruct>(temp)
+		maker = new MakerStruct<Object>(temp)
 		{
 			@Override
-			protected BlockItemStruct warpStruct(BlockItemStruct target)
+			protected ImmutableSet<Namespace> warp(Field f, Object target)
 			{
-				return target;
+				ImmutableSet.Builder<Namespace> builder = ImmutableSet.builder();
+				try
+				{
+					Class<?> clz = target.getClass();
+					for (Field field : clz.getDeclaredFields())
+					{
+						if (Modifier.isStatic(field.getModifiers()))
+							continue;
+						if (!field.isAccessible())
+							field.setAccessible(true);
+						Class type = field.getType();
+						if (Block.class.isAssignableFrom(type))
+							builder.add(Namespace.newSpace(field.getName(), (Block) field.get(target)));
+						else if (Item.class.isAssignableFrom(type))
+							builder.add(Namespace.newSpace(field.getName(), (Item) field.get(target)));
+					}
+				}
+				catch (IllegalAccessException e)
+				{
+					e.printStackTrace();
+				}
+				return builder.build();
 			}
 		};
-		ModContainer theMod = Loader.instance().activeModContainer();
 		Iterator<ContainerMeta> itr = RegistryHelper.INSTANCE.getRegistryInfo();
 		while (itr.hasNext())
 		{
 			ContainerMeta meta = itr.next();
-			FMLModUtil.setActiveContainer(FMLModUtil.getModContainer(meta.modid));
-			System.out.println("start " + meta.modid);
+			RegistryHelper.INSTANCE.start(meta);
+			CommonLogger.info("Start to register [".concat(meta.modid).concat("] mod."));
 			this.collect(meta);
-			FMLModUtil.setActiveContainer(theMod);
+			RegistryHelper.INSTANCE.end();
 		}
 	}
 
@@ -97,130 +120,102 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 	{
 		for (Field f : meta.getFields())
 		{
-			BlockItemStruct data = this.parseField(f);
-			if (data == null)//TODO log
-				continue;
-			String ore = null;
-			OreDic anno = f.getAnnotation(OreDic.class);
-			if (anno != null)
-				ore = anno.value().equals("") ? null : anno.value();
-			meta.addUnregistered(data, f.getName(), ore);
+			ImmutableSet<Namespace> result = this.make(f);
+			if (result != null)
+				meta.addUnregistered(result);
 		}
 	}
 
-	private void build(ContainerMeta meta)
+	private void register(ContainerMeta meta)
 	{
-		for (ContainerMeta.BasicInfo basicInfo : meta.getUnregistered())
+		for (ImmutableSet<Namespace> node : meta.getUnregistered())
 		{
-			StringBuilder builder = new StringBuilder(basicInfo.name);
-			for (int i = 0; i < builder.length(); ++i)
-				if (Character.isUpperCase(builder.charAt(i)))
+			String registerName;
+			String unlocalizedName;
+			for (Namespace namespace : node)
+			{
+				registerName = NameFormattor.upperTo_(namespace.toString());
+				unlocalizedName = NameFormattor._toPoint(registerName);
+				namespace.getComponent().setUnlocalizedName(unlocalizedName);
+				namespace.getComponent().register(registerName);
+				if (namespace.needRegOre())
+					namespace.getComponent().registerOre(namespace.getOreName());
+			}
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void registerClient(ContainerMeta meta)
+	{
+		for (ImmutableSet<Namespace> node : meta.getUnregistered())
+		{
+
+			for (Namespace namespace : node)
+				if (meta.getModelHandler() == null || !meta.getModelHandler().handle(namespace.getComponent()))
+					namespace.getComponent().registerModel(NameFormattor.upperTo_(namespace.toString()));
+			if (HelperMod.DEBUG_MOD)
+			{
+				FileGenerator generator = new FileGenerator(meta.modid);
+				generator.setLangType(meta.langType());
+				for (Namespace namespace : node)
+					generator.lang(namespace.getComponent().getUnlocalizedName());
+				try
 				{
-					builder.setCharAt(i, Character.toLowerCase(builder.charAt(i)));
-					builder.insert(i - 1, ".");
+					generator.writeLang();
 				}
-			String name = builder.toString();
-			basicInfo.struct.setName(name);
-			if (basicInfo.struct.blocks() != null)
-				for (Block block : basicInfo.struct.blocks())
+				catch (IOException e)
 				{
-					GameRegistry.registerBlock(block, basicInfo.name);
-					if (basicInfo.needOre)
-						OreDictionary.registerOre(basicInfo.oreDicName == null ? block.getUnlocalizedName().substring(5) :
-								basicInfo.oreDicName, block);
+					e.printStackTrace();
 				}
-			if (basicInfo.struct.items() != null)
-				for (Item item : basicInfo.struct.items())
-				{
-					GameRegistry.registerItem(item, basicInfo.name);
-					if (basicInfo.needOre)
-						OreDictionary.registerOre(basicInfo.oreDicName == null ? item.getUnlocalizedName().substring(5) :
-								basicInfo.oreDicName, item);
-				}
+//				if (meta.needModel())
+//					try
+//					{
+//						generator.model(data);
+//					}
+//					catch (IOException e)
+//					{
+//						e.printStackTrace();
+//					}
+//				if (meta.needLang())
+//				{
+//					generator.setLangType(meta.langType());
+//					generator.lang(data);
+//					try
+//					{
+//						generator.writeLang();
+//					}
+//					catch (IOException e)
+//					{
+//						e.printStackTrace();
+//					}
+			}
 		}
 	}
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		ModContainer theMod = Loader.instance().activeModContainer();
-
+		Iterator<ContainerMeta> itr = RegistryHelper.INSTANCE.getRegistryInfo();
+		while (itr.hasNext())
 		{
-			Iterator<ContainerMeta> itr = RegistryHelper.INSTANCE.getRegistryInfo();
-			while (itr.hasNext())
-			{
-				ContainerMeta meta = itr.next();
-				FMLModUtil.setActiveContainer(FMLModUtil.getModContainer(meta.modid));
-				this.build(meta);
-				if (HelperMod.proxy.isClient())
-					for (ContainerMeta.BasicInfo basicInfo : meta.getUnregistered())
-					{
-						BlockItemStruct data = basicInfo.struct;
-						if (data.blocks() != null)
-							for (Block block : data.blocks())
-								if (meta.getBlockModelHandler() == null || !meta.getBlockModelHandler().handle(block))
-									this.registerModel(Item.getItemFromBlock(block), meta.modid, block.getUnlocalizedName()
-											.substring(5).replace(".", "_"));
-						if (data.items() != null)
-							for (Item item : data.items())
-								if (meta.getItemModelHandler() == null || !meta.getItemModelHandler().handle(item))
-									this.registerModel(item, meta.modid, item.getUnlocalizedName().substring(5).replace(".", "_"));
-						if (meta.needModel() || meta.needLang())
-						{
-							FileGenerator g = new FileGenerator(meta.modid);
-							if (meta.needModel())
-								try
-								{
-									g.model(data);
-								}
-								catch (IOException e)
-								{
-									e.printStackTrace();
-								}
-							if (meta.needLang())
-							{
-								g.setLangType(meta.langType());
-								g.lang(data);
-								try
-								{
-									g.writeLang();
-								}
-								catch (IOException e)
-								{
-									e.printStackTrace();
-								}
-							}
-						}
-					}
-				FMLModUtil.setActiveContainer(theMod);
-			}
+			ContainerMeta meta = itr.next();
+			RegistryHelper.INSTANCE.start(meta);
+			this.register(meta);
+			if (HelperMod.proxy.isClient())
+				registerClient(meta);
+			RegistryHelper.INSTANCE.end();
 		}
 	}
 
-	BlockItemStruct parseField(Field f)
+	private ImmutableSet<Namespace> make(Field f)
 	{
 		Class c = f.getType();
 		if (Item.class.isAssignableFrom(c))
 			return itemMaker.make(f);
 		if (Block.class.isAssignableFrom(c))
 			return blockMaker.make(f);
-		if (BlockItemStruct.class.isAssignableFrom(c))
+		if (c.isAnnotationPresent(BlockItemStruct.class))
 			return maker.make(f);
 		return null;
-	}
-
-	@SideOnly(Side.CLIENT)
-	public void registerModel(Item target, String modId, String... name)
-	{
-		int index = 0;
-		for (String sub : name)
-		{
-			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(target,
-					index++,
-					new ModelResourceLocation(modId +
-							":" +
-							sub, "inventory"));
-			ModelBakery.addVariantName(target, modId + ":" + sub);
-		}
 	}
 }

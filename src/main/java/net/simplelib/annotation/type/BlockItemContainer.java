@@ -1,7 +1,6 @@
 package net.simplelib.annotation.type;
 
 import net.simplelib.RegistryHelper;
-import net.simplelib.abstracts.BlockItemStruct;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,7 +9,7 @@ import java.lang.annotation.Target;
 
 /**
  * The classes annotated by this annotation will be registered as the classes containing the
- * {@link net.minecraft.block.Block}/{@link net.minecraft.item.Item}/{@link BlockItemStruct}
+ * {@link net.minecraft.block.Block}/{@link net.minecraft.item.Item}/{@link BlockItemNameControl}
  * which will be register into Minecraft
  * <p>It's same for you to use {@link RegistryHelper#register(Class[])}</p>
  */
@@ -19,5 +18,4 @@ import java.lang.annotation.Target;
 		{ElementType.TYPE})
 public @interface BlockItemContainer
 {
-
 }

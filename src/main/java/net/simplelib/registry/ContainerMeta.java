@@ -1,9 +1,7 @@
-package net.simplelib.data;
+package net.simplelib.registry;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.simplelib.abstracts.BlockItemStruct;
 import net.simplelib.abstracts.ModelHandler;
 
 import java.lang.reflect.Field;
@@ -18,10 +16,9 @@ public class ContainerMeta
 	public final String modid;
 	private boolean ifGenerateLang, ifGenerateModel;
 	private Set<Field> fields;
-	private Set<BasicInfo> unregistered;
 	private String[] langType;
-	private ModelHandler<Block> blockM;
-	private ModelHandler<Item> item;
+	private ModelHandler<MinecraftComponent> modelHandler;
+	private Set<ImmutableSet<Namespace>> unregistered;
 
 	public ContainerMeta(String modid)
 	{
@@ -30,14 +27,15 @@ public class ContainerMeta
 		this.unregistered = Sets.newHashSet();
 	}
 
-	public ModelHandler<Item> getItemModelHandler()
+	public ContainerMeta setModelHandler(ModelHandler<MinecraftComponent> modelHandler)
 	{
-		return this.item;
+		this.modelHandler = modelHandler;
+		return this;
 	}
 
-	public ModelHandler<Block> getBlockModelHandler()
+	public ModelHandler<MinecraftComponent> getModelHandler()
 	{
-		return this.blockM;
+		return modelHandler;
 	}
 
 	public ContainerMeta lang(boolean b)
@@ -90,36 +88,14 @@ public class ContainerMeta
 		return this.fields;
 	}
 
-	public ContainerMeta addUnregistered(BlockItemStruct struct, String name, boolean needOre)
+	public ContainerMeta addUnregistered(ImmutableSet<Namespace> struct)
 	{
-		this.unregistered.add(new BasicInfo(struct, name, null, needOre));
+		this.unregistered.add(struct);
 		return this;
 	}
 
-	public ContainerMeta addUnregistered(BlockItemStruct struct, String name, String ore)
-	{
-		this.unregistered.add(new BasicInfo(struct, name, ore, true));
-		return this;
-	}
-
-	public Iterable<BasicInfo> getUnregistered()
+	public Iterable<ImmutableSet<Namespace>> getUnregistered()
 	{
 		return this.unregistered;
-	}
-
-	public class BasicInfo
-	{
-		public BlockItemStruct struct;
-		public String name;
-		public boolean needOre;
-		public String oreDicName;
-
-		public BasicInfo(BlockItemStruct struct, String name, String oreDicName, boolean needOre)
-		{
-			this.struct = struct;
-			this.name = name;
-			this.oreDicName = oreDicName;
-			this.needOre = needOre;
-		}
 	}
 }

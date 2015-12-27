@@ -20,5 +20,5 @@ public @interface Generate
 
 	GenerateType[] value();
 
-	String[] supportLang() default "";
+	String[] supportLang() default {""};
 }
