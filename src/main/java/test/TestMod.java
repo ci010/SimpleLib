@@ -14,13 +14,17 @@ import net.simplelib.annotation.type.Generate;
 @Mod(modid = "test")
 @Generate({Generate.GenerateType.language, Generate.GenerateType.model})
 @BlockItemContainer
-public class Test
+public class TestMod
 {
 	@Mod.Instance("test")
-	public static Test test;
+	public static TestMod test;
 
 	@Construct(TestBlock.class)
 	public static Block testBlock;
+
+	//TODO handle the situation that the only parameter is the material.
+	@Construct(TestGrowableBlock.class)
+	public static Block testGrowth;
 
 	public static String name;
 

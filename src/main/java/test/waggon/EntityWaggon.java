@@ -17,9 +17,7 @@ import net.simplelib.annotation.type.ModEntity;
 public class EntityWaggon extends Entity
 {
 	EntityHorse horse;
-	BlockPos lastHorse;
 	int distance;
-	Vec3i lastSpeed;
 
 	public EntityWaggon(World worldIn)
 	{
@@ -34,8 +32,7 @@ public class EntityWaggon extends Entity
 
 	@Override
 	protected void entityInit()
-	{
-	}
+	{}
 
 	@Override
 	public void onUpdate()
@@ -44,32 +41,37 @@ public class EntityWaggon extends Entity
 		if (horse != null)
 		{
 			BlockPos current = horse.getPosition();
+
+//			System.out.println("update");
 			if (this.getPosition().distanceSq(current) > distance)
 			{
-				if (lastHorse != null)
-				{
-					Vec3i vec = current.subtract(lastHorse);
-					this.moveEntity(vec.getX(), vec.getY(), vec.getZ());
-					this.lastSpeed = vec;
-				}
-				lastHorse = current;
+				Vec3i speed = current.subtract(this.getPosition());
+//				this.moveEntity(speed.getX() / 2, speed.getY() / 2, speed.getZ() / 2);
+				this.setPosition(current.getX(), current.getY(), current.getZ());
+//				this.lastSpeed = speed;
 			}
-			else if (lastSpeed != null)
-				this.moveEntity(lastSpeed.getX(), lastSpeed.getY(), lastSpeed.getZ());
+//			else if (lastSpeed != null)
+//			{
+//				this.moveEntity(Math.max(lastSpeed.getX() / 2, 0), Math.max(lastSpeed.getY() / 2, 0), Math.max(lastSpeed
+//						.getZ() / 2, 0));
+//			}
+//			lastHorsePos = current;
 		}
 	}
 
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound tagCompund)
 	{
-		this.horse = (EntityHorse) this.worldObj.getEntityByID(tagCompund.getInteger("horse"));
+		this.distance = tagCompund.getInteger("distance");
+//		this.horse = (EntityHorse) this.worldObj.getEntityByID(tagCompund.getInteger("horse"));
 	}
 
 	@Override
 	public void writeEntityToNBT(NBTTagCompound tag)
 	{
-		if (this.horse != null)
-			tag.setInteger("horse", this.horse.getEntityId());
+		tag.setInteger("distance", distance);
+//		if (this.horse != null)
+//			tag.setInteger("horse", this.horse.getEntityId());
 	}
 
 	@Override
