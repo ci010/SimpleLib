@@ -45,6 +45,6 @@ public class BlockMachine extends BlockContainer
 	@Override
 	public final TileEntity createNewTileEntity(World worldIn, int meta)
 	{
-		return new TileEntityDummy().load((InteractiveEntityUpdate) machine.createEntity());
+		return new TileEntityDummy().load((InteractiveEntityUpdate) machine.createEntity(worldIn));
 	}
 }

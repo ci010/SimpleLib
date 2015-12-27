@@ -26,6 +26,10 @@ public class GuiString extends GuiComponent
 		this.x = x;
 		this.y = y;
 		this.height = 8;
+		if (!StatCollector.canTranslate(this.key))
+		{
+
+		}
 	}
 
 	public GuiString setSource(TextSource source)

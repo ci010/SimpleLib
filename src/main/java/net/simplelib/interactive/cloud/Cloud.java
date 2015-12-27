@@ -20,6 +20,6 @@ public class Cloud extends InteractiveMetadata
 	@Override
 	public Container getContainer(EntityPlayer player, World world, int x, int y, int z)
 	{
-		return this.createEntity().loadToContainer(new ContainerCommon().loadPlayerSlot(player.inventory));
+		return this.createEntity(world).loadToContainer(new ContainerCommon().loadPlayerSlot(player.inventory));
 	}
 }

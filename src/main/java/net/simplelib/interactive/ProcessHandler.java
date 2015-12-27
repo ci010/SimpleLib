@@ -75,6 +75,12 @@ public class ProcessHandler
 		cache = null;
 	}
 
+	/**
+	 * Add the actual process to this interactive component.
+	 *
+	 * @param process The process will be added.
+	 * @return The Process handler.
+	 */
 	public ProcessHandler addProcess(Process process)
 	{
 		if (cache == null)

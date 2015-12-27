@@ -36,7 +36,7 @@ public class TileEntityDummy extends TileEntity implements IUpdatePlayerListBox,
 	{
 		super.readFromNBT(tag);
 		real = (InteractiveEntityUpdate) InteractiveMetadata.getMetaData(tag.getString("interactive_id"))
-				.createEntity();
+				.createEntity(this.worldObj);
 		real.readFromNBT(tag);
 	}
 
