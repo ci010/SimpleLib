@@ -15,27 +15,16 @@ import java.util.IllegalFormatException;
  */
 public class GuiString extends GuiComponent
 {
-	protected String key;
+	protected Object key;
 	protected String content;
 	protected int x, y, width = 0, height;
-	protected TextSource source;
 
-	public GuiString(String key, int x, int y)
+	public GuiString(Object key, int x, int y)
 	{
 		this.key = key;
 		this.x = x;
 		this.y = y;
 		this.height = 8;
-		if (!StatCollector.canTranslate(this.key))
-		{
-
-		}
-	}
-
-	public GuiString setSource(TextSource source)
-	{
-		this.source = source;
-		return this;
 	}
 
 	@Override
@@ -59,28 +48,13 @@ public class GuiString extends GuiComponent
 	@Override
 	public void initGui()
 	{
-		String localized = StatCollector.translateToLocal(this.key);
-		if (this.source != null)
-			try
-			{
-				localized = String.format(localized, this.source.getArguments());
-			}
-			catch (IllegalFormatException illegalformatexception)
-			{
-				HelperMod.LOG.fatal("Format error: " + localized);
-			}
-		localized = new ChatComponentText(localized).getFormattedText();
+		String localized = new ChatComponentText(key.toString()).getFormattedText();
 		int width;
 		if (this.width != (width = GuiUtil.font().getStringWidth(localized)))
 		{
 			this.width = width;
 			this.content = localized;
 		}
-	}
-
-	public interface TextSource
-	{
-		Object[] getArguments();
 	}
 
 	@Override

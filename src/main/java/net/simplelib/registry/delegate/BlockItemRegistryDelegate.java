@@ -92,10 +92,16 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 						if (!field.isAccessible())
 							field.setAccessible(true);
 						Class type = field.getType();
+						Namespace space = null;
 						if (Block.class.isAssignableFrom(type))
-							builder.add(Namespace.newSpace(field.getName(), (Block) field.get(target)));
+							builder.add(space = Namespace.newSpace(field.getName(), (Block) field.get(target)));
 						else if (Item.class.isAssignableFrom(type))
-							builder.add(Namespace.newSpace(field.getName(), (Item) field.get(target)));
+							builder.add(space = Namespace.newSpace(field.getName(), (Item) field.get(target)));
+						String ore = null;
+						OreDic anno = field.getAnnotation(OreDic.class);
+						if (anno != null)
+							ore = anno.value();
+						space.setOreName(ore);
 					}
 				}
 				catch (IllegalAccessException e)
@@ -149,45 +155,23 @@ public class BlockItemRegistryDelegate extends RegistryDelegate<BlockItemContain
 	{
 		for (ImmutableSet<Namespace> node : meta.getUnregistered())
 		{
-
 			for (Namespace namespace : node)
 				if (meta.getModelHandler() == null || !meta.getModelHandler().handle(namespace.getComponent()))
 					namespace.getComponent().registerModel(NameFormattor.upperTo_(namespace.toString()));
 			if (HelperMod.DEBUG_MOD)
 			{
-				FileGenerator generator = new FileGenerator(meta.modid);
-				generator.setLangType(meta.langType());
+				FileReference.registerFile(meta.modid);
+				LanguageReporter.instance().setLangType(meta.modid, meta.langType());
 				for (Namespace namespace : node)
-					generator.lang(namespace.getComponent().getUnlocalizedName());
+					LanguageReporter.instance().report(namespace.getComponent().getUnlocalizedName());
 				try
 				{
-					generator.writeLang();
+					LanguageReporter.instance().writeLang();
 				}
 				catch (IOException e)
 				{
 					e.printStackTrace();
 				}
-//				if (meta.needModel())
-//					try
-//					{
-//						generator.model(data);
-//					}
-//					catch (IOException e)
-//					{
-//						e.printStackTrace();
-//					}
-//				if (meta.needLang())
-//				{
-//					generator.setLangType(meta.langType());
-//					generator.lang(data);
-//					try
-//					{
-//						generator.writeLang();
-//					}
-//					catch (IOException e)
-//					{
-//						e.printStackTrace();
-//					}
 			}
 		}
 	}

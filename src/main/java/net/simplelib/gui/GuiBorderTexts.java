@@ -19,22 +19,13 @@ import java.util.List;
 public class GuiBorderTexts extends GuiComponent
 {
 	private FontRenderer font;
-	private RenderItem itemRender;
 	protected int height, width, xLeft, yLeft;
-	protected List<String> contents, keyLines = Lists.newArrayList();
-	protected List<GuiString.TextSource> sources = Lists.newArrayList();
+	protected List<String> contents;
+	protected List<Object> keyLines = Lists.newArrayList();
 
-	public GuiBorderTexts addTextLine(String contentKey)
+	public GuiBorderTexts addTextLine(Object contentKey)
 	{
 		keyLines.add(contentKey);
-		sources.add(null);
-		return this;
-	}
-
-	public GuiBorderTexts addTextLine(String contentKey, GuiString.TextSource source)
-	{
-		keyLines.add(contentKey);
-		sources.add(source);
 		return this;
 	}
 
@@ -54,27 +45,11 @@ public class GuiBorderTexts extends GuiComponent
 	public void initGui()
 	{
 		font = Minecraft.getMinecraft().fontRendererObj;
-		this.itemRender = Minecraft.getMinecraft().getRenderItem();
 		int screenWidth = Minecraft.getMinecraft().currentScreen.width;
 		int screenHeight = Minecraft.getMinecraft().currentScreen.height;
 		contents = Lists.newArrayList();
-		int size = this.keyLines.size();
-		for (int i = 0; i < size; ++i)
-		{
-			String localized = StatCollector.translateToLocal(keyLines.get(i));
-			GuiString.TextSource source = this.sources.get(i);
-			if (source != null)
-				try
-				{
-					localized = String.format(localized, source.getArguments());
-				}
-				catch (IllegalFormatException illegalformatexception)
-				{
-					HelperMod.LOG.fatal("Format error: " + localized);
-				}
-			localized = new ChatComponentText(localized).getFormattedText();
-			contents.add(localized);
-		}
+		for (Object keyLine : this.keyLines)
+			contents.add(new ChatComponentText(keyLine.toString()).getUnformattedText());
 
 		this.width = 0;
 		for (String s : contents)
@@ -111,7 +86,8 @@ public class GuiBorderTexts extends GuiComponent
 		GlStateManager.disableDepth();
 
 		this.zLevel = 300.0F;
-		this.itemRender.zLevel = 300.0F;
+		RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
+		itemRender.zLevel = 300.0F;
 		int borderColor = -267386864;
 		//top border
 		this.drawGradientRect(xLeft - 3,
@@ -181,7 +157,7 @@ public class GuiBorderTexts extends GuiComponent
 		}
 
 		this.zLevel = 0.0F;
-		this.itemRender.zLevel = 0.0F;
+		itemRender.zLevel = 0.0F;
 		GlStateManager.enableLighting();
 		GlStateManager.enableDepth();
 		RenderHelper.enableStandardItemLighting();
