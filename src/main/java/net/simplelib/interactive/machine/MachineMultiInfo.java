@@ -12,8 +12,8 @@ import java.util.List;
 public abstract class MachineMultiInfo implements Interactive
 {
 	protected List<BlockPos> pattern;
-	protected BlockMulti block;
-	protected BlockSubMachine sub;
+	protected BlockMultiCore block;
+	protected BlockMutltiSub sub;
 
 	public MachineMultiInfo addToPattern(BlockPos pos)
 	{
@@ -25,14 +25,14 @@ public abstract class MachineMultiInfo implements Interactive
 
 	public MachineMultiInfo setBlock(BlockMachine block)
 	{
-		if (block instanceof BlockMulti)
-			this.block = (BlockMulti) block;
+		if (block instanceof BlockMultiCore)
+			this.block = (BlockMultiCore) block;
 		else
-			throw new IllegalArgumentException("The block should be BlockMulti");
+			throw new IllegalArgumentException("The block should be BlockMultiCore");
 		return this;
 	}
 
-	public MachineMultiInfo setSubBlock(BlockSubMachine block)
+	public MachineMultiInfo setSubBlock(BlockMutltiSub block)
 	{
 		this.sub = block;
 		return this;

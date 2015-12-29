@@ -12,13 +12,13 @@ import net.minecraft.world.World;
 /**
  * @author ci010
  */
-public class BlockMulti extends BlockMachine
+public class BlockMultiCore extends BlockMachine
 {
 	MachineMetaMulti machine;
 	final PropertyBool ENABLE = PropertyBool.create("enable");
 	protected ImmutableList<BlockPos> subs;    //Pattern3D
 
-	public BlockMulti()
+	public BlockMultiCore()
 	{
 		this.setDefaultState(this.blockState.getBaseState().withProperty(ENABLE, false));
 	}

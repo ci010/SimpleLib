@@ -14,8 +14,8 @@ import net.simplelib.util.Pattern3DBlockPos;
 public class MachineMetaMulti extends InteractiveMetadata
 {
 	protected Pattern3DBlockPos pattern;
-	protected BlockMulti block;
-	protected BlockSubMachine sub;
+	protected BlockMultiCore block;
+	protected BlockMutltiSub sub;
 
 	MachineMetaMulti(MachineMultiInfo info)
 	{

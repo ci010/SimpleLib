@@ -15,18 +15,18 @@ import net.minecraft.world.World;
 /**
  * @author ci010
  */
-public class BlockSubMachine extends Block
+public class BlockMutltiSub extends Block
 {
 	MachineMetaMulti machine;
 	final PropertyInteger POINTER = PropertyInteger.create("pointer", 0, 6);
 	final PropertyBool ADJUST = PropertyBool.create("adjust");
 
-	protected BlockSubMachine(Material materialIn)
+	protected BlockMutltiSub(Material materialIn)
 	{
 		super(materialIn);
 	}
 
-	public BlockSubMachine()
+	public BlockMutltiSub()
 	{
 		this(Material.iron);
 		this.setCreativeTab(CreativeTabs.tabDecorations);
