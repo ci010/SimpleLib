@@ -62,6 +62,11 @@ public abstract class GuiComponent extends Gui implements Drawable
 		return property;
 	}
 
+	protected void setMouseListener(MouseProperty property)
+	{
+		this.property = property;
+	}
+
 	/**
 	 * Set the position of this component.
 	 *
