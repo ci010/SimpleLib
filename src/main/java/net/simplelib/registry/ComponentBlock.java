@@ -55,10 +55,10 @@ public class ComponentBlock extends MinecraftComponent<Block>
 	public Block registerModel(String name)
 	{
 		Item item = Item.getItemFromBlock(this.getComponent());
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item,
-				0, new ModelResourceLocation(RegistryHelper.INSTANCE.currentMod() +
-						":" + name, "inventory"));
-		ModelBakery.addVariantName(item, RegistryHelper.INSTANCE.currentMod() + ":" + name);
+		String regName = RegistryHelper.INSTANCE.currentMod().concat(":").concat(name);
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0,
+				new ModelResourceLocation(regName, "inventory"));
+		ModelBakery.addVariantName(item, regName);
 		return this.getComponent();
 	}
 }
