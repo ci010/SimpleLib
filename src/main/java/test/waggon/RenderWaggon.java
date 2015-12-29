@@ -13,35 +13,43 @@ import net.minecraft.util.ResourceLocation;
  */
 public class RenderWaggon extends Render
 {
-	ModelWaggon model = new ModelWaggon();
+	ModelWaggon model;
 
 	public RenderWaggon()
 	{
 		super(Minecraft.getMinecraft().getRenderManager());
+		System.out.println("Render and model init.");
+		model = new ModelWaggon();
 	}
 
 	@Override
 	public void doRender(Entity entity, double x, double y, double z, float entityYaw, float partialTicks)
 	{
-		super.doRender(entity, x, y, z, entityYaw, partialTicks);
 		EntityWaggon waggon = (EntityWaggon) entity;
-		double nextX = insert(x, waggon.lastTickPosX, partialTicks), nextY = insert(y, waggon.lastTickPosY, partialTicks), nextZ =
-				insert(z, waggon.lastTickPosZ, partialTicks);
+//		double nextX = insert(x, waggon.lastTickPosX, partialTicks), nextY = insert(y, waggon.lastTickPosY, partialTicks), nextZ =
+//				insert(z, waggon.lastTickPosZ, partialTicks);
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(nextX, nextY, nextZ);
-		//		GlStateManager.translate(x, y, z);
+//		GlStateManager.translate(nextX, nextY, nextZ);
+//		System.out.println("render on " + x + " " + y + " " + z);
+//		System.out.println("render");
+		GlStateManager.translate(x, y, z);
 
 		GlStateManager.enableAlpha();
-		GlStateManager.scale(0.1, 0.1, 0.1);
+		GlStateManager.scale(0.3, 0.3, 0.3);
 		this.bindEntityTexture(entity);
 		this.model.render(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 		GlStateManager.disableAlpha();
 		GlStateManager.popMatrix();
+		super.doRender(entity, x, y, z, entityYaw, partialTicks);
+
 	}
 
 	private double insert(double current, double last, float partial)
 	{
-		return last + (current - last) * partial;
+		double r = last + (current - last) * partial;
+
+//		System.out.println("insert " + current + " " + last + " = " + r);
+		return r;
 	}
 
 	private static final ResourceLocation cowTextures = new ResourceLocation("textures/entity/cow/cow.png");
@@ -66,7 +74,9 @@ public class RenderWaggon extends Render
 		@Override
 		public void render(Entity entityIn, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_, float p_78088_6_, float scale)
 		{
+//			GlStateManager.pushMatrix();
 			block.render(scale);
+//			GlStateManager.popMatrix();
 		}
 	}
 
