@@ -3,6 +3,7 @@ package net.simplelib.registry.delegate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -10,6 +11,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.simplelib.CommonLogger;
 import net.simplelib.HelperMod;
+import net.simplelib.RegistryHelper;
 import net.simplelib.abstracts.RegistryDelegate;
 import net.simplelib.annotation.type.ASMDelegate;
 import net.simplelib.annotation.type.ModEntity;
@@ -55,9 +57,19 @@ public class EntityRegistryDelegate extends RegistryDelegate<ModEntity>
 		int id = anno.id();
 		if (id == -1)
 			id = nextId(modid);
-		CommonLogger.info("Register entity {} for mod {} with id {}", name, modid, id);
-		EntityRegistry.registerModEntity(clz, name, id, mod, anno.trackingRange(), anno
-				.updateFrequency(), anno.sendsVelocityUpdates());
+		ModEntity.HasSpawner hasSpawner = this.getAnnotatedClass().getAnnotation(ModEntity.HasSpawner.class);
+		if (hasSpawner != null)
+		{
+			CommonLogger.info("Register entity {} for mod {} with id {} and its egg.", name, modid, id);
+			EntityRegistry.registerModEntity(clz, name, id, mod, anno.trackingRange(), anno
+					.updateFrequency(), anno.sendsVelocityUpdates(), hasSpawner.primaryColor(), hasSpawner.secondaryColor());
+		}
+		else
+		{
+			CommonLogger.info("Register entity {} for mod {} with id {}", name, modid, id);
+			EntityRegistry.registerModEntity(clz, name, id, mod, anno.trackingRange(), anno
+					.updateFrequency(), anno.sendsVelocityUpdates());
+		}
 		if (HelperMod.proxy.isClient())
 		{
 			if (clz.isAnnotationPresent(ModEntity.Render.class))

@@ -30,4 +30,14 @@ public @interface ModEntity
 	{
 		Class<? extends net.minecraft.client.renderer.entity.Render> value();
 	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(value =
+			{ElementType.TYPE})
+	@interface HasSpawner
+	{
+		int primaryColor();
+
+		int secondaryColor();
+	}
 }
