@@ -4,7 +4,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.simplelib.abstracts.RegistryDelegate;
 import net.simplelib.annotation.type.ASMDelegate;
-import net.simplelib.annotation.type.IProperties;
+import net.simplelib.annotation.type.IPropertyHook;
 import net.simplelib.status.StatusManager;
 import net.simplelib.status.StatusProvider;
 
@@ -12,7 +12,7 @@ import net.simplelib.status.StatusProvider;
  * @author ci010
  */
 @ASMDelegate
-public class IPropertiesDelegate extends RegistryDelegate<IProperties>
+public class IPropertiesDelegate extends RegistryDelegate<IPropertyHook>
 {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)

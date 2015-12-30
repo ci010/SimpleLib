@@ -6,11 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * This annotation register the property externally.
+ *
  * @author ci010
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value =
 		{ElementType.TYPE})
-public @interface IProperties
+public @interface IPropertyHook
 {
 }

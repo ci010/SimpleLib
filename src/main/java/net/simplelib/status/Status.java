@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
+import net.simplelib.abstracts.NBTSeril;
 
 /**
  * A general implementation of {@link IExtendedEntityProperties}
@@ -14,13 +15,18 @@ import net.minecraftforge.common.IExtendedEntityProperties;
  *
  * @author ci010
  */
-public class Status implements IExtendedEntityProperties
+public class Status implements IExtendedEntityProperties, NBTSeril
 {
 	protected String id;
 
-	protected int max, ObjId, consume, regen;
+	protected int max, ObjId;
 
 	protected Entity entity;
+
+	public Status(int max)
+	{
+		this.max = max;
+	}
 
 	protected void registerDataWatcher(Entity entity, int temp)
 	{
@@ -55,26 +61,18 @@ public class Status implements IExtendedEntityProperties
 	}
 
 	@Override
-	public void saveNBTData(NBTTagCompound compound)
+	public final void saveNBTData(NBTTagCompound compound)
 	{
 		NBTTagCompound properties = new NBTTagCompound();
-
-		properties.setInteger("current", getCurrent());
-		properties.setInteger("max", max);
-		properties.setInteger("consumption", consume);
-		properties.setInteger("regeneration", regen);
+		this.writeToNBT(properties);
 		compound.setTag(this.id, properties);
 	}
 
 	@Override
-	public void loadNBTData(NBTTagCompound compound)
+	public final void loadNBTData(NBTTagCompound compound)
 	{
 		NBTTagCompound properties = (NBTTagCompound) compound.getTag(this.id);
-
-		this.setCurrent(properties.getInteger("current"));
-		this.setConSpeed(properties.getInteger("consumption"));
-		this.setRegSpeed(properties.getInteger("regeneration"));
-		this.max = properties.getInteger("max");
+		this.readFromNBT(properties);
 	}
 
 	/**
@@ -82,6 +80,7 @@ public class Status implements IExtendedEntityProperties
 	 */
 	protected void setCurrent(int value)
 	{
+		if (value > max) return;
 		this.entity.getDataWatcher().updateObject(this.ObjId, value);
 	}
 
@@ -92,36 +91,25 @@ public class Status implements IExtendedEntityProperties
 		this.registerDataWatcher(entity, 20);
 	}
 
-	public void replenish()
-	{
-		setCurrent(this.max);
-	}
 
-	public void recover()
-	{
-		int future = this.getCurrent() + this.regen;
-		this.setCurrent(future > this.max ? this.max : future);
-	}
-
-	public void consume()
-	{
-		int future = this.getCurrent() - this.consume;
-		this.setCurrent(future < 0 ? 0 : future);
-	}
-
-	public void setMax(int max)
+	public Status setMax(int max)
 	{
 		this.max = max;
 		setCurrent(this.max);
+		return this;
 	}
 
-	public void setConSpeed(int conSpeed)
+	@Override
+	public void readFromNBT(NBTTagCompound tag)
 	{
-		this.consume = conSpeed;
+		this.max = tag.getInteger("max");
+		this.setCurrent(tag.getInteger("current"));
 	}
 
-	public void setRegSpeed(int regSpeed)
+	@Override
+	public void writeToNBT(NBTTagCompound tag)
 	{
-		this.regen = regSpeed;
+		tag.setInteger("current", getCurrent());
+		tag.setInteger("max", max);
 	}
 }

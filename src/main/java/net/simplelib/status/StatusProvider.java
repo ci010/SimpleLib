@@ -5,11 +5,9 @@ import net.minecraft.entity.Entity;
 /**
  * @author ci010
  */
-public interface StatusProvider<T extends Entity>
+public interface StatusProvider<T extends Entity, S extends Status>
 {
-	Status createStatus(T entity);
-
-	Status getStatus(T entity);
+	S createStatus(T entity);
 
 	String getId();
 }
