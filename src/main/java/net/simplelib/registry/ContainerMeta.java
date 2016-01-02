@@ -2,7 +2,8 @@ package net.simplelib.registry;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import net.simplelib.abstracts.ModelHandler;
+import net.simplelib.registry.abstracts.MinecraftComponent;
+import net.simplelib.registry.abstracts.ModelHandler;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -15,15 +16,15 @@ public class ContainerMeta
 {
 	public final String modid;
 	private boolean ifGenerateLang, ifGenerateModel;
-	private Set<Field> fields;
 	private String[] langType;
+	private Set<Class> rawContainer;
 	private ModelHandler<MinecraftComponent> modelHandler;
-	private Set<ImmutableSet<Namespace>> unregistered;
+	private Set<Namespace> unregistered;
 
 	public ContainerMeta(String modid)
 	{
 		this.modid = modid;
-		this.fields = Sets.newHashSet();
+		this.rawContainer = Sets.newHashSet();
 		this.unregistered = Sets.newHashSet();
 	}
 
@@ -66,36 +67,30 @@ public class ContainerMeta
 		return this;
 	}
 
+	public Set<Class> getRawContainer()
+	{
+		return this.rawContainer;
+	}
+
+	public ContainerMeta addRawContainer(Class<?> containers)
+	{
+		this.rawContainer.add(containers);
+		return this;
+	}
+
 	public boolean needModel()
 	{
 		return this.ifGenerateModel;
 	}
 
-	public void addField(Field f)
-	{
-		System.out.println("ADDFIELD " + f.getName() + " in " + modid);
-		this.fields.add(f);
-	}
-
-	public ContainerMeta addField(Collection<Field> f)
-	{
-		this.fields.addAll(f);
-		return this;
-	}
-
-	public Set<Field> getFields()
-	{
-		return this.fields;
-	}
-
 	public ContainerMeta addUnregistered(ImmutableSet<Namespace> struct)
 	{
-		this.unregistered.add(struct);
+		this.unregistered.addAll(struct);
 		return this;
 	}
 
-	public Iterable<ImmutableSet<Namespace>> getUnregistered()
+	public ImmutableSet<Namespace> getUnregistered()
 	{
-		return this.unregistered;
+		return ImmutableSet.copyOf(this.unregistered);
 	}
 }
