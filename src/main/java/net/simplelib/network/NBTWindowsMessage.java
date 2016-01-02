@@ -4,8 +4,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.simplelib.abstracts.NBTSeril;
-import net.simplelib.annotation.type.Message;
+import net.simplelib.common.NBTSeril;
+import net.simplelib.registry.annotation.type.Message;
 import net.simplelib.interactive.ContainerCommon;
 
 /**

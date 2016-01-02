@@ -12,9 +12,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.simplelib.ModNetwork;
-import net.simplelib.data.VarInteger;
-import net.simplelib.data.VarSync;
+import net.simplelib.network.ModNetwork;
+import net.simplelib.common.VarSync;
 import net.simplelib.network.NBTWindowsMessage;
 
 import java.util.List;
@@ -82,12 +81,12 @@ public class ContainerCommon extends Container implements Inventory.Listener, Va
 	public void onCraftGuiOpened(ICrafting iCrafting)
 	{
 		for (int i = 0; i < varIntegers.size(); ++i)
-			iCrafting.sendProgressBarUpdate(this, i, varIntegers.get(i).getData());
+			iCrafting.sendProgressBarUpdate(this, i, varIntegers.get(i).get());
 		if (iCrafting instanceof EntityPlayerMP)
 		{
 			EntityPlayerMP playerMP = (EntityPlayerMP) iCrafting;
 			for (int num = 0; num < syncs.size(); ++num)
-				ModNetwork.instance().sendTo(new NBTWindowsMessage(this.windowId, num, syncs.get(num).getData()),
+				ModNetwork.instance().sendTo(new NBTWindowsMessage(this.windowId, num, syncs.get(num).get()),
 						playerMP);
 		}
 	}
@@ -102,7 +101,7 @@ public class ContainerCommon extends Container implements Inventory.Listener, Va
 	@SideOnly(Side.CLIENT)
 	public void updateSync(int id, NBTTagCompound tag)
 	{
-		syncs.get(id).getData().readFromNBT(tag);
+		syncs.get(id).get().readFromNBT(tag);
 	}
 
 	@Override
@@ -115,7 +114,7 @@ public class ContainerCommon extends Container implements Inventory.Listener, Va
 			{
 				VarInteger i = varIntegers.get(num);
 				if (i.isDirty())
-					player.sendProgressBarUpdate(this, num, i.getData());
+					player.sendProgressBarUpdate(this, num, i.get());
 			}
 	}
 
@@ -140,7 +139,7 @@ public class ContainerCommon extends Container implements Inventory.Listener, Va
 	public void onChanged(VarSync var)
 	{
 		for (EntityPlayerMP player : getPlayers())
-			ModNetwork.instance().sendTo(new NBTWindowsMessage(this.windowId, syncs.indexOf(var), var.getData()),
+			ModNetwork.instance().sendTo(new NBTWindowsMessage(this.windowId, syncs.indexOf(var), var.get()),
 					player);
 	}
 }

@@ -1,7 +1,7 @@
 package net.simplelib.deprecated;
 
-import net.simplelib.ModNetwork;
-import net.simplelib.data.VarSync;
+import net.simplelib.network.ModNetwork;
+import net.simplelib.common.VarSync;
 import net.simplelib.network.NBTWindowsMessage;
 
 import java.util.List;
@@ -19,6 +19,6 @@ public class SyncPortalClient extends SyncPortal
 	@Override
 	void sendChange(int winId, int id, VarSync seril)
 	{
-		ModNetwork.instance().sendTo(new NBTWindowsMessage(winId, id, seril.getData()));
+		ModNetwork.instance().sendTo(new NBTWindowsMessage(winId, id, seril.get()));
 	}
 }

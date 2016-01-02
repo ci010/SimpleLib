@@ -221,7 +221,7 @@ public class TestMain
 		System.out.println(json);
 		RecipePatter r = recipe.fromJson(json, RecipePatter.class);
 
-		System.out.print(r.name);
+//		System.out.print(r.name);
 	}
 
 	static class TestPatternBuilder
@@ -229,7 +229,7 @@ public class TestMain
 		String name, domain;
 		int id, length, height;
 		boolean shapeless;
-		List<String> inputBuff = Lists.newArrayList(), outputBuff = Lists.newArrayList();
+		List<String> inputBuff = Lists.newArrayList();
 
 		public void setLength(int length)
 		{
@@ -282,9 +282,9 @@ public class TestMain
 			out.beginObject();
 			{
 				out.name("id");
-				out.value(value.name);
+//				out.value(value.name);
 				out.name("windowId");
-				out.value(value.id);
+//				out.value(value.id);
 				out.name("shapeless");
 				out.value(value.shapeless);
 				out.name("length");

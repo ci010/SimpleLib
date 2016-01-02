@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.simplelib.HelperMod;
-import net.simplelib.annotation.type.Handler;
+import net.simplelib.registry.annotation.type.Handler;
 
 /**
  * @author ci010

@@ -1,33 +1,28 @@
 package net.simplelib.registry.delegate;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.item.ItemMonsterPlacer;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.simplelib.CommonLogger;
 import net.simplelib.HelperMod;
-import net.simplelib.RegistryHelper;
-import net.simplelib.abstracts.RegistryDelegate;
-import net.simplelib.annotation.type.ASMDelegate;
-import net.simplelib.annotation.type.ModEntity;
-import net.simplelib.util.FMLModUtil;
-import net.simplelib.util.GenericUtil;
+import net.simplelib.common.CommonLogger;
+import net.simplelib.common.utils.FMLModUtil;
+import net.simplelib.common.utils.GenericUtil;
+import net.simplelib.registry.abstracts.ASMRegistryDelegate;
+import net.simplelib.registry.annotation.type.ASMDelegate;
+import net.simplelib.registry.annotation.type.ModEntity;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.Map;
 
 /**
  * @author ci010
  */
 @ASMDelegate
-public class EntityRegistryDelegate extends RegistryDelegate<ModEntity>
+public class EntityRegistryDelegate extends ASMRegistryDelegate<ModEntity>
 {
 	static Map<String, Integer> modidCache = Maps.newHashMap();
 
@@ -82,39 +77,44 @@ public class EntityRegistryDelegate extends RegistryDelegate<ModEntity>
 				}
 				catch (InstantiationException e)
 				{
-					e.printStackTrace();
+					renderObj = handleException(render, name);
 				}
 				catch (IllegalAccessException e)
 				{
-					try
-					{
-						Constructor constructor = render.getConstructor();
-						constructor.setAccessible(true);
-						renderObj = (Render) constructor.newInstance();
-					}
-					catch (NoSuchMethodException e1)
-					{
-						CommonLogger.fatal("Cannot create the instance of {}'s renderer. There should be a " +
-								"constructor without any parameter for the renderer class. The entity {} won't be register a " +
-								"renderer.", name, name);
-						return;
-					}
-					catch (IllegalAccessException e1)
-					{
-						e1.printStackTrace();
-					}
-					catch (InstantiationException e1)
-					{
-						e1.printStackTrace();
-					}
-					catch (InvocationTargetException e1)
-					{
-						e1.printStackTrace();
-					}
+					renderObj = this.handleException(render, name);
 				}
 				RenderingRegistry.registerEntityRenderingHandler(clz, renderObj);
 				CommonLogger.info("Register renderer to entity {}", name);
 			}
 		}
+	}
+
+	private Render handleException(Class<? extends Render> render, String name)
+	{
+		try
+		{
+			Constructor constructor = render.getDeclaredConstructor();
+			constructor.setAccessible(true);
+			return (Render) constructor.newInstance();
+		}
+		catch (NoSuchMethodException e1)
+		{
+			CommonLogger.fatal("Cannot create the instance of {}'s renderer. There should be a " +
+					"constructor without any parameter for the renderer class. The entity {} won't be register a " +
+					"renderer.", name, name);
+		}
+		catch (IllegalAccessException e1)
+		{
+			e1.printStackTrace();
+		}
+		catch (InstantiationException e1)
+		{
+			e1.printStackTrace();
+		}
+		catch (InvocationTargetException e1)
+		{
+			e1.printStackTrace();
+		}
+		return null;
 	}
 }

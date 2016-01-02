@@ -1,7 +1,7 @@
 package net.simplelib.event;
 
 import net.minecraftforge.fml.common.eventhandler.Event;
-import net.simplelib.data.VarInteger;
+import net.simplelib.interactive.VarInteger;
 
 /**
  * @author ci010

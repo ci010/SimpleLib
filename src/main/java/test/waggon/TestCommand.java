@@ -5,7 +5,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.world.World;
-import net.simplelib.annotation.type.ModCommand;
+import net.simplelib.registry.annotation.type.ModCommand;
 
 /**
  * @author ci010

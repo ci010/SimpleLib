@@ -5,8 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.simplelib.data.VarInteger;
-import net.simplelib.data.VarSync;
+import net.simplelib.common.VarSync;
 import net.simplelib.event.InteractiveIntegerMissMatchEvent;
 
 import java.util.List;
@@ -72,7 +71,7 @@ public class InteractiveEntityUpdate extends InteractiveEntity implements IUpdat
 		super.writeToNBT(tag);
 		int[] arr = new int[this.integers.size()];
 		for (int i = 0; i < this.integers.size(); ++i)
-			arr[i] = integers.get(i).getData();
+			arr[i] = integers.get(i).get();
 		tag.setIntArray("VarInt", arr);
 	}
 }

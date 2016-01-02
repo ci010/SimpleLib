@@ -6,7 +6,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.simplelib.annotation.type.Message;
+import net.simplelib.registry.annotation.type.Message;
 import net.simplelib.registry.SitHandler;
 
 /**

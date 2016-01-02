@@ -2,17 +2,19 @@ package net.simplelib.registry.delegate;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.simplelib.abstracts.RegistryDelegate;
-import net.simplelib.annotation.type.ASMDelegate;
-import net.simplelib.annotation.type.IPropertyHook;
+import net.simplelib.registry.abstracts.ASMRegistryDelegate;
+import net.simplelib.registry.annotation.type.ASMDelegate;
+import net.simplelib.registry.annotation.type.IPropertyHook;
 import net.simplelib.status.StatusManager;
 import net.simplelib.status.StatusProvider;
+
+import java.lang.reflect.Type;
 
 /**
  * @author ci010
  */
 @ASMDelegate
-public class IPropertiesDelegate extends RegistryDelegate<IPropertyHook>
+public class IPropertiesDelegate extends ASMRegistryDelegate<IPropertyHook>
 {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
@@ -21,6 +23,12 @@ public class IPropertiesDelegate extends RegistryDelegate<IPropertyHook>
 		if (!StatusProvider.class.isAssignableFrom(clz))
 			throw new IllegalArgumentException("The class ".concat(clz.getName()).concat("didn't implement " +
 					"StatusProvider. It cannot be registered as a status provider!"));
+		System.out.println(clz.getName());
+		for (Type type : clz.getGenericInterfaces())
+		{
+			System.out.println(type);
+
+		}
 		try
 		{
 			StatusManager.registerStatus((StatusProvider) clz.newInstance());

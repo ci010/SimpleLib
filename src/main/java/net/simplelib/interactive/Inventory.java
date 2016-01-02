@@ -8,8 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
-import net.simplelib.abstracts.NBTSeril;
-import net.simplelib.data.VarItemHolder;
+import net.simplelib.common.NBTSeril;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,27 +81,27 @@ public class Inventory implements IInventory, NBTSeril
 	@Override
 	public ItemStack getStackInSlot(int index)
 	{
-		return this.holders.get(index).getData();
+		return this.holders.get(index).get();
 	}
 
 	@Override
 	public ItemStack decrStackSize(int index, int count)
 	{
-		if (this.holders.get(index).getData() != null)
+		if (this.holders.get(index).get() != null)
 		{
 			ItemStack stack;
-			if (this.holders.get(index).getData().stackSize <= size)
+			if (this.holders.get(index).get().stackSize <= size)
 			{
-				stack = this.holders.get(index).getData();
+				stack = this.holders.get(index).get();
 				this.holders.set(index, null);
 				this.markDirty();
 				return stack;
 			}
 			else
 			{
-				stack = this.holders.get(index).getData().splitStack(size);
-				if (this.holders.get(index).getData().stackSize == 0)
-					this.holders.get(index).setData(null);
+				stack = this.holders.get(index).get().splitStack(size);
+				if (this.holders.get(index).get().stackSize == 0)
+					this.holders.get(index).set(null);
 				this.markDirty();
 				return stack;
 			}
@@ -114,10 +113,10 @@ public class Inventory implements IInventory, NBTSeril
 	@Override
 	public ItemStack getStackInSlotOnClosing(int index)
 	{
-		if (this.holders.get(index).getData() != null)
+		if (this.holders.get(index).get() != null)
 		{
-			ItemStack itemstack = this.holders.get(index).getData();
-			this.holders.get(index).setData(null);
+			ItemStack itemstack = this.holders.get(index).get();
+			this.holders.get(index).set(null);
 			return itemstack;
 		}
 		else
@@ -127,7 +126,7 @@ public class Inventory implements IInventory, NBTSeril
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack)
 	{
-		this.holders.get(index).setData(stack);
+		this.holders.get(index).set(stack);
 		if (stack != null && stack.stackSize > this.getInventoryStackLimit())
 			stack.stackSize = this.getInventoryStackLimit();
 		this.markDirty();
@@ -190,7 +189,7 @@ public class Inventory implements IInventory, NBTSeril
 	public void clear()
 	{
 		for (VarItemHolder holder : this.holders)
-			holder.setData(null);
+			holder.set(null);
 	}
 
 	@Override
@@ -220,7 +219,7 @@ public class Inventory implements IInventory, NBTSeril
 			NBTTagCompound temp = tagList.getCompoundTagAt(i);
 			byte slot = temp.getByte("Slot");
 			if (slot >= 0 && slot < this.holders.size())
-				this.holders.get(slot).setData(ItemStack.loadItemStackFromNBT(temp));
+				this.holders.get(slot).set(ItemStack.loadItemStackFromNBT(temp));
 		}
 	}
 
@@ -229,11 +228,11 @@ public class Inventory implements IInventory, NBTSeril
 	{
 		NBTTagList stackList = new NBTTagList();
 		for (int i = 0; i < this.holders.size(); ++i)
-			if (this.holders.get(i).getData() != null)
+			if (this.holders.get(i).get() != null)
 			{
 				NBTTagCompound tagCompound = new NBTTagCompound();
 				tagCompound.setByte("Slot", (byte) i);
-				this.holders.get(i).getData().writeToNBT(tagCompound);
+				this.holders.get(i).get().writeToNBT(tagCompound);
 				stackList.appendTag(tagCompound);
 			}
 		tag.setTag(this.getCommandSenderName(), stackList);

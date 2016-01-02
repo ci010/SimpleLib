@@ -5,16 +5,16 @@ import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.simplelib.RegistryHelper;
-import net.simplelib.abstracts.RegistryDelegate;
-import net.simplelib.annotation.type.ASMDelegate;
-import net.simplelib.annotation.type.Generate;
+import net.simplelib.registry.abstracts.ASMRegistryDelegate;
+import net.simplelib.registry.annotation.type.ASMDelegate;
+import net.simplelib.registry.annotation.type.Generate;
 
 /**
  * @author ci010
  */
 @ASMDelegate
 @SideOnly(Side.CLIENT)
-public class GenerationDelegate extends RegistryDelegate<Generate>
+public class GenerationDelegate extends ASMRegistryDelegate<Generate>
 {
 	@Mod.EventHandler
 	public void construct(FMLConstructionEvent event)

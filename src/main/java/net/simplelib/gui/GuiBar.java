@@ -1,6 +1,6 @@
 package net.simplelib.gui;
 
-import net.simplelib.util.GuiUtil;
+import net.simplelib.common.utils.GuiUtil;
 
 /**
  * The bar-like Component.

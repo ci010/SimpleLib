@@ -6,9 +6,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
-import net.simplelib.annotation.type.ModEntity;
+import net.simplelib.registry.annotation.type.ModEntity;
 
 import java.util.List;
 
@@ -57,6 +56,7 @@ public class EntityWaggon extends EntityLiving
 				if (distance > this.distance)
 					this.moveHelper.setMoveTo(current.getX(), current.getY(), current.getZ(), 0.4d);
 			}
+		System.out.println("Test Thread.");
 	}
 
 

@@ -6,8 +6,8 @@ import com.google.common.collect.Lists;
 import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.simplelib.abstracts.NBTSeril;
-import net.simplelib.data.VarSync;
+import net.simplelib.common.NBTSeril;
+import net.simplelib.common.VarSync;
 
 import java.util.List;
 
@@ -59,7 +59,7 @@ public class InteractiveEntity implements NBTSeril
 	{
 		this.id = tag.getString("interactive_id");
 		for (VarSync syncNBT : this.sync)
-			syncNBT.getData().readFromNBT(tag.getCompoundTag("sync"));
+			syncNBT.get().readFromNBT(tag.getCompoundTag("sync"));
 		for (Inventory inventory : this.inventories.values())
 			inventory.readFromNBT(tag);
 	}
@@ -70,7 +70,7 @@ public class InteractiveEntity implements NBTSeril
 		tag.setString("interactive_id", this.id);
 		NBTTagCompound sync = new NBTTagCompound();
 		for (VarSync syncNBT : this.sync)
-			syncNBT.getData().writeToNBT(sync);
+			syncNBT.get().writeToNBT(sync);
 		tag.setTag("sync", sync);
 		for (Inventory inventory : this.inventories.values())
 			inventory.writeToNBT(tag);

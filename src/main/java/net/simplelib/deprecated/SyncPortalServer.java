@@ -2,8 +2,8 @@ package net.simplelib.deprecated;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.simplelib.ModNetwork;
-import net.simplelib.data.VarSync;
+import net.simplelib.network.ModNetwork;
+import net.simplelib.common.VarSync;
 import net.simplelib.network.NBTWindowsMessage;
 
 import java.util.List;
@@ -37,6 +37,6 @@ public class SyncPortalServer extends SyncPortal
 	protected void sendChange(int winId, int id, VarSync seril)
 	{
 		for (EntityPlayerMP playerMP : listener)
-			ModNetwork.instance().sendTo(new NBTWindowsMessage(winId, id, seril.getData()), playerMP);
+			ModNetwork.instance().sendTo(new NBTWindowsMessage(winId, id, seril.get()), playerMP);
 	}
 }

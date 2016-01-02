@@ -12,7 +12,7 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.simplelib.annotation.type.Handler;
+import net.simplelib.registry.annotation.type.Handler;
 
 import java.io.File;
 import java.io.FileWriter;

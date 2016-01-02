@@ -6,10 +6,10 @@ import com.google.common.collect.Multimap;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.simplelib.annotation.type.Handler;
-import net.simplelib.util.GenericUtil;
+import net.simplelib.common.CommonLogger;
+import net.simplelib.registry.annotation.type.Handler;
+import net.simplelib.common.utils.GenericUtil;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -18,13 +18,15 @@ import java.util.Map;
 @Handler
 public class StatusManager
 {
-	private static Multimap<Type, StatusProvider> map = HashMultimap.create();
+	private static Multimap<Class<? extends Entity>, StatusProvider> map = HashMultimap.create();
 	private static Map<Class<? extends StatusProvider>, StatusProvider> indexMap = Maps.newHashMap();
 
 	public static void registerStatus(StatusProvider provider)
 	{
+		Class<? extends Entity> clz = GenericUtil.<Entity>getInterfaceGenericTypeTo(provider);
+		CommonLogger.info("Register the status {} to all {}.", provider.getId(), clz.getSimpleName());
 		indexMap.put(provider.getClass(), provider);
-		map.put(GenericUtil.getGenericType(provider), provider);
+		map.put(clz, provider);
 	}
 
 	/**

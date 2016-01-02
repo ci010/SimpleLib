@@ -14,10 +14,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.simplelib.HelperMod;
-import net.simplelib.ModNetwork;
-import net.simplelib.annotation.type.Message;
-import net.simplelib.annotation.type.ModGuiHandler;
-import net.simplelib.data.VarSync;
+import net.simplelib.network.ModNetwork;
+import net.simplelib.registry.annotation.type.Message;
+import net.simplelib.registry.annotation.type.ModGuiHandler;
+import net.simplelib.common.VarSync;
 import net.simplelib.network.AbstractBiMessageHandler;
 import net.simplelib.network.NBTMessage;
 import net.simplelib.network.NBTWindowsMessage;
@@ -114,7 +114,7 @@ public class GuiPortSyncHandler implements IGuiHandler
 		{
 			SyncPortalServer server = (SyncPortalServer) current.get(message.data.getInteger("winId"));
 			for (int i = 0; i < server.data.size(); ++i)
-				ModNetwork.instance().sendTo(new NBTWindowsMessage(server.id, i, server.data.get(i).getData()),
+				ModNetwork.instance().sendTo(new NBTWindowsMessage(server.id, i, server.data.get(i).get()),
 						(EntityPlayerMP) player);
 			return null;
 		}

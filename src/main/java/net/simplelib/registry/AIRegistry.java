@@ -8,8 +8,9 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.simplelib.annotation.type.Handler;
-import net.simplelib.util.GenericUtil;
+import net.simplelib.registry.abstracts.AIProvider;
+import net.simplelib.registry.annotation.type.Handler;
+import net.simplelib.common.utils.GenericUtil;
 
 import java.util.Set;
 

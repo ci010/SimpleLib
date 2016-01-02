@@ -7,9 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.simplelib.HelperMod;
-import net.simplelib.data.VarInteger;
-import net.simplelib.data.VarItemHolder;
-import net.simplelib.data.VarSync;
+import net.simplelib.common.VarSync;
 import net.simplelib.gui.GuiContainerCommon;
 import net.simplelib.network.GuiHandler;
 

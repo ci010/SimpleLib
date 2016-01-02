@@ -12,11 +12,13 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.simplelib.abstracts.ArgumentHelper;
-import net.simplelib.annotation.field.Construct;
+import net.simplelib.network.ModNetwork;
+import net.simplelib.registry.abstracts.ArgumentHelper;
+import net.simplelib.registry.annotation.field.Construct;
 import net.simplelib.network.AbstractMessageHandler;
 import net.simplelib.registry.*;
-import net.simplelib.util.FMLModUtil;
+import net.simplelib.registry.annotation.type.BlockItemContainer;
+import net.simplelib.common.utils.FMLModUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -82,9 +84,9 @@ public enum RegistryHelper
 	public void registerMod(String modid, Class<?> container)
 	{
 		if (!this.containerIdx.containsKey(modid))
-			this.track(new ContainerMeta(modid).addField(this.parseContainer(container)));
+			this.track(new ContainerMeta(modid).addRawContainer(container));
 		else
-			this.containerIdx.get(modid).addField(this.parseContainer(container));
+			this.containerIdx.get(modid).addRawContainer(container);
 	}
 
 	public void registerBlock(String modid, Block block, String name)
@@ -111,7 +113,7 @@ public enum RegistryHelper
 		this.register(modid, temp);
 	}
 
-	private void register(String modid, ImmutableSet set)
+	public void register(String modid, ImmutableSet set)
 	{
 		if (!this.containerIdx.containsKey(modid))
 			this.track(new ContainerMeta(modid).addUnregistered(set));
@@ -153,7 +155,8 @@ public enum RegistryHelper
 	}
 
 	/**
-	 * Register new message with its handler class
+	 * Register a new message with its handler class.
+	 * <p>Highly recommend to use {@link net.simplelib.registry.annotation.type.Message} to register this.</p>
 	 *
 	 * @param handlerClass The handler class which binds with message class
 	 * @param messageClass The message class
@@ -196,7 +199,7 @@ public enum RegistryHelper
 
 	/**
 	 * Register containers. All the static fields with type assigning from
-	 * {@link Item}/ {@link Block}/{@link net.simplelib.annotation.type.BlockItemContainer} in these containers
+	 * {@link Item}/ {@link Block}/{@link BlockItemContainer} in these containers
 	 * will be registered.
 	 *
 	 * @param ifGenerateLang  If your mod need to generate language files
@@ -204,11 +207,11 @@ public enum RegistryHelper
 	 * @param containers      The item/block/custom containers.
 	 */
 	public void register(boolean ifGenerateLang, boolean ifGenerateModel, Class<?>... containers)
-	{
+	{//// TODO: 2016/1/2 check if this mod is registered. 
 		String modid = Loader.instance().activeModContainer().getModId();
 		ContainerMeta meta = new ContainerMeta(modid).lang(ifGenerateLang).model(ifGenerateModel);
 		for (Class<?> container : containers)
-			meta.addField(parseContainer(container));
+			meta.addRawContainer(container);
 		this.track(meta);
 	}
 
@@ -217,28 +220,28 @@ public enum RegistryHelper
 	 */
 	public void check()
 	{
-		boolean isClear = true;
-		for (ContainerMeta meta : containerIdx.values())
-			for (Field f : meta.getFields())
-				try
-				{
-					if (f.get(null) == null)
-					{
-						HelperMod.LOG.fatal("field" + f.getName() + "is NULL!");
-						isClear = false;
-					}
-				}
-				catch (IllegalArgumentException e)
-				{
-					e.printStackTrace();
-				}
-				catch (IllegalAccessException e)
-				{
-					e.printStackTrace();
-				}
-
-		if (isClear)
-			HelperMod.LOG.info("Containers are all fine");
+//		boolean isClear = true;
+//		for (ContainerMeta meta : containerIdx.values())
+//			for (Field f : meta.getFields())
+//				try
+//				{
+//					if (f.get(null) == null)
+//					{
+//						HelperMod.LOG.fatal("field" + f.getName() + "is NULL!");
+//						isClear = false;
+//					}
+//				}
+//				catch (IllegalArgumentException e)
+//				{
+//					e.printStackTrace();
+//				}
+//				catch (IllegalAccessException e)
+//				{
+//					e.printStackTrace();
+//				}
+//
+//		if (isClear)
+//			HelperMod.LOG.info("Containers are all fine");
 	}
 
 	/**

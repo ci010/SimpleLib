@@ -1,11 +1,7 @@
 package net.simplelib.gui;
 
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.StatCollector;
-import net.simplelib.HelperMod;
-import net.simplelib.util.GuiUtil;
-
-import java.util.IllegalFormatException;
+import net.simplelib.common.utils.GuiUtil;
 
 /**
  * One of the most basic components in gui.

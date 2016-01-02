@@ -11,8 +11,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.simplelib.ModNetwork;
-import net.simplelib.annotation.type.Handler;
+import net.simplelib.network.ModNetwork;
+import net.simplelib.registry.annotation.type.Handler;
 import net.simplelib.minecraft.EntitySitableTemp;
 import net.simplelib.network.PlayerSitMessage;
 

@@ -2,6 +2,8 @@ package net.simplelib.registry;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.simplelib.registry.abstracts.MinecraftComponent;
+
 
 /**
  * @author ci010
@@ -60,13 +62,12 @@ public class Namespace
 		return parent == null ? name : parent.concat("_").concat(name);
 	}
 
-	public static Namespace newSpace(String name, Block block)
+	public static Namespace newSpace(String name, Object o)
 	{
-		return new Namespace(name, new ComponentBlock(block));
-	}
-
-	public static Namespace newSpace(String name, Item block)
-	{
-		return new Namespace(name, new ComponentItem(block));
+		if (o instanceof Block)
+			return new Namespace(name, new ComponentBlock((Block) o));
+		if (o instanceof Item)
+			return new Namespace(name, new ComponentItem((Item) o));
+		return null;
 	}
 }

@@ -3,11 +3,9 @@ package net.simplelib.interactive;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.simplelib.HelperMod;
-import net.simplelib.annotation.field.Name;
-import net.simplelib.annotation.field.Owner;
-import net.simplelib.data.VarInteger;
-import net.simplelib.data.VarItemHolder;
-import net.simplelib.data.VarSync;
+import net.simplelib.registry.annotation.field.Name;
+import net.simplelib.registry.annotation.field.Owner;
+import net.simplelib.common.VarSync;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

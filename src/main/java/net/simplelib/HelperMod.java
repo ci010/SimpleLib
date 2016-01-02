@@ -1,6 +1,7 @@
 package net.simplelib;
 
 import net.minecraft.init.Blocks;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -8,8 +9,16 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.launcher.FMLTweaker;
+import net.simplelib.common.CommonLogger;
+import net.simplelib.common.utils.GenericUtil;
+import net.simplelib.registry.RegistryBufferManager;
+import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 @Mod(modid = HelperMod.MODID, name = HelperMod.NAME, version = HelperMod.VERSION, useMetadata = true)
 public class HelperMod
@@ -21,7 +30,7 @@ public class HelperMod
 	@Instance(MODID)
 	public static HelperMod instance;
 
-	public static final Logger LOG = LogManager.getLogger();
+	public static final Logger LOG = LogManager.getLogger("test");
 
 	@SidedProxy(modId = MODID, serverSide = "net.simplelib.CommonProxy", clientSide = "net.simplelib.ClientProxy")
 	public static CommonProxy proxy;
@@ -29,6 +38,7 @@ public class HelperMod
 	@EventHandler
 	public void construct(FMLConstructionEvent event)
 	{
+		System.out.println(LOG.getClass().getName());
 		CommonLogger.init();
 		if (DEBUG_MOD)
 			CommonLogger.info("Detected that this is a development environment. Debug mode on.");
@@ -81,6 +91,12 @@ public class HelperMod
 		RegistryBufferManager.instance().invoke(event);
 		RegistryBufferManager.close();
 	}
+
+//	@NetworkCheckHandler
+//	public void acceptModList(Map<String, String> modList, Side side)
+//	{
+//
+//	}
 
 	static
 	{

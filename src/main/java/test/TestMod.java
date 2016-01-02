@@ -4,9 +4,9 @@ import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.simplelib.annotation.field.Construct;
-import net.simplelib.annotation.type.BlockItemContainer;
-import net.simplelib.annotation.type.Generate;
+import net.simplelib.registry.annotation.field.Construct;
+import net.simplelib.registry.annotation.type.BlockItemContainer;
+import net.simplelib.registry.annotation.type.Generate;
 
 /**
  * @author ci010

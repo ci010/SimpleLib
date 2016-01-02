@@ -1,7 +1,7 @@
 package net.simplelib.deprecated;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.simplelib.data.VarSync;
+import net.simplelib.common.VarSync;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public abstract class SyncPortal implements VarSync.Listener
 
 	public void loadFromNBT(int id, NBTTagCompound nbt)
 	{
-		this.data.get(id).getData().readFromNBT(nbt);
+		this.data.get(id).get().readFromNBT(nbt);
 	}
 
 	@Override

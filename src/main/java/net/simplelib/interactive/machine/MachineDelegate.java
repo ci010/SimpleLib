@@ -3,15 +3,15 @@ package net.simplelib.interactive.machine;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.simplelib.HelperMod;
-import net.simplelib.abstracts.RegistryDelegate;
-import net.simplelib.annotation.type.ASMDelegate;
-import net.simplelib.annotation.type.ModMachine;
+import net.simplelib.registry.abstracts.ASMRegistryDelegate;
+import net.simplelib.registry.annotation.type.ASMDelegate;
+import net.simplelib.registry.annotation.type.ModMachine;
 
 /**
  * @author ci010
  */
 @ASMDelegate
-public class MachineDelegate extends RegistryDelegate<ModMachine>
+public class MachineDelegate extends ASMRegistryDelegate<ModMachine>
 {
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)

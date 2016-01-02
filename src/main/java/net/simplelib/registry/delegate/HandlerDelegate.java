@@ -5,15 +5,15 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.simplelib.HelperMod;
-import net.simplelib.abstracts.RegistryDelegate;
-import net.simplelib.annotation.type.ASMDelegate;
-import net.simplelib.annotation.type.Handler;
+import net.simplelib.registry.abstracts.ASMRegistryDelegate;
+import net.simplelib.registry.annotation.type.ASMDelegate;
+import net.simplelib.registry.annotation.type.Handler;
 
 /**
  * @author ci010
  */
 @ASMDelegate
-public class HandlerDelegate extends RegistryDelegate<Handler>
+public class HandlerDelegate extends ASMRegistryDelegate<Handler>
 {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)

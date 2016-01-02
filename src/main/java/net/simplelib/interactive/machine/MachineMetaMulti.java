@@ -6,7 +6,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.simplelib.interactive.ContainerCommon;
 import net.simplelib.interactive.InteractiveMetadata;
-import net.simplelib.util.Pattern3DBlockPos;
+import net.simplelib.common.Pattern3DBlockPos;
 
 /**
  * @author ci010

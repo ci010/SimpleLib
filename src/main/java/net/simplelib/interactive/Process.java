@@ -1,9 +1,7 @@
 package net.simplelib.interactive;
 
-import net.simplelib.abstracts.UpdateSafe;
-import net.simplelib.data.VarInteger;
-import net.simplelib.data.VarItemHolder;
-import net.simplelib.data.VarSync;
+import net.simplelib.common.UpdateSafe;
+import net.simplelib.common.VarSync;
 
 /**
  * This interface indicates a core updatable logic.

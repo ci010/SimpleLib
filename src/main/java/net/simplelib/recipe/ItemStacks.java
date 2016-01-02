@@ -2,6 +2,7 @@ package net.simplelib.recipe;
 
 import com.sun.istack.internal.NotNull;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
@@ -12,7 +13,7 @@ public class ItemStacks implements Comparable<ItemStacks>
 	protected String name;
 	protected ItemStack[] materials;
 	protected int size, length, height;
-	protected boolean damageSensitive, raw, oreDic;
+	protected boolean damageSensitive, nbtSensitive, raw, oreDic;
 
 	public ItemStacks(String name, int length, int height, ItemStack... materials)
 	{
@@ -22,7 +23,7 @@ public class ItemStacks implements Comparable<ItemStacks>
 		this.height = height;
 		this.size = length * height;
 		if (this.size != materials.length)
-			throw new IllegalArgumentException("Stack size error");
+			throw new IllegalArgumentException("Stack size error.");
 	}
 
 	public ItemStacks(ItemStack... materials)
@@ -35,6 +36,12 @@ public class ItemStacks implements Comparable<ItemStacks>
 	public ItemStacks damageSensitive()
 	{
 		this.damageSensitive = true;
+		return this;
+	}
+
+	public ItemStacks nbtSensitive()
+	{
+		this.nbtSensitive = true;
 		return this;
 	}
 
@@ -65,12 +72,15 @@ public class ItemStacks implements Comparable<ItemStacks>
 				continue;
 			if (other == null || stack == null)
 				return -1;
+			if (this.nbtSensitive || o.nbtSensitive)
+				if (!stack.getTagCompound().equals(other.getTagCompound()))
+					return -1;
 			int thisIds[] = OreDictionary.getOreIDs(stack), otherIds[] = OreDictionary.getOreIDs(other);
 			for (int j = 0; j < thisIds.length; ++j)
 				if (thisIds[j] != otherIds[j])
 					return -1;
 			if (other.getItem() != stack.getItem() ||
-					(damageSensitive && other.getItemDamage() != stack.getItemDamage()))
+					((damageSensitive || o.damageSensitive) && other.getItemDamage() != stack.getItemDamage()))
 				return -1;
 		}
 		return 0;

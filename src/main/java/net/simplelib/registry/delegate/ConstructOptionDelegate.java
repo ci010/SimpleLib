@@ -3,9 +3,10 @@ package net.simplelib.registry.delegate;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.simplelib.RegistryHelper;
-import net.simplelib.abstracts.RegistryDelegate;
-import net.simplelib.annotation.ConstructOption;
-import net.simplelib.annotation.type.ASMDelegate;
+import net.simplelib.common.utils.GenericUtil;
+import net.simplelib.registry.abstracts.ASMRegistryDelegate;
+import net.simplelib.registry.annotation.ConstructOption;
+import net.simplelib.registry.annotation.type.ASMDelegate;
 
 import java.lang.annotation.Annotation;
 
@@ -13,15 +14,15 @@ import java.lang.annotation.Annotation;
  * @author ci010
  */
 @ASMDelegate
-public class ConstructOptionDelegate extends RegistryDelegate<ConstructOption>
+public class ConstructOptionDelegate extends ASMRegistryDelegate<ConstructOption>
 {
 	@Mod.EventHandler
 	public void construct(FMLConstructionEvent event)
 	{
 		try
 		{
-			RegistryHelper.INSTANCE.registerAnnotation((Class<? extends Annotation>) this.getAnnotatedClass(), this.getAnnotation().value()
-					.newInstance());
+			RegistryHelper.INSTANCE.registerAnnotation(GenericUtil.<Annotation>cast(this.getAnnotatedClass()),
+					this.getAnnotation().value().newInstance());
 		}
 		catch (InstantiationException e)
 		{

@@ -4,7 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
-import net.simplelib.abstracts.NBTSeril;
+import net.simplelib.common.NBTSeril;
 
 /**
  * A general implementation of {@link IExtendedEntityProperties}

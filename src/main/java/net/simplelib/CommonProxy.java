@@ -12,7 +12,6 @@ public class CommonProxy
 
 	public boolean isSinglePlayer()
 	{
-		System.out.println(Minecraft.getMinecraft().isGamePaused());
 		return Minecraft.getMinecraft().isSingleplayer();
 	}
 }
