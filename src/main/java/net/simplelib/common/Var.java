@@ -12,7 +12,7 @@ public class Var<T>
 		return data;
 	}
 
-	protected void set(T data)
+	public void set(T data)
 	{
 		this.data = data;
 	}
