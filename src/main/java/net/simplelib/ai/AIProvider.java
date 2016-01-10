@@ -1,4 +1,4 @@
-package net.simplelib.registry.abstracts;
+package net.simplelib.ai;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;

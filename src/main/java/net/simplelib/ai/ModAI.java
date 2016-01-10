@@ -1,4 +1,4 @@
-package net.simplelib.registry.annotation.type;
+package net.simplelib.ai;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,14 +1,11 @@
-package net.simplelib.registry.delegate;
+package net.simplelib.ai;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.simplelib.common.CommonLogger;
+import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
+import net.simplelib.common.registry.annotation.type.ASMDelegate;
 import net.simplelib.common.utils.GenericUtil;
-import net.simplelib.registry.abstracts.ASMRegistryDelegate;
-import net.simplelib.registry.annotation.type.ASMDelegate;
-import net.simplelib.registry.annotation.type.ModAI;
-import net.simplelib.registry.abstracts.AIProvider;
-import net.simplelib.registry.AIRegistry;
 
 /**
  * @author ci010
