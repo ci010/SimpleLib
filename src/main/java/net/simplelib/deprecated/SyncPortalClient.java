@@ -1,7 +1,7 @@
 package net.simplelib.deprecated;
 
-import net.simplelib.network.ModNetwork;
 import net.simplelib.common.VarSync;
+import net.simplelib.network.ModNetwork;
 import net.simplelib.network.NBTWindowsMessage;
 
 import java.util.List;

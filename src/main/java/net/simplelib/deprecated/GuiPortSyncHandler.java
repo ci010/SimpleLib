@@ -14,11 +14,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.simplelib.HelperMod;
-import net.simplelib.network.ModNetwork;
-import net.simplelib.registry.annotation.type.Message;
-import net.simplelib.registry.annotation.type.ModGuiHandler;
 import net.simplelib.common.VarSync;
+import net.simplelib.common.registry.annotation.type.Message;
+import net.simplelib.common.registry.annotation.type.ModGuiHandler;
 import net.simplelib.network.AbstractBiMessageHandler;
+import net.simplelib.network.ModNetwork;
 import net.simplelib.network.NBTMessage;
 import net.simplelib.network.NBTWindowsMessage;
 

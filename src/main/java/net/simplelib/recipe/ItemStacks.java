@@ -1,8 +1,6 @@
 package net.simplelib.recipe;
 
-import com.sun.istack.internal.NotNull;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
@@ -51,7 +49,7 @@ public class ItemStacks implements Comparable<ItemStacks>
 	}
 
 	@Override
-	public int compareTo(@NotNull ItemStacks o)
+	public int compareTo(ItemStacks o)
 	{
 		if (o == null)
 			return 1;

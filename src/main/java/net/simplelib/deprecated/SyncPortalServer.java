@@ -2,8 +2,8 @@ package net.simplelib.deprecated;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.simplelib.network.ModNetwork;
 import net.simplelib.common.VarSync;
+import net.simplelib.network.ModNetwork;
 import net.simplelib.network.NBTWindowsMessage;
 
 import java.util.List;

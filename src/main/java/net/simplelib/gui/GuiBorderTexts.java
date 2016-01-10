@@ -7,10 +7,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.StatCollector;
-import net.simplelib.HelperMod;
 
-import java.util.IllegalFormatException;
 import java.util.List;
 
 /**

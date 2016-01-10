@@ -3,9 +3,9 @@ package net.simplelib.interactive.machine;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.simplelib.HelperMod;
-import net.simplelib.registry.abstracts.ASMRegistryDelegate;
-import net.simplelib.registry.annotation.type.ASMDelegate;
-import net.simplelib.registry.annotation.type.ModMachine;
+import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
+import net.simplelib.common.registry.annotation.type.ASMDelegate;
+import net.simplelib.common.registry.annotation.type.ModMachine;
 
 /**
  * @author ci010

@@ -4,7 +4,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
-import net.simplelib.registry.annotation.type.ModTileEntity;
+import net.simplelib.common.registry.annotation.type.ModTileEntity;
 import net.simplelib.interactive.InteractiveEntityUpdate;
 import net.simplelib.interactive.InteractiveMetadata;
 import net.simplelib.interactive.Inventory;

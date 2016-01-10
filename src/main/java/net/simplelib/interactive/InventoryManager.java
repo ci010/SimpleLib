@@ -3,7 +3,7 @@ package net.simplelib.interactive;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.simplelib.HelperMod;
-import net.simplelib.registry.annotation.field.Name;
+import net.simplelib.common.registry.annotation.field.Name;
 
 import java.util.List;
 

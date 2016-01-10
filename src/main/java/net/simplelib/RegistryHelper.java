@@ -12,13 +12,18 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.simplelib.network.ModNetwork;
-import net.simplelib.registry.abstracts.ArgumentHelper;
-import net.simplelib.registry.annotation.field.Construct;
-import net.simplelib.network.AbstractMessageHandler;
-import net.simplelib.registry.*;
-import net.simplelib.registry.annotation.type.BlockItemContainer;
+import net.simplelib.ai.AIRegistry;
+import net.simplelib.common.registry.ComponentBlock;
+import net.simplelib.common.registry.ComponentItem;
+import net.simplelib.common.registry.ContainerMeta;
+import net.simplelib.common.registry.Namespace;
+import net.simplelib.common.registry.abstracts.ArgumentHelper;
+import net.simplelib.common.registry.annotation.field.Construct;
+import net.simplelib.common.registry.annotation.type.BlockItemContainer;
 import net.simplelib.common.utils.FMLModUtil;
+import net.simplelib.network.AbstractMessageHandler;
+import net.simplelib.network.ModNetwork;
+import net.simplelib.sitting.SitHandler;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -156,7 +161,7 @@ public enum RegistryHelper
 
 	/**
 	 * Register a new message with its handler class.
-	 * <p>Highly recommend to use {@link net.simplelib.registry.annotation.type.Message} to register this.</p>
+	 * <p>Highly recommend to use {@link net.simplelib.common.registry.annotation.type.Message} to register this.</p>
 	 *
 	 * @param handlerClass The handler class which binds with message class
 	 * @param messageClass The message class

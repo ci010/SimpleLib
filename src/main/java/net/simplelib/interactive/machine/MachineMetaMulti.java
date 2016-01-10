@@ -4,9 +4,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.simplelib.common.Pattern3DBlockPos;
 import net.simplelib.interactive.ContainerCommon;
 import net.simplelib.interactive.InteractiveMetadata;
-import net.simplelib.common.Pattern3DBlockPos;
 
 /**
  * @author ci010

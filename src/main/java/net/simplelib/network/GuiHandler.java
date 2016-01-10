@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
-import net.simplelib.registry.annotation.type.ModGuiHandler;
+import net.simplelib.common.registry.annotation.type.ModGuiHandler;
 
 import java.util.List;
 

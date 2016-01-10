@@ -3,9 +3,9 @@ package net.simplelib.interactive;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.simplelib.HelperMod;
-import net.simplelib.registry.annotation.field.Name;
-import net.simplelib.registry.annotation.field.Owner;
 import net.simplelib.common.VarSync;
+import net.simplelib.common.registry.annotation.field.Name;
+import net.simplelib.common.registry.annotation.field.Owner;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
