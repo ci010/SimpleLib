@@ -1,20 +1,20 @@
-package net.simplelib.minecraft;
+package net.simplelib.sitting;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.simplelib.registry.annotation.type.ModEntity;
+import net.simplelib.common.registry.annotation.type.ModEntity;
 
 /**
  * @author CI010
  */
 @ModEntity
-public class EntitySitableTemp extends net.minecraft.entity.Entity
+public class EntitySeat extends net.minecraft.entity.Entity
 {
 	public int blockPosX;
 	public int blockPosY;
 	public int blockPosZ;
 
-	public EntitySitableTemp(World world, double blockX, double blockY, double blockZ)
+	public EntitySeat(World world, double blockX, double blockY, double blockZ)
 	{
 		super(world);
 		this.noClip = true;
@@ -27,7 +27,7 @@ public class EntitySitableTemp extends net.minecraft.entity.Entity
 		this.setPosition(blockX + 0.5d, blockY + 0.5, blockZ + 0.5d);
 	}
 
-	public EntitySitableTemp(World world)
+	public EntitySeat(World world)
 	{
 		super(world);
 		this.noClip = true;

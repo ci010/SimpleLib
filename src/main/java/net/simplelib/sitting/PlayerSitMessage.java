@@ -1,13 +1,13 @@
-package net.simplelib.network;
+package net.simplelib.sitting;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.simplelib.registry.annotation.type.Message;
-import net.simplelib.registry.SitHandler;
+import net.simplelib.common.registry.annotation.type.Message;
+import net.simplelib.network.AbstractServerMessageHandler;
+import net.simplelib.network.NBTMessage;
 
 /**
  * @author CI010
@@ -19,13 +19,14 @@ public class PlayerSitMessage extends NBTMessage
 	public PlayerSitMessage()
 	{}
 
-	public PlayerSitMessage(BlockPos pos, EnumFacing face)
+	public PlayerSitMessage(float offset, BlockPos pos)
 	{
+		System.out.println("create sit msg");
 		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setInteger("x", pos.getX());
 		nbt.setInteger("y", pos.getY());
 		nbt.setInteger("z", pos.getZ());
-		nbt.setString("face", face.getName2());
+		nbt.setFloat("offset", offset);
 		this.data = nbt;
 	}
 
@@ -35,10 +36,9 @@ public class PlayerSitMessage extends NBTMessage
 		@Override
 		public IMessage handleServerMessage(EntityPlayer player, PlayerSitMessage message, MessageContext ctx)
 		{
+			System.out.println("handle sit message");
 			int x = message.data.getInteger("x"), y = message.data.getInteger("y"), z = message.data.getInteger("z");
-			SitHandler.sitOnBlock(player.worldObj, new BlockPos(x, y, z), player, EnumFacing.byName(message.data
-					.getString
-							("face")));
+			SitHandler.sitOnBlock(player.worldObj, new BlockPos(x, y, z), player);
 			return null;
 		}
 	}
