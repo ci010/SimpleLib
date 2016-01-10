@@ -1,7 +1,6 @@
 package net.simplelib.gui;
 
-import net.minecraft.util.StatCollector;
-import net.simplelib.registry.LanguageReporter;
+import net.simplelib.common.Local;
 
 /**
  * @author ci010
@@ -13,10 +12,7 @@ public class LocalString extends SourceString
 	public LocalString(String id)
 	{
 		super(id);
-		if (!StatCollector.canTranslate(id))
-			LanguageReporter.instance().report(localized = id);
-		else
-			localized = StatCollector.translateToLocal(id);
+		localized = Local.translate(id);
 	}
 
 	@Override
