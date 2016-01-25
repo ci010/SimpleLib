@@ -6,20 +6,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author ci010
+ * @author CI010
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value =
 		{ElementType.TYPE})
-public @interface Key
+public @interface ModHandler
 {
-	/**
-	 * @return The id of the Key. This will be the reference of the description and category.
-	 */
-	String id();
+	Type[] value() default {Type.FML, Type.Forge};
 
-	/**
-	 * @return The key code in integer. Reference {@link org.lwjgl.input.Keyboard}.
-	 */
-	int keyCode();
+	enum Type
+	{
+		FML, Forge, Terrain, OreGen
+	}
 }

@@ -14,7 +14,6 @@ public class NameFormattor
 				builder.setCharAt(i, Character.toLowerCase(builder.charAt(i)));
 				builder.insert(i, "_");
 			}
-		StringBuffer bff;
 		return builder.toString();
 	}
 

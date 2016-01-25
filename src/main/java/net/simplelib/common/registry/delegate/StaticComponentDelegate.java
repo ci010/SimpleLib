@@ -10,13 +10,13 @@ import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
 import net.simplelib.common.registry.abstracts.NamespaceMakerSimple;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
 import net.simplelib.common.registry.annotation.type.BlockItemStruct;
-import net.simplelib.common.registry.annotation.type.StaticComponent;
+import net.simplelib.common.registry.annotation.type.ModComponent;
 
 /**
  * @author ci010
  */
 @ASMDelegate
-public class StaticComponentDelegate extends ASMRegistryDelegate<StaticComponent>
+public class StaticComponentDelegate extends ASMRegistryDelegate<ModComponent>
 {
 	private NamespaceMakerSimple simpleMaker = new NamespaceMakerSimple().staticSensitve(false);
 

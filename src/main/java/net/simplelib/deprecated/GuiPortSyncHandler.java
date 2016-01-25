@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.simplelib.HelperMod;
 import net.simplelib.common.VarSync;
-import net.simplelib.common.registry.annotation.type.Message;
+import net.simplelib.common.registry.annotation.type.ModMessage;
 import net.simplelib.common.registry.annotation.type.ModGuiHandler;
 import net.simplelib.network.AbstractBiMessageHandler;
 import net.simplelib.network.ModNetwork;
@@ -73,7 +73,7 @@ public class GuiPortSyncHandler implements IGuiHandler
 		return registered.get(ID).getGui(player, x, y, z);
 	}
 
-	@Message(OpenGuiMsgHandler.class)
+	@ModMessage(OpenGuiMsgHandler.class)
 	public static class OpenGuiMessage extends NBTMessage implements IMessage
 	{
 		public OpenGuiMessage() {}

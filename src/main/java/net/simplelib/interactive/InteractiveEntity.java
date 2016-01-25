@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.simplelib.common.NBTSeril;
+import net.simplelib.common.nbt.ITagSerial;
 import net.simplelib.common.VarSync;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author ci010
  */
-public class InteractiveEntity implements NBTSeril
+public class InteractiveEntity implements ITagSerial
 {
 	protected World world;
 	protected String id;

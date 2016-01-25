@@ -50,7 +50,7 @@ public class ModNetwork
 		}
 		else
 			throw new IllegalArgumentException("Cannot register " + handlerClass.getName() +
-					". Not Support type Handler maybe?");
+					". Not Support type ModHandler maybe?");
 	}
 
 	/**

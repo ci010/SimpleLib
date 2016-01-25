@@ -8,14 +8,14 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.simplelib.RegistryHelper;
-import net.simplelib.common.registry.abstracts.MinecraftComponent;
+import net.simplelib.common.registry.abstracts.RegComponent;
 
 /**
  * @author CI010
  */
-public class ComponentItem extends MinecraftComponent<Item>
+public class RegItem extends RegComponent<Item>
 {
-	public ComponentItem(Item wrap)
+	public RegItem(Item wrap)
 	{
 		super(wrap);
 	}

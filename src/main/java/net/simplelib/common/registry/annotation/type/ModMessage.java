@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value =
 		{ElementType.TYPE})
-public @interface Message
+public @interface ModMessage
 {
 	/**
 	 * @return The handler of the class. This is necessary to decide the usage of a message.

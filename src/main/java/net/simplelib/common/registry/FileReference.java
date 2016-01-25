@@ -3,6 +3,8 @@ package net.simplelib.common.registry;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.storage.ISaveFormat;
+import net.minecraft.world.storage.SaveFormatOld;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -15,9 +17,16 @@ import java.util.Map;
 public class FileReference
 {
 	public static final File mc = ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "mcDataDir");
-
 	private static Map<String, FileReference> refers = Maps.newHashMap();
 	protected static File assets = getDir(mc, "FakeAsset");
+
+	public static final File saveDir;
+
+	static
+	{
+		SaveFormatOld saveLoader = (SaveFormatOld) Minecraft.getMinecraft().getSaveLoader();
+		saveDir = saveLoader.savesDirectory;
+	}
 
 	protected File modFile, dirBlockState, dirModelBlock, dirModelItem, dirTextureBlock, dirTextureItem, dirLang,
 			standardItem;

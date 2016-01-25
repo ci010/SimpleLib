@@ -4,20 +4,20 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.simplelib.common.NBTSeril;
-import net.simplelib.common.registry.annotation.type.Message;
+import net.simplelib.common.nbt.ITagSerial;
+import net.simplelib.common.registry.annotation.type.ModMessage;
 import net.simplelib.interactive.ContainerCommon;
 
 /**
  * @author ci010
  */
-@Message(NBTWindowsMessage.NBTWindowsMessageHandler.class)
+@ModMessage(NBTWindowsMessage.NBTWindowsMessageHandler.class)
 public class NBTWindowsMessage extends NBTMessage
 {
 	public NBTWindowsMessage()
 	{}
 
-	public NBTWindowsMessage(int windowId, int id, NBTSeril seril)
+	public NBTWindowsMessage(int windowId, int id, ITagSerial seril)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		NBTTagCompound data = new NBTTagCompound();

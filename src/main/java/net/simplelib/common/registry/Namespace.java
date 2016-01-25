@@ -2,7 +2,7 @@ package net.simplelib.common.registry;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.simplelib.common.registry.abstracts.MinecraftComponent;
+import net.simplelib.common.registry.abstracts.RegComponent;
 
 
 /**
@@ -11,9 +11,9 @@ import net.simplelib.common.registry.abstracts.MinecraftComponent;
 public class Namespace
 {
 	private String parent = null, name, oreName;
-	private MinecraftComponent component;
+	private RegComponent component;
 
-	public Namespace(String name, MinecraftComponent component)
+	public Namespace(String name, RegComponent component)
 	{
 		this.component = component;
 		this.name = name;
@@ -51,7 +51,7 @@ public class Namespace
 		return name;
 	}
 
-	public MinecraftComponent getComponent()
+	public RegComponent getComponent()
 	{
 		return component;
 	}
@@ -65,9 +65,9 @@ public class Namespace
 	public static Namespace newSpace(String name, Object o)
 	{
 		if (o instanceof Block)
-			return new Namespace(name, new ComponentBlock((Block) o));
+			return new Namespace(name, new RegBlock((Block) o));
 		if (o instanceof Item)
-			return new Namespace(name, new ComponentItem((Item) o));
+			return new Namespace(name, new RegItem((Item) o));
 		return null;
 	}
 }

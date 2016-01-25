@@ -3,14 +3,14 @@ package net.simplelib.common.registry;
 import com.google.common.collect.ImmutableList;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.simplelib.common.registry.annotation.type.Handler;
+import net.simplelib.common.registry.annotation.type.ModHandler;
 
 import java.util.Collection;
 
 /**
  * @author ci010
  */
-@Handler
+@ModHandler
 public class KeyBindingHandler
 {
 	private static int size;

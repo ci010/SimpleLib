@@ -9,14 +9,14 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.simplelib.RegistryHelper;
-import net.simplelib.common.registry.abstracts.MinecraftComponent;
+import net.simplelib.common.registry.abstracts.RegComponent;
 
 /**
  * @author CI010
  */
-public class ComponentBlock extends MinecraftComponent<Block>
+public class RegBlock extends RegComponent<Block>
 {
-	public ComponentBlock(Block wrap)
+	public RegBlock(Block wrap)
 	{
 		super(wrap);
 	}

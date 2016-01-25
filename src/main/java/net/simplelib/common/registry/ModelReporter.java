@@ -12,7 +12,7 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.simplelib.common.registry.annotation.type.Handler;
+import net.simplelib.common.registry.annotation.type.ModHandler;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -23,7 +23,7 @@ import java.util.Set;
 /**
  * @author ci010
  */
-@Handler
+@ModHandler
 public class ModelReporter
 {
 	static ModelResourceLocation MISS = new ModelResourceLocation("builtin/missing", "missing");

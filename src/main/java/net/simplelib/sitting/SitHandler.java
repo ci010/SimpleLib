@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.simplelib.common.registry.annotation.type.Handler;
+import net.simplelib.common.registry.annotation.type.ModHandler;
 import net.simplelib.common.utils.GenericUtil;
 import net.simplelib.network.ModNetwork;
 
@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * @author CI010
  */
-@Handler
+@ModHandler
 public class SitHandler
 {
 	private static Map<Block, SittingMetaInfo> regMap = Maps.newConcurrentMap();

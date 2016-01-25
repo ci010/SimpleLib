@@ -1,6 +1,7 @@
 package net.simplelib.common.registry;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
@@ -9,11 +10,13 @@ import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
 import net.simplelib.common.utils.ASMDataUtil;
 import net.simplelib.common.utils.GenericUtil;
+import net.simplelib.common.utils.PackageModIdMap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.util.Map;
 
 /**
  * @author ci010
@@ -53,8 +56,13 @@ public final class RegistryBufferManager
 		}
 	}
 
+	private PackageModIdMap rootMap = new PackageModIdMap();
+
 	public final void load(ASMDataTable table)
 	{
+		for (ASMDataTable.ASMData data : table.getAll(Mod.class.getName()))
+			rootMap.put(ASMDataUtil.getClass(data).getPackage()
+					.getName(), data.getAnnotationInfo().get("modid").toString());
 		for (ASMDataTable.ASMData data : table.getAll(ASMDelegate.class.getName()))
 		{
 			Class<?> registryDelegateType = ASMDataUtil.getClass(data);
@@ -88,7 +96,8 @@ public final class RegistryBufferManager
 					Class<? extends Annotation> target = GenericUtil.getGenericTypeTo(delegate);
 					for (ASMDataTable.ASMData meta : table.getAll(target.getName()))
 					{
-						delegate.addCache(meta);
+						delegate.addCache(rootMap.getModid(ASMDataUtil.getClass(meta).getPackage()
+								.getName()), meta);
 						subscriberInfoMap.put(state, new SubscriberInfo(delegate, method));
 					}
 				}
@@ -130,6 +139,7 @@ public final class RegistryBufferManager
 
 		if (state instanceof FMLLoadCompleteEvent)
 		{
+			rootMap = null;
 			subscriberInfoMap.removeAll(FMLConstructionEvent.class);
 			subscriberInfoMap.removeAll(FMLPreInitializationEvent.class);
 			subscriberInfoMap.removeAll(FMLInitializationEvent.class);

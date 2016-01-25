@@ -3,13 +3,14 @@ package net.simplelib.common;
 import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import net.simplelib.common.nbt.ITagSerial;
 
 import java.util.Set;
 
 /**
  * @author ci010
  */
-public class VarSync<T extends NBTSeril> extends Var<T>
+public class VarSync<T extends ITagSerial> extends Var<T>
 {
 	public final Side side = FMLCommonHandler.instance().getSide();
 	private Set<Listener> listeners;

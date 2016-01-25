@@ -11,7 +11,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value =
 		{ElementType.TYPE})
-public @interface StaticComponent
+public @interface ModKeyBinding
 {
-	String name() default "";
+	/**
+	 * @return The id of the ModKeyBinding. This will be the reference of the description and category.
+	 */
+	String id();
+
+	/**
+	 * @return The key code in integer. Reference {@link org.lwjgl.input.Keyboard}.
+	 */
+	int keyCode();
 }

@@ -5,11 +5,11 @@ import net.minecraft.creativetab.CreativeTabs;
 /**
  * @author CI010
  */
-public abstract class MinecraftComponent<T>
+public abstract class RegComponent<T>
 {
 	private T component;
 
-	public MinecraftComponent(T wrap)
+	public RegComponent(T wrap)
 	{
 		this.component = wrap;
 	}

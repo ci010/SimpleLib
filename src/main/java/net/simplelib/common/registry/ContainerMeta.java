@@ -2,7 +2,7 @@ package net.simplelib.common.registry;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import net.simplelib.common.registry.abstracts.MinecraftComponent;
+import net.simplelib.common.registry.abstracts.RegComponent;
 import net.simplelib.common.registry.abstracts.ModelHandler;
 
 import java.util.Set;
@@ -16,7 +16,7 @@ public class ContainerMeta
 	private boolean ifGenerateLang, ifGenerateModel;
 	private String[] langType;
 	private Set<Class> rawContainer;
-	private ModelHandler<MinecraftComponent> modelHandler;
+	private ModelHandler<RegComponent> modelHandler;
 	private Set<Namespace> unregistered;
 
 	public ContainerMeta(String modid)
@@ -26,13 +26,13 @@ public class ContainerMeta
 		this.unregistered = Sets.newHashSet();
 	}
 
-	public ContainerMeta setModelHandler(ModelHandler<MinecraftComponent> modelHandler)
+	public ContainerMeta setModelHandler(ModelHandler<RegComponent> modelHandler)
 	{
 		this.modelHandler = modelHandler;
 		return this;
 	}
 
-	public ModelHandler<MinecraftComponent> getModelHandler()
+	public ModelHandler<RegComponent> getModelHandler()
 	{
 		return modelHandler;
 	}

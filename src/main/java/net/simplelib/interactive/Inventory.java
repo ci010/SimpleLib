@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
-import net.simplelib.common.NBTSeril;
+import net.simplelib.common.nbt.ITagSerial;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author ci010
  */
-public class Inventory implements IInventory, NBTSeril
+public class Inventory implements IInventory, ITagSerial
 {
 	public static final InventoryRule COMMON = new InventoryRule()
 	{

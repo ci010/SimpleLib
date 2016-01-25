@@ -10,7 +10,7 @@ import net.simplelib.common.registry.KeyPair;
 import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
 import net.simplelib.common.registry.abstracts.KeyHandler;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import net.simplelib.common.registry.annotation.type.Key;
+import net.simplelib.common.registry.annotation.type.ModKeyBinding;
 import net.simplelib.common.utils.GenericUtil;
 
 import java.util.List;
@@ -19,14 +19,14 @@ import java.util.List;
  * @author ci010
  */
 @ASMDelegate
-public class KeyRegisterDelegate extends ASMRegistryDelegate<Key>
+public class KeyRegisterDelegate extends ASMRegistryDelegate<ModKeyBinding>
 {
 	private List<KeyPair> pairs = Lists.newArrayList();
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		Key anno = this.getAnnotation();
+		ModKeyBinding anno = this.getAnnotation();
 		Class<?> clz = this.getAnnotatedClass();
 		if (!KeyHandler.class.isAssignableFrom(clz))
 		{

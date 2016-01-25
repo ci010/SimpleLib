@@ -15,16 +15,16 @@ public class Pattern3DBlockPos extends Pattern3D
 {
 	protected List<BlockPos> sub;
 
-	private Pattern3DBlockPos(List<Vector> pos)
+	private Pattern3DBlockPos(List<Vector3D> pos)
 	{
 		super(pos);
 	}
 
 	public static Pattern3DBlockPos newPattern(List<BlockPos> poses)
 	{
-		List<Vector> temp = Lists.newArrayList();
+		List<Vector3D> temp = Lists.newArrayList();
 		for (BlockPos pose : poses)
-			temp.add(new BlockAdaptorVector(pose));
+			temp.add(new BlockAdaptorVector3D(pose));
 		return new Pattern3DBlockPos(temp);
 	}
 
@@ -36,11 +36,11 @@ public class Pattern3DBlockPos extends Pattern3D
 		return builder.build();
 	}
 
-	static class BlockAdaptorVector implements Vector
+	static class BlockAdaptorVector3D implements Vector3D
 	{
 		BlockPos pos;
 
-		public BlockAdaptorVector(BlockPos pos)
+		public BlockAdaptorVector3D(BlockPos pos)
 		{
 			this.pos = pos;
 		}
@@ -64,13 +64,13 @@ public class Pattern3DBlockPos extends Pattern3D
 		}
 
 		@Override
-		public Pattern3D.Vector offset(int x, int y, int z)
+		public Vector3D offset(int x, int y, int z)
 		{
-			return new BlockAdaptorVector(pos.add(x, y, z));
+			return new BlockAdaptorVector3D(pos.add(x, y, z));
 		}
 
 		@Override
-		public int compareTo(Pattern3D.Vector o)
+		public int compareTo(Vector3D o)
 		{
 			return getX() - o.getX() + getY() - o.getY() + getZ() - o.getZ();
 		}

@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.simplelib.common.registry.annotation.type.Message;
+import net.simplelib.common.registry.annotation.type.ModMessage;
 import net.simplelib.network.AbstractServerMessageHandler;
 import net.simplelib.network.NBTMessage;
 
@@ -13,7 +13,7 @@ import net.simplelib.network.NBTMessage;
  * @author CI010
  */
 
-@Message(PlayerSitMessage.Handler.class)
+@ModMessage(PlayerSitMessage.Handler.class)
 public class PlayerSitMessage extends NBTMessage
 {
 	public PlayerSitMessage()
@@ -21,7 +21,6 @@ public class PlayerSitMessage extends NBTMessage
 
 	public PlayerSitMessage(float offset, BlockPos pos)
 	{
-		System.out.println("create sit msg");
 		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setInteger("x", pos.getX());
 		nbt.setInteger("y", pos.getY());
