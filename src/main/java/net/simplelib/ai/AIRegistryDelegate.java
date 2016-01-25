@@ -16,11 +16,11 @@ public class AIRegistryDelegate extends ASMRegistryDelegate<ModAI>
 	@Mod.EventHandler
 	public void onInit(FMLInitializationEvent event)
 	{
-		AIProvider provider;
+		AIHandler provider;
 		try
 		{
-			provider = (AIProvider) this.getAnnotatedClass().newInstance();
-			AIRegistry.registerAI(provider);
+			provider = (AIHandler) this.getAnnotatedClass().newInstance();
+			AIRegistry.registerHandler(provider);
 			CommonLogger.info("Register AI {} to entity {} by mod [{}]", this.getAnnotatedClass().getSimpleName(),
 					GenericUtil.getGenericType(provider), this.getModid());
 		}

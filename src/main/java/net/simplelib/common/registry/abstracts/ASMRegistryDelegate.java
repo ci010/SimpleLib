@@ -61,10 +61,14 @@ public abstract class ASMRegistryDelegate<T extends Annotation> //extends Regist
 		return this.current.annotation;
 	}
 
-	public final void addCache(ASMDataTable.ASMData data)
+	public final void addCache(String modid, ASMDataTable.ASMData data)
 	{
+		if (modid == null)
+		{
+//			System.out.println("NULL!!!!!!!!!!");
+			modid = ASMDataUtil.getModId(data);
+		}
 		Class<?> clz = ASMDataUtil.getClass(data);
-		String modid = ASMDataUtil.getModId(data);
 		Class<? extends T> type = GenericUtil.getGenericTypeTo(this);
 		T annotation = ASMDataUtil.getAnnotation(data, type);
 		cache.add(new ASMCache(clz, modid, annotation));
