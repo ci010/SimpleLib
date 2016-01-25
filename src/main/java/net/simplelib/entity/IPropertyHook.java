@@ -1,4 +1,6 @@
-package net.simplelib.common.registry.annotation.type;
+package net.simplelib.entity;
+
+import net.minecraft.entity.Entity;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,4 +17,5 @@ import java.lang.annotation.Target;
 		{ElementType.TYPE})
 public @interface IPropertyHook
 {
+	Class<? extends Entity> value();
 }
