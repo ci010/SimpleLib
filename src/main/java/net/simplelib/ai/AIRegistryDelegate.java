@@ -1,11 +1,13 @@
 package net.simplelib.ai;
 
+import api.simplelib.ai.AIHandler;
+import api.simplelib.ai.ModAI;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.simplelib.common.CommonLogger;
-import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
+import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import net.simplelib.common.utils.GenericUtil;
+import api.simplelib.utils.GenericUtil;
 
 /**
  * @author ci010
