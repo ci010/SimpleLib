@@ -1,0 +1,71 @@
+package api.simplelib.utils;
+
+import com.google.common.collect.Maps;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
+
+import java.lang.annotation.Annotation;
+import java.util.Map;
+
+/**
+ * @author ci010
+ */
+public class ASMDataUtil
+{
+	private static Map<String, Class<?>> cache;
+
+	/**
+	 * @param data The ASMData harvested by FML.
+	 * @return The mod's id of the ASMData referring to.
+	 */
+	public static String getModId(ASMDataTable.ASMData data)
+	{
+		return data.getCandidate().getContainedMods().get(0).getModId();
+	}
+
+	/**
+	 * @param data   The ASMData harvested by FML.
+	 * @param clz    The annotation class you want to harvest from ASMData.
+	 * @param <Anno> The type of that annotation.
+	 * @return The specific type of Annotation in the ASMData.
+	 */
+	public static <Anno extends Annotation> Anno getAnnotation(ASMDataTable.ASMData data, Class<Anno> clz)
+	{
+		return getClass(data).getAnnotation(clz);
+	}
+
+	/**
+	 * @param data The ASMData harvested by FML.
+	 * @return The class referred by this ASMData
+	 */
+	public static Class<?> getClass(ASMDataTable.ASMData data)
+	{
+		if (cache == null)
+			cache = Maps.newHashMap();
+		Class<?> c = null;
+		try
+		{
+			String name = data.getClassName();
+			if (cache.containsKey(name))
+				c = cache.get(name);
+			else
+			{
+				c = Class.forName(name);
+				cache.put(name, c);
+			}
+		}
+		catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		return c;
+	}
+
+	public static void clear()
+	{
+		if (Loader.instance().getLoaderState() == LoaderState.AVAILABLE)
+			cache = null;
+	}
+}
