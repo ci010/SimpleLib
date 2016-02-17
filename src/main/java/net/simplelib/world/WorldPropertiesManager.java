@@ -8,7 +8,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.simplelib.common.nbt.ITagSerial;
 import net.simplelib.common.registry.annotation.field.Instance;
-import net.simplelib.common.registry.annotation.type.ModHandler;
+import api.simplelib.common.ModHandler;
 
 import java.util.Map;
 
@@ -60,7 +60,7 @@ public class WorldPropertiesManager implements ITagSerial
 	public void onWorldUnload(WorldEvent.Unload event)
 	{
 		for (IExtendedWorldProperties properties : dimensions.get(event.world.provider.getDimensionId()).values())
-			properties.unLoad(event.world);
+			properties.unload(event.world);
 	}
 
 	@Override

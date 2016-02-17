@@ -2,7 +2,7 @@ package net.simplelib.world;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
+import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
 
 /**

@@ -10,5 +10,5 @@ public interface IExtendedWorldProperties extends ITagSerial
 {
 	void load(World world);
 
-	void unLoad(World world);
+	void unload(World world);
 }
