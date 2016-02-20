@@ -1,5 +1,6 @@
 package net.simplelib.sitting;
 
+import api.simplelib.sitting.Sitable;
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.PropertyDirection;
@@ -12,8 +13,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.simplelib.common.registry.annotation.type.ModHandler;
-import net.simplelib.common.utils.GenericUtil;
+import api.simplelib.common.ModHandler;
+import api.simplelib.utils.GenericUtil;
 import net.simplelib.network.ModNetwork;
 
 import java.util.List;
@@ -27,34 +28,26 @@ public class SitHandler
 {
 	private static Map<Block, SittingMetaInfo> regMap = Maps.newConcurrentMap();
 
-	public static void register(Block block, Situation situation)
+	public static void register(Sitable sitable)
 	{
-		if (block != null)
+		Block block = sitable.sitableBlock();
+		PropertyDirection dir = null;
+		for (Object o : block.getDefaultState().getProperties().entrySet())
 		{
-			PropertyDirection dir = null;
-			for (Object o : block.getDefaultState().getProperties().entrySet())
-			{
-				Map.Entry<Object, Object> entry = GenericUtil.cast(o);
-				if (entry.getKey() instanceof PropertyDirection)
-					dir = (PropertyDirection) entry.getKey();
-			}
-			regMap.put(block, new SittingMetaInfo(dir, situation));
+			Map.Entry<Object, Object> entry = GenericUtil.cast(o);
+			if (entry.getKey() instanceof PropertyDirection)
+				dir = (PropertyDirection) entry.getKey();
 		}
+		regMap.put(block, new SittingMetaInfo(dir, sitable.getSituation()));
 	}
 
-	public static void register(Block block)
-	{
-		register(block, SituationDefault.instance());
-	}
-
-	public static void sitOnBlock(World world, BlockPos pos, EntityPlayer player)
+	public static void sitOnBlock(World world, BlockPos pos, EntityPlayer player, Block block)
 	{
 		IBlockState state = world.getBlockState(pos);
-		Block block = state.getBlock();
 		SittingMetaInfo meta = regMap.get(block);
-		if (meta.situation.shouldSit(player, block))
+		if (meta.logic.shouldSit(player, pos))
 		{
-			double x = pos.getX(), y = pos.getY() + meta.situation.offsetVertical(),
+			double x = pos.getX(), y = pos.getY() + meta.logic.offsetVertical(),
 					z = pos.getZ();
 			if (meta.dir != null)
 			{
@@ -66,20 +59,20 @@ public class SitHandler
 					case UP:
 						break;
 					case NORTH:
-						z += meta.situation.offsetHorizontal();
-						player.rotationYaw  = 0;/* (180f, player.rotationPitch);*/
+						z += meta.logic.offsetHorizontal();
+						player.rotationYaw = 0;/* (180f, player.rotationPitch);*/
 						break;
 					case SOUTH:
-						z -= meta.situation.offsetHorizontal();
-						player.rotationYaw  = 180;
+						z -= meta.logic.offsetHorizontal();
+						player.rotationYaw = 180;
 						break;
 					case WEST:
-						x -= meta.situation.offsetHorizontal();
-						player.rotationYaw  = 270;
+						x -= meta.logic.offsetHorizontal();
+						player.rotationYaw = 270;
 						break;
 					case EAST:
-						x += meta.situation.offsetHorizontal();
-						player.rotationYaw  = 90;
+						x += meta.logic.offsetHorizontal();
+						player.rotationYaw = 90;
 						break;
 				}
 			}
@@ -115,11 +108,12 @@ public class SitHandler
 	public void onBlockActive(PlayerInteractEvent event)
 	{
 		Block block;
-		Situation situation;
+		Sitable.Situation logic;
 		if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
 			if (regMap.containsKey(block = event.entityPlayer.worldObj.getBlockState(event.pos).getBlock()))
-				if ((situation = regMap.get(block).situation).shouldSit(event.entityPlayer, block))
-					ModNetwork.instance().sendToServer(new PlayerSitMessage(situation.offsetVertical(), event.pos));
+				if ((logic = regMap.get(block).logic).shouldSit(event.entityPlayer, event.pos))
+					ModNetwork.instance().sendToServer(new PlayerSitMessage(logic.offsetVertical()
+							, event.pos, block));
 	}
 
 	@SubscribeEvent
@@ -134,21 +128,12 @@ public class SitHandler
 	private static class SittingMetaInfo
 	{
 		PropertyDirection dir;
-		Situation situation;
+		Sitable.Situation logic;
 
-		public SittingMetaInfo(PropertyDirection dir, Situation situation)
+		public SittingMetaInfo(PropertyDirection dir, Sitable.Situation logic)
 		{
 			this.dir = dir;
-			this.situation = situation;
+			this.logic = logic;
 		}
-	}
-
-	public interface Situation
-	{
-		boolean shouldSit(EntityPlayer player, Block block);
-
-		float offsetVertical();
-
-		float offsetHorizontal();
 	}
 }

@@ -3,12 +3,10 @@ package net.simplelib.common.registry.delegate;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.simplelib.RegistryHelper;
-import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
+import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import net.simplelib.common.registry.annotation.type.ModMessage;
-import net.simplelib.common.utils.GenericUtil;
-import net.simplelib.network.AbstractMessageHandler;
+import api.simplelib.network.ModMessage;
+import net.simplelib.network.ModNetwork;
 
 /**
  * @author ci010
@@ -19,8 +17,19 @@ public class PacketRegistryDelegate extends ASMRegistryDelegate<ModMessage>
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		Class<IMessage> msg = GenericUtil.cast(this.getAnnotatedClass());
-		Class<AbstractMessageHandler<IMessage>> handler = GenericUtil.cast(this.getAnnotation().value());
-		RegistryHelper.INSTANCE.registerMessage(handler, msg);
+		if (IMessage.class.isAssignableFrom(this.getAnnotatedClass()))
+			try
+			{
+				IMessage msg = (IMessage) this.getAnnotatedClass().newInstance();
+				ModNetwork.instance().registerMessage(msg);
+			}
+			catch (InstantiationException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IllegalAccessException e)
+			{
+				e.printStackTrace();
+			}
 	}
 }

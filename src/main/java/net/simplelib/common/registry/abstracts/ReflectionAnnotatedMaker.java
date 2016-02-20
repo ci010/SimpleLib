@@ -1,9 +1,10 @@
 package net.simplelib.common.registry.abstracts;
 
+import api.simplelib.component.ArgumentHelper;
 import net.simplelib.HelperMod;
 import net.simplelib.common.Maker;
-import net.simplelib.common.registry.annotation.field.Construct;
-import net.simplelib.common.utils.GenericUtil;
+import api.simplelib.component.Construct;
+import api.simplelib.utils.GenericUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

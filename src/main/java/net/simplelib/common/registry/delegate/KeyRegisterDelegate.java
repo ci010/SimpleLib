@@ -4,14 +4,14 @@ import com.google.common.collect.Lists;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.simplelib.common.Local;
+import api.simplelib.Local;
 import net.simplelib.common.registry.KeyBindingHandler;
-import net.simplelib.common.registry.KeyPair;
-import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
-import net.simplelib.common.registry.abstracts.KeyHandler;
+import net.simplelib.common.registry.abstracts.KeyPair;
+import api.simplelib.registry.ASMRegistryDelegate;
+import api.simplelib.key.KeyHandler;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import net.simplelib.common.registry.annotation.type.ModKeyBinding;
-import net.simplelib.common.utils.GenericUtil;
+import api.simplelib.key.ModKeyBinding;
+import api.simplelib.utils.GenericUtil;
 
 import java.util.List;
 
@@ -38,16 +38,18 @@ public class KeyRegisterDelegate extends ASMRegistryDelegate<ModKeyBinding>
 			try
 			{
 				final KeyHandler handler = GenericUtil.cast(this.getAnnotatedClass().newInstance());
-				pairs.add(new KeyPair(Local.translate("key.".concat(anno.id()).concat(".description"), anno.id()),
-						anno.keyCode(),
-						Local.translate("key.".concat(anno.id()).concat(".category"), anno.id()))
-				{
-					@Override
-					public void onKeyPressed()
-					{
-						handler.onKeyPressed(this.getKeyBinding());
-					}
-				});
+				pairs.add(
+						new KeyPair(
+								Local.translate("key.".concat(anno.id()).concat(".description"), anno.id()),
+								anno.keyCode(),
+								Local.translate("key.".concat(anno.id()).concat(".category"), anno.id()))
+						{
+							@Override
+							public void onKeyPressed()
+							{
+								handler.onKeyPressed(this.getKeyBinding());
+							}
+						});
 			}
 			catch (InstantiationException e)
 			{

@@ -1,13 +1,16 @@
 package net.simplelib.interactive;
 
+import api.simplelib.interactive.Interactive;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import api.simplelib.VarSync;
 import net.simplelib.common.nbt.ITagSerial;
-import net.simplelib.common.VarSync;
+import net.simplelib.interactive.inventory.Inventory;
+import net.simplelib.interactive.inventory.InventoryManagerImpl;
 
 import java.util.List;
 
@@ -16,48 +19,71 @@ import java.util.List;
  */
 public class InteractiveEntity implements ITagSerial
 {
-	protected World world;
-	protected String id;
 	protected ImmutableList<VarSync> sync;
 	protected ImmutableMap<String, Inventory> inventories;
-	protected List<InventoryManager.Info> infoList;
+	protected List<InventoryManagerImpl.Info> infoList;
 
-	protected InteractiveEntity(String id, World world)
+	protected World world;
+	protected String id;
+	private BlockPos pos;
+	private List<ITagSerial> properties;
+	private Interactive real;
+
+	protected InteractiveEntity(Interactive real, String id, World world, List<ITagSerial> properties)
 	{
+		this.real = real;
 		this.id = id;
 		this.world = world;
+		this.pos = BlockPos.ORIGIN;
+		this.properties = properties;
 	}
 
-	public ContainerCommon loadToContainer(ContainerCommon container)
+	public void setPos(BlockPos pos)
 	{
-		List<Slot> slots = Lists.newArrayList();
-		Inventory inventory;
-		for (InventoryManager.Info info : infoList)
-			if (info instanceof InventoryManager.SpaceInfo)
-			{
-				InventoryManager.SpaceInfo spaceInfo = (InventoryManager.SpaceInfo) info;
-				inventory = inventories.get(spaceInfo.id);
-				int counter = 0;
-				for (int j = 0; j < spaceInfo.column; ++j)
-					for (int k = 0; k < spaceInfo.row; ++k)
-						slots.add(new SlotWeak(inventory, counter++, spaceInfo.x + 18 * j, spaceInfo.y + 18 * k));
-			}
-			else
-				slots.add(new SlotStrong(inventory = inventories.get("default"), info.rule, inventory.namespace
-						.indexOf(info.id), info.x, info.y));
-		return container.loadSlots(slots).load(ImmutableList.copyOf(sync));
+		this.pos = pos;
 	}
 
-	protected InteractiveEntity loadInventory(ImmutableMap<String, Inventory> inventories)
+	public BlockPos getPos()
 	{
-		this.inventories = inventories;
-		return this;
+		return this.pos;
+	}
+
+	public World getWorld()
+	{
+		return world;
+	}
+
+	public String getId()
+	{
+		return this.id;
+	}
+
+	public ITagSerial get(Class<?> clz)
+	{
+		for (ITagSerial property : this.properties)
+			if (clz.isAssignableFrom(property.getClass()))
+				return property;
+		return null;
+	}
+
+	public int add(Object object)
+	{
+//		this.properties.add(object);
+		return this.properties.size() - 1;
+	}
+
+	public void interactWith(EntityPlayer player)
+	{
+		this.real.interactWith(player, this.pos);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag)
 	{
 		this.id = tag.getString("interactive_id");
+		if (properties != null)
+			for (ITagSerial property : properties)
+				property.readFromNBT(tag);
 		for (VarSync syncNBT : this.sync)
 			syncNBT.get().readFromNBT(tag.getCompoundTag("sync"));
 		for (Inventory inventory : this.inventories.values())
@@ -68,6 +94,9 @@ public class InteractiveEntity implements ITagSerial
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		tag.setString("interactive_id", this.id);
+		if (properties != null)
+			for (ITagSerial property : properties)
+				property.writeToNBT(tag);
 		NBTTagCompound sync = new NBTTagCompound();
 		for (VarSync syncNBT : this.sync)
 			syncNBT.get().writeToNBT(sync);

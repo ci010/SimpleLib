@@ -1,18 +1,19 @@
 package net.simplelib.network;
 
+import api.simplelib.network.IClientMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.simplelib.common.nbt.ITagSerial;
-import net.simplelib.common.registry.annotation.type.ModMessage;
+import api.simplelib.network.ModMessage;
 import net.simplelib.interactive.ContainerCommon;
 
 /**
  * @author ci010
  */
-@ModMessage(NBTWindowsMessage.NBTWindowsMessageHandler.class)
-public class NBTWindowsMessage extends NBTMessage
+@ModMessage
+public class NBTWindowsMessage extends NBTMessage implements IClientMessage<NBTWindowsMessage>
 {
 	public NBTWindowsMessage()
 	{}
@@ -28,17 +29,13 @@ public class NBTWindowsMessage extends NBTMessage
 		this.data = tag;
 	}
 
-
-	public static class NBTWindowsMessageHandler extends AbstractClientMessageHandler<NBTWindowsMessage>
+	@Override
+	public IMessage onClientMessage(EntityPlayer player, NBTWindowsMessage message, MessageContext ctx)
 	{
-		@Override
-		public IMessage handleClientMessage(EntityPlayer player, NBTWindowsMessage message, MessageContext ctx)
-		{
-			if (player.openContainer != null && player.openContainer.windowId == message.data.getInteger("windowId") && player.openContainer instanceof
-					ContainerCommon)
-				((ContainerCommon) player.openContainer).updateSync(message.data.getInteger("id"), message.data
-						.getCompoundTag("data"));
-			return null;
-		}
+		if (player.openContainer != null && player.openContainer.windowId == message.data.getInteger("windowId") && player.openContainer instanceof
+				ContainerCommon)
+			((ContainerCommon) player.openContainer).updateSync(message.data.getInteger("id"), message.data
+					.getCompoundTag("data"));
+		return null;
 	}
 }

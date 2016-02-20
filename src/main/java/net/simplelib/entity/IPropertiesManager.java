@@ -1,7 +1,8 @@
 package net.simplelib.entity;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import api.simplelib.entity.PropertyHook;
+import api.simplelib.utils.GenericUtil;
+import com.google.common.collect.*;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,8 +11,12 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.simplelib.common.CommonLogger;
-import net.simplelib.common.registry.annotation.field.Instance;
-import net.simplelib.common.registry.annotation.type.ModHandler;
+import api.simplelib.Instance;
+import api.simplelib.common.ModHandler;
+import scala.collection.mutable.MultiMap;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author ci010
@@ -22,19 +27,19 @@ public class IPropertiesManager
 	@Instance(weak = true)
 	private static IPropertiesManager instance;
 
-	private Multimap<Class<? extends Entity>, IPropertiesHandler> map = HashMultimap.create();
-	private IPropertiesHandler.StatusCollection collection = new IPropertiesHandler.StatusCollection();
+	private Multimap<Class<? extends Entity>, PropertyHook> map = HashMultimap.create();
+	private StatusCollection collection = new StatusCollection();
 
-	public void registerStatus(Class<? extends Entity> clz, IPropertiesHandler provider)
+	public void registerStatus(Class<? extends Entity> clz, PropertyHook property)
 	{
 		CommonLogger.info("Register the status handler to all {}.", clz.getSimpleName());
 		if (clz == EntityPlayer.class)
 		{
-			map.put(EntityPlayerSP.class, provider);
-			map.put(EntityPlayerMP.class, provider);
+			map.put(EntityPlayerSP.class, property);
+			map.put(EntityPlayerMP.class, property);
 			return;
 		}
-		map.put(clz, provider);
+		map.put(clz, property);
 	}
 
 	public static IPropertiesManager instance()
@@ -52,10 +57,10 @@ public class IPropertiesManager
 	@SubscribeEvent
 	public void onEntityConstructing(EntityEvent.EntityConstructing event)
 	{
-		for (IPropertiesHandler provider : map.get(event.entity.getClass()))
+		for (PropertyHook provider : map.get(event.entity.getClass()))
 		{
 			collection.set(event.entity);
-			provider.handle(collection);
+			provider.handle(event.entity, collection);
 		}
 	}
 }

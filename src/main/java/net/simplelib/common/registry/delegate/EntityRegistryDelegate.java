@@ -2,19 +2,18 @@ package net.simplelib.common.registry.delegate;
 
 import com.google.common.collect.Maps;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.simplelib.HelperMod;
 import net.simplelib.common.CommonLogger;
-import net.simplelib.common.registry.LanguageReporter;
-import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
+import api.simplelib.Local;
+import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import net.simplelib.common.registry.annotation.type.ModEntity;
-import net.simplelib.common.utils.FMLModUtil;
-import net.simplelib.common.utils.GenericUtil;
+import api.simplelib.entity.ModEntity;
+import api.simplelib.utils.FMLModUtil;
+import api.simplelib.utils.GenericUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -60,6 +59,7 @@ public class EntityRegistryDelegate extends ASMRegistryDelegate<ModEntity>
 			CommonLogger.info("Register entity {} for mod {} with id {} and its egg.", name, modid, id);
 			EntityRegistry.registerModEntity(clz, name, id, mod, anno.trackingRange(), anno
 					.updateFrequency(), anno.sendsVelocityUpdates(), spawner.primaryColor(), spawner.secondaryColor());
+			Local.translate("entity.".concat(modid).concat(".").concat(name).concat(".name"));
 		}
 		else
 		{
@@ -67,9 +67,6 @@ public class EntityRegistryDelegate extends ASMRegistryDelegate<ModEntity>
 			EntityRegistry.registerModEntity(clz, name, id, mod, anno.trackingRange(), anno
 					.updateFrequency(), anno.sendsVelocityUpdates());
 		}
-		String unlocalizedName = "entity.".concat(modid).concat(".").concat(name).concat(".name");
-		if (!StatCollector.canTranslate(unlocalizedName))
-			LanguageReporter.instance().report("entity.".concat(modid).concat(".").concat(name).concat(".name"));
 
 		if (HelperMod.proxy.isClient())
 		{

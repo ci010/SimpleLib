@@ -12,7 +12,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.simplelib.common.VarSync;
+import api.simplelib.VarSync;
+import net.simplelib.interactive.inventory.Inventory;
+import net.simplelib.interactive.process.VarInteger;
 import net.simplelib.network.ModNetwork;
 import net.simplelib.network.NBTWindowsMessage;
 

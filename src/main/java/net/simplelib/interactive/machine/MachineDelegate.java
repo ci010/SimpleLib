@@ -3,9 +3,8 @@ package net.simplelib.interactive.machine;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.simplelib.HelperMod;
-import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
+import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import net.simplelib.common.registry.annotation.type.ModMachine;
 
 /**
  * @author ci010
@@ -21,7 +20,11 @@ public class MachineDelegate extends ASMRegistryDelegate<ModMachine>
 		try
 		{
 			MachineInfo info = (MachineInfo) this.getAnnotatedClass().newInstance();
-			new MachineMetadata(info, this.getModid());
+//			InteractiveMetadata metaData = info.getMetaData();
+//			if (metaData == null)
+//			{
+//
+//			}
 		}
 		catch (InstantiationException e)
 		{

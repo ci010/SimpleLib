@@ -2,8 +2,8 @@ package net.simplelib.common.registry;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import net.simplelib.common.registry.abstracts.RegComponent;
-import net.simplelib.common.registry.abstracts.ModelHandler;
+import net.simplelib.common.registry.abstracts.RegComponentBase;
+import api.simplelib.registry.ModelHandler;
 
 import java.util.Set;
 
@@ -16,7 +16,7 @@ public class ContainerMeta
 	private boolean ifGenerateLang, ifGenerateModel;
 	private String[] langType;
 	private Set<Class> rawContainer;
-	private ModelHandler<RegComponent> modelHandler;
+	private ModelHandler<RegComponentBase> modelHandler;
 	private Set<Namespace> unregistered;
 
 	public ContainerMeta(String modid)
@@ -26,13 +26,13 @@ public class ContainerMeta
 		this.unregistered = Sets.newHashSet();
 	}
 
-	public ContainerMeta setModelHandler(ModelHandler<RegComponent> modelHandler)
+	public ContainerMeta setModelHandler(ModelHandler<RegComponentBase> modelHandler)
 	{
 		this.modelHandler = modelHandler;
 		return this;
 	}
 
-	public ModelHandler<RegComponent> getModelHandler()
+	public ModelHandler<RegComponentBase> getModelHandler()
 	{
 		return modelHandler;
 	}

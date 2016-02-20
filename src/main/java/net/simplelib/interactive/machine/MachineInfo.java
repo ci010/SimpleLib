@@ -1,18 +1,13 @@
 package net.simplelib.interactive.machine;
 
 
-import net.simplelib.interactive.Interactive;
+import api.simplelib.interactive.Interactive;
+import net.simplelib.interactive.block.BlockMachine;
 
 /**
  * @author ci010
  */
-public abstract class MachineInfo implements Interactive
+public interface MachineInfo extends Interactive
 {
-	protected BlockMachine block;
-
-	public MachineInfo setBlock(BlockMachine block)
-	{
-		this.block = block;
-		return this;
-	}
+	 BlockMachine getBlock();
 }

@@ -1,9 +1,12 @@
 package net.simplelib.common.registry;
 
+import api.simplelib.FileReference;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import api.simplelib.Instance;
+import api.simplelib.common.ModHandler;
+import net.simplelib.event.ClientStopEvent;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 
 import java.io.BufferedWriter;
@@ -16,8 +19,10 @@ import java.util.Set;
 /**
  * @author ci010
  */
+@ModHandler
 public class LanguageReporter
 {
+	@Instance
 	private static LanguageReporter instance = new LanguageReporter();
 	/**
 	 * The support language type of the mod.
@@ -30,20 +35,14 @@ public class LanguageReporter
 
 	public void report(String unlocalizedName)
 	{
-		langNodes.add(unlocalizedName.concat(".name="));
+//		if (!unlocalizedName.endsWith(".name"))
+//			unlocalizedName = unlocalizedName.concat(".name=");
+//		else
+		unlocalizedName = unlocalizedName.concat("=");
+		langNodes.add(unlocalizedName);
 	}
 
-	public void report(Block block)
-	{
-		this.report(block.getUnlocalizedName());
-	}
-
-	public void report(Item item)
-	{
-		this.report(item.getUnlocalizedName());
-	}
-
-	public LanguageReporter setLangType(String modid, String[] str)
+	public LanguageReporter start(String modid, String[] str)
 	{
 		try
 		{
@@ -62,20 +61,44 @@ public class LanguageReporter
 		return this;
 	}
 
-	public void writeLang() throws IOException
+	public void end()
 	{
-		for (File lang : fileLang)
+		try
 		{
-			BufferedWriter writer = new BufferedWriter(new FileWriterWithEncoding(lang, "UTF-8"));
-			Collections.sort(langNodes);
-			for (String name : langNodes)
+			for (File lang : fileLang)
 			{
-				writer.write(name);
-				writer.newLine();
+				BufferedWriter writer = new BufferedWriter(new FileWriterWithEncoding(lang, "UTF-8"));
+				Collections.sort(langNodes);
+				char last = 0;
+				boolean init = false;
+				for (String name : langNodes)
+				{
+					if (init && name.charAt(0) != last)
+						writer.write("\n");
+					last = name.charAt(0);
+					init = true;
+					writer.write(name);
+					writer.newLine();
+				}
+				writer.flush();
+				writer.close();
 			}
-			writer.flush();
-			writer.close();
 		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		this.langNodes.clear();
+		this.fileLang.clear();
+	}
+
+	@SubscribeEvent
+	public void exit(ClientStopEvent event)
+	{
+		if (this.langNodes.isEmpty())
+			return;
+		this.start("all", new String[]{"zh_CN", "en_US"});
+		this.end();
 	}
 
 	public static LanguageReporter instance()

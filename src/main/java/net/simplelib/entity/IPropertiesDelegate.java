@@ -1,35 +1,41 @@
 package net.simplelib.entity;
 
+import api.simplelib.entity.IStatus;
+import api.simplelib.entity.ModPropertyHook;
+import api.simplelib.entity.PropertyHook;
+import api.simplelib.utils.GenericUtil;
+import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
+import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
 
 /**
  * @author ci010
  */
 @ASMDelegate
-public class IPropertiesDelegate extends ASMRegistryDelegate<IPropertyHook>
+public class IPropertiesDelegate extends ASMRegistryDelegate<ModPropertyHook>
 {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
 	{
 		Class<?> clz = this.getAnnotatedClass();
-		if (!IPropertiesHandler.class.isAssignableFrom(clz))
-			throw new IllegalArgumentException("The class ".concat(clz.getName()).concat("didn't implement " +
-					"IPropertiesHandler. It cannot be registered as a status provider!"));
-		try
+		if (PropertyHook.class.isAssignableFrom(clz))
 		{
-			IPropertiesManager.instance().registerStatus(this.getAnnotation().value(), (IPropertiesHandler) clz
-					.newInstance());
-		}
-		catch (InstantiationException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IllegalAccessException e)
-		{
-			e.printStackTrace();
+			try
+			{
+				PropertyHook hook = (PropertyHook) clz.newInstance();
+				Class<? extends Entity> entityClz = GenericUtil.getInterfaceGenericTypeTo(hook);
+				IPropertiesManager.instance().registerStatus(entityClz, hook);
+			}
+			catch (InstantiationException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IllegalAccessException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 }

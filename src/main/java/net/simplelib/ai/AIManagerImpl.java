@@ -17,9 +17,9 @@ public class AIManagerImpl implements AIManager
 	private Set<Class<? extends EntityAIBase>> removedCache = Sets.newHashSet();
 	private Set<EntityAIBase> removed = Sets.newHashSet();
 
-	public AIManagerImpl addAI(int piority, EntityAIBase ai)
+	public AIManagerImpl addAI(int priority, EntityAIBase ai)
 	{
-		delegate.addTask(piority, ai);
+		delegate.addTask(priority, ai);
 		return this;
 	}
 

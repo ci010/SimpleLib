@@ -1,12 +1,14 @@
 package net.simplelib.interactive;
 
-import com.google.common.collect.ImmutableList;
+import api.simplelib.interactive.Interactive;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.simplelib.common.VarSync;
+import net.simplelib.common.nbt.ITagSerial;
 import net.simplelib.event.InteractiveIntegerMissMatchEvent;
+import api.simplelib.interactive.process.Process;
+import net.simplelib.interactive.process.VarInteger;
 
 import java.util.List;
 
@@ -18,24 +20,21 @@ public class InteractiveEntityUpdate extends InteractiveEntity implements IUpdat
 	protected List<Process> processes;
 	protected List<VarInteger> integers;
 
-	protected InteractiveEntityUpdate(String name, World world)
+	protected InteractiveEntityUpdate(Interactive real, String id, World world, List<ITagSerial> properties)
 	{
-		super(name, world);
+		super(real, id, world, properties);
 	}
 
-	@Override
-	public ContainerCommon loadToContainer(ContainerCommon container)
-	{
-		return super.loadToContainer(container).load(ImmutableList.copyOf(integers));
-	}
+//	public InteractiveEntityUpdate(String name, World world)
+//	{
+//		super(name, world);
+//	}
 
-	protected InteractiveEntity loadProcess(List<Process> processes, List<VarInteger> intes, List<VarSync> nbts)
-	{
-		this.sync = ImmutableList.copyOf(nbts);
-		this.processes = processes;
-		this.integers = intes;
-		return this;
-	}
+//	@Override
+//	public ContainerCommon loadToContainer(ContainerCommon container)
+//	{
+//		return super.loadToContainer(container).load(ImmutableList.copyOf(integers));
+//	}
 
 	@Override
 	public void update()

@@ -1,22 +1,20 @@
 package net.simplelib.common.registry;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.*;
-import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
+import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import net.simplelib.common.utils.ASMDataUtil;
-import net.simplelib.common.utils.GenericUtil;
-import net.simplelib.common.utils.PackageModIdMap;
+import api.simplelib.utils.ASMDataUtil;
+import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.PackageModIdMap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.util.Map;
 
 /**
  * @author ci010
@@ -40,10 +38,10 @@ public final class RegistryBufferManager
 
 	class SubscriberInfo
 	{
-		ASMRegistryDelegate obj;
+		Object obj;
 		Method method;
 
-		public SubscriberInfo(ASMRegistryDelegate obj, Method method)
+		public SubscriberInfo(Object obj, Method method)
 		{
 			this.obj = obj;
 			this.method = method;
@@ -66,12 +64,12 @@ public final class RegistryBufferManager
 		for (ASMDataTable.ASMData data : table.getAll(ASMDelegate.class.getName()))
 		{
 			Class<?> registryDelegateType = ASMDataUtil.getClass(data);
+			boolean asmType;
 
-			if (!ASMRegistryDelegate.class.isAssignableFrom(registryDelegateType))
-				throw new UnsupportedOperationException("The class need to extends ASMRegistryDelegate");
-			if (!(registryDelegateType.getGenericSuperclass() instanceof ParameterizedType))
-				throw new UnsupportedOperationException("The class need to handle an annotation type");
-
+			if (asmType = ASMRegistryDelegate.class.isAssignableFrom(registryDelegateType))
+				if (!(registryDelegateType.getGenericSuperclass() instanceof ParameterizedType))
+					throw new UnsupportedOperationException("The ASMRegistryDelegate class need to handle an " +
+							"annotation type");
 
 			for (Method method : registryDelegateType.getDeclaredMethods())
 			{
@@ -91,15 +89,24 @@ public final class RegistryBufferManager
 				try
 				{
 					Class<? extends FMLStateEvent> state = GenericUtil.cast(methodParam);
-					Class<? extends ASMRegistryDelegate> real = GenericUtil.cast(registryDelegateType);
-					ASMRegistryDelegate delegate = real.newInstance();
-					Class<? extends Annotation> target = GenericUtil.getGenericTypeTo(delegate);
-					for (ASMDataTable.ASMData meta : table.getAll(target.getName()))
+					Object delegate = registryDelegateType.newInstance();
+					if (asmType)
 					{
-						delegate.addCache(rootMap.getModid(ASMDataUtil.getClass(meta).getPackage()
-								.getName()), meta);
-						subscriberInfoMap.put(state, new SubscriberInfo(delegate, method));
+						ASMRegistryDelegate asmDelegate = (ASMRegistryDelegate) delegate;
+						Class<? extends Annotation> target = GenericUtil.getGenericTypeTo(asmDelegate);
+						for (ASMDataTable.ASMData meta : table.getAll(target.getName()))
+						{
+							Package pkg = ASMDataUtil.getClass(meta).getPackage();
+							String modid = rootMap.getModid(pkg.getName());
+							if (modid == null)
+							{
+								modid = "Anonymous";
+//							HelperMod.metadata.childMods.add();
+							}
+							asmDelegate.addCache(modid, meta);
+						}
 					}
+					subscriberInfoMap.put(state, new SubscriberInfo(delegate, method));
 				}
 				catch (InstantiationException e)
 				{
@@ -121,11 +128,17 @@ public final class RegistryBufferManager
 		for (SubscriberInfo info : subscriberInfoMap.get(realType))
 			try
 			{
-				while (info.obj.hasNext())
+				if (info.obj instanceof ASMRegistryDelegate)
 				{
-					info.obj.next();
-					info.method.invoke(info.obj, state);
+					ASMRegistryDelegate asmRegistryDelegate = (ASMRegistryDelegate) info.obj;
+					while (asmRegistryDelegate.hasNext())
+					{
+						asmRegistryDelegate.next();
+						info.method.invoke(info.obj, state);
+					}
 				}
+				else
+					info.method.invoke(info.obj, state);
 			}
 			catch (IllegalAccessException e)
 			{
@@ -140,6 +153,7 @@ public final class RegistryBufferManager
 		if (state instanceof FMLLoadCompleteEvent)
 		{
 			rootMap = null;
+			ASMDataUtil.clear();
 			subscriberInfoMap.removeAll(FMLConstructionEvent.class);
 			subscriberInfoMap.removeAll(FMLPreInitializationEvent.class);
 			subscriberInfoMap.removeAll(FMLInitializationEvent.class);

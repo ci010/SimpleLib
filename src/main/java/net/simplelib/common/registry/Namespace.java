@@ -2,7 +2,7 @@ package net.simplelib.common.registry;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.simplelib.common.registry.abstracts.RegComponent;
+import net.simplelib.common.registry.abstracts.RegComponentBase;
 
 
 /**
@@ -11,9 +11,9 @@ import net.simplelib.common.registry.abstracts.RegComponent;
 public class Namespace
 {
 	private String parent = null, name, oreName;
-	private RegComponent component;
+	private RegComponentBase component;
 
-	public Namespace(String name, RegComponent component)
+	public Namespace(String name, RegComponentBase component)
 	{
 		this.component = component;
 		this.name = name;
@@ -51,7 +51,7 @@ public class Namespace
 		return name;
 	}
 
-	public RegComponent getComponent()
+	public RegComponentBase getComponent()
 	{
 		return component;
 	}

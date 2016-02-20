@@ -1,5 +1,7 @@
 package net.simplelib.common.registry;
 
+import api.simplelib.FileReference;
+import api.simplelib.utils.Assert;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,15 +9,15 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.util.IRegistry;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.simplelib.common.registry.annotation.type.ModHandler;
+import net.simplelib.HelperMod;
+import api.simplelib.common.ModHandler;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -26,20 +28,22 @@ import java.util.Set;
 @ModHandler
 public class ModelReporter
 {
-	static ModelResourceLocation MISS = new ModelResourceLocation("builtin/missing", "missing");
+//	private static ModelResourceLocation MISS = new ModelResourceLocation("builtin/missing", "missing");
 
 	@SubscribeEvent
 	public void onModelPost(ModelBakeEvent event)
 	{
-		List<BlockStateCollection> list = Lists.newArrayList();
+		if (!Assert.debug())
+			return;
+		List<StatesCollection> list = Lists.newArrayList();
 		Set<ModelResourceLocation> set = ReflectionHelper.getPrivateValue(ModelLoader.class, event.modelLoader,
 				"missingVariants");
-		IRegistry modelReg = event.modelRegistry;
+//		IRegistry modelReg = event.modelRegistry;
 
-		Object missingModel = modelReg.getObject(MISS);
+//		Object missingModel = modelReg.getObject(MISS);
 		for (ModelResourceLocation missing : set)
 		{
-			BlockStateCollection temp = new BlockStateCollection(missing.getResourceDomain(), missing
+			StatesCollection temp = new StatesCollection(missing.getResourceDomain(), missing
 					.getResourcePath());
 			if (list.contains(temp))
 				list.get(list.indexOf(temp)).addVar(missing.getVariant());
@@ -47,77 +51,65 @@ public class ModelReporter
 				list.add(temp.addVar(missing.getVariant()));
 		}
 		Gson gson = this.buildGson();
-		for (BlockStateCollection state : list)
+		try
 		{
-			FileReference refer = FileReference.getRefer(state.domain);
-			File stateFile = new File(refer.dirBlockState, state.path.concat(".json"));
-			try
-			{
-				if (!stateFile.exists())
-					stateFile.createNewFile();
-				FileWriter writer = new FileWriter(stateFile);
-				writer.write(gson.toJson(state).replace('`', '='));
-				writer.flush();
-				writer.close();
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-			for (String s : state.varPath)
-			{
-				File modelFile = new File(refer.dirModelBlock, state.domain.concat(s).concat(".json"));
-				BlockModelSimpleInfo info = new BlockModelSimpleInfo();
-				info.texture = state.domain.concat(":").concat(s).concat("_").concat("texture");
-				try
-				{
-					if (!modelFile.exists())
-						modelFile.createNewFile();
-					FileWriter writer = new FileWriter(modelFile);
-					writer.write(gson.toJson(info));
-					writer.flush();
-					writer.close();
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-			}
-			File itemModelFile = new File(refer.dirModelItem, state.path.concat(".json"));
-			ItemModelSimpleInfo info = new ItemModelSimpleInfo();
-			info.parent = state.domain.concat(":").concat("block").concat("/").concat(state.path);
-			info.thirdperson = new PersonView();
-			info.thirdperson.rotation = new int[]{10, -45, 170};
-			info.thirdperson.translation = new float[]{0f, 1.5f, -2.75f};
-			info.thirdperson.scale = new float[]{0.375f, 0.375f, 0.375f};
-
-			try
-			{
-				if (!itemModelFile.exists())
-					itemModelFile.createNewFile();
-				FileWriter writer = new FileWriter(itemModelFile);
-				writer.write(gson.toJson(info));
-				writer.flush();
-				writer.close();
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-//				String out = gson.toJson(state).replace('`', '=');
-//				System.out.println(out);
+			for (final StatesCollection state : list)
+				if (state.vars.size() == 1 && state.vars.get(0).equals("inventory"))
+					this.writeItem(state, gson);
+				else
+					this.writeBlock(state, gson);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
 		}
 		standard = null;
+	}
+
+	private void writeItem(StatesCollection state, Gson gson) throws IOException
+	{
+		FileReference refer = FileReference.getRefer(state.domain);
+		File modelItem = new File(refer.dirModelItem, state.path.concat(".json"));
+		if (standard != null)
+			FileUtils.write(new File(refer.dirModelItem, "standard.json"), gson.toJson(standard));
+		standard = null;
+		ItemModelSimpleInfo info = new ItemModelSimpleInfo();
+		info.parent = state.domain.concat(":item/standard");
+		info.texture = state.domain.concat(":item/").concat(state.path);
+		FileUtils.write(modelItem, gson.toJson(info));
+	}
+
+	private void writeBlock(StatesCollection state, Gson gson) throws IOException
+	{
+		FileReference refer = FileReference.getRefer(state.domain);
+		File stateFile = new File(refer.dirBlockState, state.path.concat(".json"));
+		File modelItem = new File(refer.dirModelItem, state.path.concat(".json"));
+		FileUtils.write(stateFile, gson.toJson(state).replace('`', '='));
+		//Replace to prevent gson to transform that to something strange....
+		for (String s : state.varPath)
+		{
+			File modelFile = new File(refer.dirModelBlock, s.concat(".json"));
+			BlockModelSimpleInfo info = new BlockModelSimpleInfo();
+			info.texture = state.domain.concat(":").concat(s).concat("_").concat("texture");
+			FileUtils.write(modelFile, gson.toJson(info));
+		}
+		ItemModelSimpleInfo info = new ItemModelSimpleInfo();
+		info.parent = state.domain.concat(":").concat("block").concat("/").concat(state.path);
+		info.thirdperson = new PersonView();
+		info.thirdperson.rotation = new int[]{10, -45, 170};
+		info.thirdperson.translation = new float[]{0f, 1.5f, -2.75f};
+		info.thirdperson.scale = new float[]{0.375f, 0.375f, 0.375f};
+		FileUtils.write(modelItem, gson.toJson(info));
 	}
 
 	private Gson buildGson()
 	{
 		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(BlockStateCollection.class,
-				new TypeAdapter<BlockStateCollection>()
+		builder.registerTypeAdapter(StatesCollection.class,
+				new TypeAdapter<StatesCollection>()
 				{
 					@Override
-					public void write(JsonWriter out, BlockStateCollection value) throws IOException
+					public void write(JsonWriter out, StatesCollection value) throws IOException
 					{
 						out.setIndent("  ");
 						out.beginObject();
@@ -134,7 +126,7 @@ public class ModelReporter
 					}
 
 					@Override
-					public BlockStateCollection read(JsonReader in) throws IOException {return null;}
+					public StatesCollection read(JsonReader in) throws IOException {return null;}
 				}).registerTypeAdapter(BlockModelSimpleInfo.class,
 				new TypeAdapter<BlockModelSimpleInfo>()
 				{
@@ -159,12 +151,24 @@ public class ModelReporter
 					{
 						out.setIndent("  ");
 						out.beginObject();
-						out.name("parent").value(value.parent);
-						out.name("display").beginObject();
-						this.write("thirdperson", out, value.thirdperson);
-						if (value.firstperson != null)
-							this.write("firstperson", out, value.firstperson);
-						out.endObject().endObject();
+						if (value.parent != null)
+							out.name("parent").value(value.parent);
+						if (value.thirdperson != null || value.firstperson != null)
+						{
+							out.name("display").beginObject();
+							if (value.thirdperson != null)
+								this.write("thirdperson", out, value.thirdperson);
+							if (value.firstperson != null)
+								this.write("firstperson", out, value.firstperson);
+							out.endObject();
+						}
+						if (value.texture != null)
+						{
+							out.name("texture").beginObject();
+							out.name("layer0").value(value.texture);
+							out.endObject();
+						}
+						out.endObject();
 					}
 
 					private void write(String name, JsonWriter out, PersonView view) throws IOException
@@ -223,13 +227,13 @@ public class ModelReporter
 		}
 	};
 
-	private static class BlockStateCollection
+	private static class StatesCollection
 	{
 		String domain, path;
 		List<String> vars;
 		List<String> varPath;
 
-		public BlockStateCollection(String domain, String path)
+		public StatesCollection(String domain, String path)
 		{
 			this.domain = domain;
 			this.path = path;
@@ -237,7 +241,7 @@ public class ModelReporter
 			varPath = Lists.newArrayList();
 		}
 
-		BlockStateCollection addVar(String var)
+		StatesCollection addVar(String var)
 		{
 			this.vars.add(var);
 			int idx = var.indexOf("=");
@@ -251,9 +255,9 @@ public class ModelReporter
 		@Override
 		public boolean equals(Object obj)
 		{
-			if (obj instanceof BlockStateCollection)
+			if (obj instanceof StatesCollection)
 			{
-				BlockStateCollection stat = (BlockStateCollection) obj;
+				StatesCollection stat = (StatesCollection) obj;
 				return stat.domain.equals(domain) && stat.path.equals(path);
 			}
 			return super.equals(obj);

@@ -1,13 +1,15 @@
 package net.simplelib.interactive.machine;
 
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
-import net.simplelib.common.registry.annotation.type.ModTileEntity;
+import api.simplelib.common.ModTileEntity;
+import net.simplelib.interactive.ContainerCommon;
 import net.simplelib.interactive.InteractiveEntityUpdate;
 import net.simplelib.interactive.InteractiveMetadata;
-import net.simplelib.interactive.Inventory;
+import net.simplelib.interactive.inventory.Inventory;
 
 /**
  * @author ci010
@@ -16,7 +18,7 @@ import net.simplelib.interactive.Inventory;
 public class TileEntityDummy extends TileEntity implements IUpdatePlayerListBox, Inventory.Listener
 {
 	protected InteractiveEntityUpdate real;
-	protected boolean sensitve;
+	protected boolean sensitive;
 
 	public TileEntityDummy load(InteractiveEntityUpdate real)
 	{
@@ -25,9 +27,15 @@ public class TileEntityDummy extends TileEntity implements IUpdatePlayerListBox,
 		//TODO think about if there is a better way to handle the dirty problem
 	}
 
+	public Container loadToContainer(ContainerCommon container)
+	{
+		return container;
+//		return real.loadToContainer(container);
+	}
+
 	public TileEntityDummy saveSensitive()
 	{
-		sensitve = true;
+		sensitive = true;
 		return this;
 	}
 
@@ -56,7 +64,7 @@ public class TileEntityDummy extends TileEntity implements IUpdatePlayerListBox,
 	@Override
 	public void onInventoryChange(IInventory inventory)
 	{
-		if (sensitve)
+		if (sensitive)
 			this.markDirty();
 	}
 }
