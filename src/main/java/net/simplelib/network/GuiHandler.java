@@ -1,9 +1,8 @@
 package net.simplelib.network;
 
+import api.simplelib.IContainerProvider;
 import com.google.common.collect.Lists;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import api.simplelib.common.ModGuiHandler;
@@ -16,9 +15,9 @@ import java.util.List;
 @ModGuiHandler
 public class GuiHandler implements IGuiHandler
 {
-	private static List<ContainerProvider> providers = Lists.newArrayList();
+	private static List<IContainerProvider> providers = Lists.newArrayList();
 
-	public static int addContainerProvider(ContainerProvider provider)
+	public static int addContainerProvider(IContainerProvider provider)
 	{
 		if (providers.contains(provider))
 			return providers.indexOf(provider);
@@ -36,15 +35,5 @@ public class GuiHandler implements IGuiHandler
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
 		return providers.get(ID).getGuiContainer(player, world, x, y, z);
-	}
-
-	/**
-	 * @author ci010
-	 */
-	public interface ContainerProvider
-	{
-		Container getContainer(EntityPlayer player, World world, int x, int y, int z);
-
-		GuiContainer getGuiContainer(EntityPlayer player, World world, int x, int y, int z);
 	}
 }

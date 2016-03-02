@@ -1,21 +1,12 @@
-package net.simplelib.network;
+package api.simplelib.network;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-public abstract class NBTMessage implements IMessage
+public class NBTCoder implements MessageCoder<NBTTagCompound>
 {
-	public NBTTagCompound data;
-
-	public NBTMessage()
-	{}
-
-	public NBTMessage(NBTTagCompound data)
-	{
-		this.data = data;
-	}
+	private NBTTagCompound data;
 
 	@Override
 	public void fromBytes(ByteBuf buf)
@@ -27,5 +18,17 @@ public abstract class NBTMessage implements IMessage
 	public void toBytes(ByteBuf buf)
 	{
 		ByteBufUtils.writeTag(buf, data);
+	}
+
+	@Override
+	public NBTTagCompound get()
+	{
+		return data;
+	}
+
+	@Override
+	public void set(NBTTagCompound value)
+	{
+		data = value;
 	}
 }

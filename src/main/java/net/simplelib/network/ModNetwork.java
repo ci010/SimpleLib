@@ -1,14 +1,14 @@
 package net.simplelib.network;
 
-import api.simplelib.network.IClientMessage;
-import api.simplelib.network.IServerMessage;
+import api.simplelib.network.AbstractBiMessage;
+import api.simplelib.network.AbstractClientMessage;
+import api.simplelib.network.AbstractServerMessage;
 import api.simplelib.utils.GenericUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -40,92 +40,27 @@ public class ModNetwork
 		dispatcher = NetworkRegistry.INSTANCE.newSimpleChannel(modid);
 	}
 
-	public final <T extends IMessage> void registerMessage(final T msg)
-	{
-		boolean isServer = msg instanceof IServerMessage,
-				isClient = msg instanceof IClientMessage;
-		IMessageHandler<T, IMessage> handler;
-		Class<T> msgClz;
-		if (isServer)
-			if (isClient)
-			{
-				handler = new AbstractBiMessageHandler<T>()
-				{
-					@Override
-					public IMessage handleClientMessage(EntityPlayer player, T message, MessageContext ctx)
-					{
-						return ((IClientMessage) msg).onClientMessage(player, GenericUtil.<IClientMessage>cast(message), ctx);
-					}
-
-					@Override
-					public IMessage handleServerMessage(EntityPlayer player, T message, MessageContext ctx)
-					{
-						return ((IServerMessage) msg).onServerMessage(player, GenericUtil.<IServerMessage>cast(message), ctx);
-					}
-				};
-				msgClz = GenericUtil.cast(msg.getClass());
-				dispatcher.registerMessage(handler, msgClz, packetId, Side.CLIENT);
-				dispatcher.registerMessage(handler, msgClz, packetId++, Side.SERVER);
-			}
-			else
-				dispatcher.registerMessage(
-						new AbstractServerMessageHandler<T>()
-						{
-							@Override
-							public IMessage handleServerMessage(EntityPlayer player, T message, MessageContext ctx)
-							{
-								return ((IServerMessage) msg).onServerMessage(player, GenericUtil.<IServerMessage>cast(message),
-										ctx);
-							}
-						}, msgClz = GenericUtil.cast(msg.getClass()), packetId++, Side.SERVER);
-		else if (isClient)
-			dispatcher.registerMessage(
-					new AbstractClientMessageHandler<T>()
-					{
-						@Override
-						public IMessage handleClientMessage(EntityPlayer player, T message, MessageContext ctx)
-						{
-							return ((IClientMessage) msg).onClientMessage(player, GenericUtil.<IClientMessage>cast(message), ctx);
-						}
-					}, msgClz = GenericUtil.cast(msg.getClass()), packetId++, Side.CLIENT);
-		else
-		{
-
-			//TODO log
-			return;
-		}
-
-	}
 
 	/**
 	 * Registers a message and message handler
 	 */
-	public final <Message extends IMessage> void registerMessage(Class<? extends IMessageHandler<Message, IMessage>>
-																		 handlerClass, Class<Message> messageClass)
+	public final <Message extends IMessage> void registerMessage(IMessageHandler<Message, IMessage> handler)
 	{
-		if (messageClass == handlerClass)
+		Class<Message> messageClass;
+		if (handler instanceof AbstractClientMessage)
+			dispatcher.registerMessage(handler, messageClass = GenericUtil.cast(handler.getClass()), packetId++, Side.CLIENT);
+		else if (handler instanceof AbstractServerMessage)
+			dispatcher.registerMessage(handler, messageClass = GenericUtil.cast(handler.getClass()), packetId++, Side.SERVER);
+		else if (handler instanceof AbstractBiMessage)
 		{
-//				dispatcher.registerMessage(handlerClass, messageClass);
-		}
-		else if (AbstractClientMessageHandler.class.isAssignableFrom(handlerClass))
-			dispatcher.registerMessage(handlerClass, messageClass, packetId++, Side.CLIENT);
-		else if (AbstractServerMessageHandler.class.isAssignableFrom(handlerClass))
-			dispatcher.registerMessage(handlerClass, messageClass, packetId++, Side.SERVER);
-		else if (AbstractBiMessageHandler.class.isAssignableFrom(handlerClass))
-		{
-			dispatcher.registerMessage(handlerClass, messageClass, packetId, Side.CLIENT);
-			dispatcher.registerMessage(handlerClass, messageClass, packetId++, Side.SERVER);
+			dispatcher.registerMessage(handler, messageClass = GenericUtil.cast(handler.getClass()), packetId, Side.CLIENT);
+			dispatcher.registerMessage(handler, messageClass = GenericUtil.cast(handler.getClass()), packetId++, Side.SERVER);
 		}
 		else
 		{
-
-//			registerAnonymous.add(handlerClass);
-//			registerAnonymous.add(messageClass);
-//			dispatcher.re
+			throw new IllegalArgumentException("Cannot register " + handler.getClass().getName() +
+					". Not Support type ModHandler maybe?");
 		}
-//		else
-//			throw new IllegalArgumentException("Cannot register " + handlerClass.getName() +
-//					". Not Support type ModHandler maybe?");
 	}
 
 	/**
@@ -164,7 +99,6 @@ public class ModNetwork
 									  double range)
 	{
 		dispatcher.sendToAllAround(message, new NetworkRegistry.TargetPoint(dimension, x, y, z,
-
 				range));
 	}
 
