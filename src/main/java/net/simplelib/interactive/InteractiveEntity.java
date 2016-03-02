@@ -1,16 +1,11 @@
 package net.simplelib.interactive;
 
-import api.simplelib.interactive.Interactive;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.entity.player.EntityPlayer;
+import api.simplelib.interactive.meta.InteractivePropertyHook;
+import api.simplelib.utils.GenericUtil;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import api.simplelib.VarSync;
 import net.simplelib.common.nbt.ITagSerial;
-import net.simplelib.interactive.inventory.Inventory;
-import net.simplelib.interactive.inventory.InventoryManagerImpl;
 
 import java.util.List;
 
@@ -19,19 +14,13 @@ import java.util.List;
  */
 public class InteractiveEntity implements ITagSerial
 {
-	protected ImmutableList<VarSync> sync;
-	protected ImmutableMap<String, Inventory> inventories;
-	protected List<InventoryManagerImpl.Info> infoList;
-
 	protected World world;
 	protected String id;
 	private BlockPos pos;
 	private List<ITagSerial> properties;
-	private Interactive real;
 
-	protected InteractiveEntity(Interactive real, String id, World world, List<ITagSerial> properties)
+	protected InteractiveEntity(String id, World world, List<ITagSerial> properties)
 	{
-		this.real = real;
 		this.id = id;
 		this.world = world;
 		this.pos = BlockPos.ORIGIN;
@@ -58,23 +47,12 @@ public class InteractiveEntity implements ITagSerial
 		return this.id;
 	}
 
-	public ITagSerial get(Class<?> clz)
+	public <Data extends ITagSerial, T extends InteractivePropertyHook<Data, ?>> Data get(Class<T> propertyType)
 	{
 		for (ITagSerial property : this.properties)
-			if (clz.isAssignableFrom(property.getClass()))
-				return property;
+			if (propertyType == property.getClass())
+				return GenericUtil.cast(property);
 		return null;
-	}
-
-	public int add(Object object)
-	{
-//		this.properties.add(object);
-		return this.properties.size() - 1;
-	}
-
-	public void interactWith(EntityPlayer player)
-	{
-		this.real.interactWith(player, this.pos);
 	}
 
 	@Override
@@ -84,10 +62,6 @@ public class InteractiveEntity implements ITagSerial
 		if (properties != null)
 			for (ITagSerial property : properties)
 				property.readFromNBT(tag);
-		for (VarSync syncNBT : this.sync)
-			syncNBT.get().readFromNBT(tag.getCompoundTag("sync"));
-		for (Inventory inventory : this.inventories.values())
-			inventory.readFromNBT(tag);
 	}
 
 	@Override
@@ -97,12 +71,5 @@ public class InteractiveEntity implements ITagSerial
 		if (properties != null)
 			for (ITagSerial property : properties)
 				property.writeToNBT(tag);
-		NBTTagCompound sync = new NBTTagCompound();
-		for (VarSync syncNBT : this.sync)
-			syncNBT.get().writeToNBT(sync);
-		tag.setTag("sync", sync);
-		for (Inventory inventory : this.inventories.values())
-			inventory.writeToNBT(tag);
 	}
-
 }

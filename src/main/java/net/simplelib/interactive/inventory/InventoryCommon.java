@@ -1,6 +1,7 @@
 package net.simplelib.interactive.inventory;
 
 import api.simplelib.interactive.inventory.InventoryRule;
+import api.simplelib.interactive.inventory.SlotInfo;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -12,14 +13,12 @@ import net.minecraft.util.IChatComponent;
 import net.simplelib.common.nbt.ITagSerial;
 import net.simplelib.interactive.process.VarItemHolder;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * @author ci010
  */
-public class Inventory implements IInventory, ITagSerial
+public class InventoryCommon implements IInventory, ITagSerial
 {
 	public static final InventoryRule COMMON = new InventoryRule()
 	{
@@ -49,23 +48,17 @@ public class Inventory implements IInventory, ITagSerial
 	protected List<VarItemHolder> holders;
 	protected Listener listener;//TODO handle this
 
-	protected Inventory(String id, int size, String[] namespace, InventoryRule rule)
+	protected InventoryCommon(String id, int count, List<String> namespace, InventoryRule rule)
 	{
 		this.id = id;
 		this.rule = rule;
+		this.size = count;
 		this.namespace = ImmutableList.copyOf(namespace);
-		this.size = size;
-		this.holders = new ArrayList<VarItemHolder>(size);
-		Collections.fill(holders, new VarItemHolder());
 	}
 
-	public Inventory assignNamespace(String name, VarItemHolder holder)
+	public void assign(SlotInfo info, VarItemHolder holder)
 	{
-		if (namespace.contains(name))
-			holders.set(namespace.indexOf(name), holder);
-		else
-			throw new IllegalArgumentException("The slot name not matched!");
-		return this;
+		holders.set(info.id(), holder);
 	}
 
 	public void applyListener(Listener listener)
@@ -197,7 +190,7 @@ public class Inventory implements IInventory, ITagSerial
 	@Override
 	public String getCommandSenderName()
 	{
-		return this.id.concat("_inventory");
+		return "inventory.".concat(this.id);
 	}
 
 	@Override

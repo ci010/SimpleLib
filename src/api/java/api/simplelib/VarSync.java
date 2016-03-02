@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * @author ci010
  */
-public class VarSync<T extends ITagSerial> extends VarBase<T>
+public abstract class VarSync<T> extends VarBase<T> implements ITagSerial
 {
 	public final Side side = FMLCommonHandler.instance().getSide();
 	private Set<Listener> listeners;

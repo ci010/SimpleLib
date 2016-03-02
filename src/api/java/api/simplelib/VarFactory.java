@@ -1,7 +1,5 @@
 package api.simplelib;
 
-import api.simplelib.Var;
-
 /**
  * @author ci010
  */

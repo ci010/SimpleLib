@@ -8,7 +8,7 @@ public interface SlotInfo
 	/**
 	 * @return The id of this slot. Used by save/load.
 	 */
-	String id();
+	int id();
 
 	/**
 	 * Still WIP
@@ -37,4 +37,6 @@ public interface SlotInfo
 	 * @see InventoryRule
 	 */
 	SlotInfo applyRule(InventoryRule rule);
+
+	int parent();
 }

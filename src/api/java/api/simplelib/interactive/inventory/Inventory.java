@@ -1,18 +1,23 @@
 package api.simplelib.interactive.inventory;
 
 import api.simplelib.Var;
+import api.simplelib.interactive.Interactive;
+import api.simplelib.interactive.meta.InteractivePropertyHook;
+import com.google.common.collect.ImmutableList;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.simplelib.interactive.inventory.InventoryManagerImpl;
+import net.simplelib.common.nbt.ITagSerial;
+import net.simplelib.interactive.inventory.InventoryManager;
 
 /**
  * This interface indicates that this contains extra inventory space.
  *
  * @author ci010
  */
-public interface Inventory
+public interface Inventory extends Interactive, InteractivePropertyHook<Inventory.Data, Inventory.Meta>
 {
 	/**
-	 * Factory method to provides extra inventory infomation by some methods of {@link InventoryManagerImpl}
+	 * Factory method to provides extra inventory infomation by some methods of {@link InventoryManager}
 	 *
 	 * @param manager The inventory Manager.
 	 */
@@ -30,13 +35,12 @@ public interface Inventory
 		 * which link to this slot.
 		 * </p>
 		 *
-		 * @param slotId The id of the slot.
-		 * @param x      The x position of the slot.
-		 * @param y      The y position of the slot.
+		 * @param x The x position of the slot.
+		 * @param y The y position of the slot.
 		 * @return {@link SlotInfo}, The info of this slot.
 		 * @see api.simplelib.interactive.process.ProcessPipeline.Factory#newStack(SlotInfo)
 		 */
-		SlotInfo newSingletonSlot(String slotId, int x, int y);
+		SlotInfo newSingletonSlot(int x, int y);
 
 		/**
 		 * Create a space of slot.
@@ -46,14 +50,29 @@ public interface Inventory
 		 * <p>In this situation, if you want to use {@link SpaceInfo#get(int, int)} to point a specific
 		 * slot, and create {@link Var} by {@link SlotInfo}.</p>
 		 *
-		 * @param spaceId The id of the space.
-		 * @param x       The left x position of all the slots.
-		 * @param y       The top y position of all the slots.
-		 * @param row     The numbers of row.
-		 * @param column  The numbers of column.
+		 * @param x      The left x position of all the slots.
+		 * @param y      The top y position of all the slots.
+		 * @param row    The numbers of row.
+		 * @param column The numbers of column.
 		 * @return {@link SpaceInfo}, The info of this space.
 		 * @see api.simplelib.interactive.process.ProcessPipeline.Factory#newStack(SlotInfo)
 		 */
-		SpaceInfo newSlotSpace(String spaceId, int x, int y, int row, int column);
+		SpaceInfo newSlotSpace(int x, int y, int row, int column);
+	}
+
+	interface Data extends ITagSerial
+	{
+		void assign(SlotInfo info, Var<ItemStack> holder);
+
+		IInventory getInventory(SlotInfo info);
+
+		IInventory getInventory(SpaceInfo info);
+	}
+
+	interface Meta
+	{
+		ImmutableList<SpaceInfo> getSpaces();
+
+		ImmutableList<SlotInfo> getSlots();
 	}
 }

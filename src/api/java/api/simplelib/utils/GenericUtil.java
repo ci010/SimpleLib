@@ -37,12 +37,35 @@ public class GenericUtil
 		}
 	}
 
-	public static Type getInterfaceGenericType(Object obj, Type interfaceType, int parameter)
+	public static Type getGenericType(Class<?> clz, int parameter)
 	{
-		for (Type type : obj.getClass().getGenericInterfaces())
-			if (interfaceType == null || type == interfaceType || interfaceType.equals(type))
+		try
+		{
+			return ((ParameterizedType) clz.getGenericSuperclass())
+					.getActualTypeArguments()
+					[parameter];
+		}
+		catch (Exception e)
+		{
+			CommonLogger.warn("Cannot found the generic type by superclass for {}. Now try to search from interface" +
+					".", clz);
+			return getInterfaceGenericType(clz, null, parameter);
+		}
+	}
+
+	public static Type getInterfaceGenericType(Class<?> clz, Type interfaceType, int parameter)
+	{
+		for (Type type : clz.getGenericInterfaces())
+			if (interfaceType == null || type == interfaceType)
+				return ((ParameterizedType) type).getActualTypeArguments()[parameter];
+			else if (type instanceof ParameterizedType)
 				return ((ParameterizedType) type).getActualTypeArguments()[parameter];
 		throw new IllegalArgumentException("Not found a interface with type " + interfaceType + ".");
+	}
+
+	public static Type getInterfaceGenericType(Object obj, Type interfaceType, int parameter)
+	{
+		return getInterfaceGenericType(obj.getClass(), interfaceType, parameter);
 	}
 
 	/**
@@ -56,6 +79,41 @@ public class GenericUtil
 		return getGenericType(obj, 0);
 	}
 
+	public static Type getInterfaceGenericType(Object obj)
+	{
+		return getInterfaceGenericType(obj, null, 0);
+	}
+
+	public static Type getInterfaceGenericType(Class<?> clz)
+	{
+		return getInterfaceGenericType(clz, null, 0);
+	}
+
+	public static Type getInterfaceGenericType(Object obj, int parameter)
+	{
+		return getInterfaceGenericType(obj, null, parameter);
+	}
+
+	public static <T> Class<T> getInterfaceGenericTypeTo(Class<?> clz)
+	{
+		return getInterfaceGenericTypeTo(clz, 0);
+	}
+
+	public static <T> Class<T> getInterfaceGenericTypeTo(Class<?> clz, int parameter)
+	{
+		return cast(getInterfaceGenericType(clz, null, parameter));
+	}
+
+	public static <T> Class<T> getInterfaceGenericTypeTo(Class<?> clz, Type t)
+	{
+		return cast(getInterfaceGenericType(clz, t, 0));
+	}
+
+	public static <T> Class<T> getInterfaceGenericTypeTo(Object obj)
+	{
+		return getInterfaceGenericTypeTo(obj.getClass());
+	}
+
 	public static <T> Class<T> getGenericTypeTo(Object obj, int parameter)
 	{
 		return cast(getGenericType(obj, parameter));
@@ -66,20 +124,6 @@ public class GenericUtil
 		return getGenericTypeTo(obj, 0);
 	}
 
-	public static Type getInterfaceGenericType(Object obj)
-	{
-		return getInterfaceGenericType(obj, null, 0);
-	}
-
-	public static Type getInterfaceGenericType(Object obj, int parameter)
-	{
-		return getInterfaceGenericType(obj, null, parameter);
-	}
-
-	public static <T> Class<T> getInterfaceGenericTypeTo(Object obj)
-	{
-		return cast(getInterfaceGenericType(obj));
-	}
 
 	public static Type getInterfaceGenericType(Object obj, Type interfaceType)
 	{
