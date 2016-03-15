@@ -1,4 +1,4 @@
-package net.simplelib.common.registry.annotation.field;
+package api.simplelib.common;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value =
 		{ElementType.FIELD})
-public @interface Name
+public @interface Instance
 {
-	String value();
+	boolean weak() default false;
 }
