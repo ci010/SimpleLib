@@ -5,4 +5,5 @@
  *
  * @author ci010
  */
+@Deprecated
 package net.simplelib.deprecated;

@@ -2,15 +2,14 @@ package net.simplelib.deprecated;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.simplelib.common.VarSync;
-import net.simplelib.network.ModNetwork;
-import net.simplelib.network.NBTWindowsMessage;
+import api.simplelib.VarSync;
 
 import java.util.List;
 
 /**
  * @author ci010
  */
+@Deprecated
 public class SyncPortalServer extends SyncPortal
 {
 	private List<EntityPlayerMP> listener;
@@ -36,7 +35,7 @@ public class SyncPortalServer extends SyncPortal
 	@Override
 	protected void sendChange(int winId, int id, VarSync seril)
 	{
-		for (EntityPlayerMP playerMP : listener)
-			ModNetwork.instance().sendTo(new NBTWindowsMessage(winId, id, seril.get()), playerMP);
+//		for (EntityPlayerMP playerMP : listener)
+//			ModNetwork.instance().sendTo(new NBTWindowsMessage(winId, id, seril.get()), playerMP);
 	}
 }

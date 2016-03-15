@@ -1,6 +1,6 @@
 package net.simplelib.deprecated;
 
-import net.simplelib.common.VarSync;
+import api.simplelib.VarSync;
 
 import java.util.List;
 
