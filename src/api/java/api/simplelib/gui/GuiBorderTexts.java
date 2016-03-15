@@ -1,4 +1,4 @@
-package net.simplelib.gui;
+package api.simplelib.gui;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;

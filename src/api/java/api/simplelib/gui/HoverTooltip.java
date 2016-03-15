@@ -1,4 +1,4 @@
-package net.simplelib.gui;
+package api.simplelib.gui;
 
 /**
  * Basic implementation of showing tooltip while mouse hovers.

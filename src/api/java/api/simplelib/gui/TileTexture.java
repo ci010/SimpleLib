@@ -1,4 +1,4 @@
-package net.simplelib.gui;
+package api.simplelib.gui;
 
 /**
  * The most basic implementation of {@link GuiComponent} using {@link TextureInfo}.

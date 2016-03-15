@@ -1,4 +1,4 @@
-package net.simplelib.gui;
+package api.simplelib.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

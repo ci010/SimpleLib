@@ -1,7 +1,7 @@
-package net.simplelib.gui;
+package api.simplelib.gui;
 
 import net.minecraft.util.ChatComponentText;
-import net.simplelib.common.utils.GuiUtil;
+import api.simplelib.utils.GuiUtil;
 
 /**
  * One of the most basic components in gui.

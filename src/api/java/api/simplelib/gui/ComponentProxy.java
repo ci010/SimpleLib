@@ -1,4 +1,6 @@
-package net.simplelib.gui;
+package api.simplelib.gui;
+
+import api.simplelib.StringSource;
 
 /**
  * @author ci010
@@ -27,14 +29,14 @@ public class ComponentProxy extends GuiComponent
 			@Override
 			public GuiBorderTexts getTextLines()
 			{
-				return new GuiBorderTexts().addTextLine(new SourceString("x: ").setSource(new SourceString.Source()
+				return new GuiBorderTexts().addTextLine(new StringSource("x: ").setSource(new StringSource.Source()
 				{
 					@Override
 					public Object[] getSource()
 					{
 						return new Object[]{ComponentProxy.this.getX()};
 					}
-				})).addTextLine(new SourceString("y: ").setSource(new SourceString.Source()
+				})).addTextLine(new StringSource("y: ").setSource(new StringSource.Source()
 				{
 					@Override
 					public Object[] getSource()

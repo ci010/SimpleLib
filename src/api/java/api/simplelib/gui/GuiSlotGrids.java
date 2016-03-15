@@ -1,4 +1,4 @@
-package net.simplelib.gui;
+package api.simplelib.gui;
 
 import api.simplelib.utils.GuiUtil;
 

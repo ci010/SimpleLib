@@ -1,10 +1,10 @@
-package net.simplelib.gui;
+package api.simplelib.gui;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.simplelib.common.utils.GuiUtil;
+import api.simplelib.utils.GuiUtil;
 import org.lwjgl.util.Timer;
 
 import java.io.IOException;
