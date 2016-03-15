@@ -6,9 +6,11 @@ import net.minecraft.world.storage.SaveFormatOld;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.simplelib.common.TrivalThread;
 
 import java.io.File;
 import java.util.Map;
+import java.util.concurrent.*;
 
 @SideOnly(Side.CLIENT)
 public class FileReference
@@ -17,12 +19,21 @@ public class FileReference
 	private static Map<String, FileReference> refers = Maps.newHashMap();
 	protected static File assets = getDir(mc, "debug-reports");
 
-	public static final File saveDir;
+	private static File logDir;
+	private static File saveDir;
 
-	static
+	public static File getLog()
 	{
-		SaveFormatOld saveLoader = (SaveFormatOld) Minecraft.getMinecraft().getSaveLoader();
-		saveDir = saveLoader.savesDirectory;
+		if (logDir == null)
+			logDir = new File(mc, "logs");
+		return logDir;
+	}
+
+	public static File getSave()
+	{
+		while (saveDir == null)
+			saveDir = ((SaveFormatOld) Minecraft.getMinecraft().getSaveLoader()).savesDirectory;
+		return saveDir;
 	}
 
 	public final File modFile, dirBlockState, dirModelBlock, dirModelItem, dirTextureBlock, dirTextureItem, dirLang;
