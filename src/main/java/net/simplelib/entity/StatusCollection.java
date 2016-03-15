@@ -1,33 +1,18 @@
 package net.simplelib.entity;
 
 import api.simplelib.entity.IStatus;
-import api.simplelib.entity.PropertyHook;
+import api.simplelib.entity.EntityPropertyHook;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.IExtendedEntityProperties;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * @author ci010
  */
-public class StatusCollection implements PropertyHook.Handler
+public class StatusCollection implements EntityPropertyHook.Handler
 {
 	private Entity delegate;
-
-//	public StatusCollection add(String id, IExtendedEntityProperties stpropertiestus)
-//	{
-//		if (stpropertiestus instanceof Status)
-//		{
-//			Status s = (Status) stpropertiestus;
-//			s.id = id;
-//		}
-//		ExtendPropertyAddEvent event = new ExtendPropertyAddEvent(delegate, id, stpropertiestus);
-//		boolean canceled = MinecraftForge.EVENT_BUS.post(event);
-//		if (!canceled)
-//			event.entity.registerExtendedProperties(event.id, event.status);
-//		return this;
-//	}
 
 	void set(Entity entity)
 	{
@@ -35,16 +20,17 @@ public class StatusCollection implements PropertyHook.Handler
 	}
 
 	@Override
-	public PropertyHook.Handler add(String id, IExtendedEntityProperties properties)
+	public EntityPropertyHook.Handler add(String id, IExtendedEntityProperties properties)
 	{
 		delegate.registerExtendedProperties(id, properties);
 		return this;
 	}
 
 	@Override
-	public PropertyHook.Handler add(String id, IStatus status)
+	public EntityPropertyHook.Handler add(String id, IStatus status)
 	{
-		delegate.registerExtendedProperties(id, new Status(status));
+		Status real = new Status(id, status);
+		delegate.registerExtendedProperties(id, real);
 		return this;
 	}
 

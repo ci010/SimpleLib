@@ -1,8 +1,7 @@
 package net.simplelib.entity;
 
-import api.simplelib.entity.IStatus;
 import api.simplelib.entity.ModPropertyHook;
-import api.simplelib.entity.PropertyHook;
+import api.simplelib.entity.EntityPropertyHook;
 import api.simplelib.utils.GenericUtil;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.Mod;
@@ -20,11 +19,11 @@ public class IPropertiesDelegate extends ASMRegistryDelegate<ModPropertyHook>
 	public void init(FMLInitializationEvent event)
 	{
 		Class<?> clz = this.getAnnotatedClass();
-		if (PropertyHook.class.isAssignableFrom(clz))
+		if (EntityPropertyHook.class.isAssignableFrom(clz))
 		{
 			try
 			{
-				PropertyHook hook = (PropertyHook) clz.newInstance();
+				EntityPropertyHook hook = (EntityPropertyHook) clz.newInstance();
 				Class<? extends Entity> entityClz = GenericUtil.getInterfaceGenericTypeTo(hook);
 				IPropertiesManager.instance().registerStatus(entityClz, hook);
 			}

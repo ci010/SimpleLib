@@ -1,7 +1,8 @@
 package net.simplelib.entity;
 
-import api.simplelib.entity.PropertyHook;
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.common.Nullable;
+import api.simplelib.entity.IStatus;
+import api.simplelib.entity.EntityPropertyHook;
 import com.google.common.collect.*;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
@@ -11,12 +12,8 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.simplelib.common.CommonLogger;
-import api.simplelib.Instance;
+import api.simplelib.common.Instance;
 import api.simplelib.common.ModHandler;
-import scala.collection.mutable.MultiMap;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author ci010
@@ -27,10 +24,10 @@ public class IPropertiesManager
 	@Instance(weak = true)
 	private static IPropertiesManager instance;
 
-	private Multimap<Class<? extends Entity>, PropertyHook> map = HashMultimap.create();
+	private Multimap<Class<? extends Entity>, EntityPropertyHook> map = HashMultimap.create();
 	private StatusCollection collection = new StatusCollection();
 
-	public void registerStatus(Class<? extends Entity> clz, PropertyHook property)
+	public void registerStatus(Class<? extends Entity> clz, EntityPropertyHook property)
 	{
 		CommonLogger.info("Register the status handler to all {}.", clz.getSimpleName());
 		if (clz == EntityPlayer.class)
@@ -42,6 +39,11 @@ public class IPropertiesManager
 		map.put(clz, property);
 	}
 
+	public static boolean enable()
+	{
+		return instance != null;
+	}
+
 	public static IPropertiesManager instance()
 	{
 		if (instance == null)
@@ -49,15 +51,25 @@ public class IPropertiesManager
 		return instance;
 	}
 
+	@Nullable
 	public IExtendedEntityProperties get(Entity entity, String id)
 	{
 		return entity.getExtendedProperties(id);
 	}
 
+	@Nullable
+	public IStatus getStatus(Entity entity, String id)
+	{
+		IExtendedEntityProperties p = get(entity, id);
+		if (p instanceof Status)
+			return ((Status) p).real;
+		return null;
+	}
+
 	@SubscribeEvent
 	public void onEntityConstructing(EntityEvent.EntityConstructing event)
 	{
-		for (PropertyHook provider : map.get(event.entity.getClass()))
+		for (EntityPropertyHook provider : map.get(event.entity.getClass()))
 		{
 			collection.set(event.entity);
 			provider.handle(event.entity, collection);

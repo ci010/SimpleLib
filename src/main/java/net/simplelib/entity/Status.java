@@ -7,6 +7,7 @@ import api.simplelib.utils.GenericUtil;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
@@ -26,20 +27,15 @@ import java.util.List;
  */
 public class Status implements IExtendedEntityProperties
 {
-	protected String id;
+	private String id;
 
 	private int currentId = 21;
 
-	private IStatus real;
+	protected IStatus real;
 
 	protected Entity entity;
 
 	private List<VarWatchingImpl> watching;
-
-	public static Status get(Entity entity, String id)
-	{
-		return (Status) IPropertiesManager.instance().get(entity, id);
-	}
 
 	protected int registerDataWatcher(Object o)
 	{
@@ -52,22 +48,24 @@ public class Status implements IExtendedEntityProperties
 			try
 			{
 				entity.getDataWatcher().addObject(++currentId, o);
+				entity.getDataWatcher().updateObject(currentId, o);
 			}
 			catch (IllegalArgumentException e)
 			{
-				if (e.getMessage().equals("Duplicate windowId value for " + currentId + "!"))
+				if (e.getMessage().contains("Duplicate"))
 					retry = true;
 				else
-					return -1;
+					throw e;
 			}
 		}
 		while (retry);
 		return currentId;
 	}
 
-	public Status(IStatus status)
+	public Status(String id, IStatus status)
 	{
 		this.real = status;
+		this.id = id;
 	}
 
 	@Override
@@ -121,7 +119,19 @@ public class Status implements IExtendedEntityProperties
 				VarWatchingImpl<Float> var = new VarWatchingImpl<Float>(name, f)
 				{
 					@Override
-					public Float get() {return this.getDelegate().getWatchableObjectFloat(this.getId());}
+					public Float get()
+					{
+						Float f = 0f;
+						try
+						{
+							f = this.getDelegate().getWatchableObjectFloat(this.getId());
+						}
+						catch (NullPointerException e)
+						{
+							System.out.println("null for " + this.getId());
+						}
+						return f;
+					}
 				}; builder.add(var);
 				return var;
 			}
@@ -178,6 +188,8 @@ public class Status implements IExtendedEntityProperties
 		{
 			if (data == null)
 				throw new NullPointerException("The initial data cannot be null!");
+			if (name == null)
+				throw new NullPointerException("The name cannot be null!");
 			this.name = name;
 			this.delegate = entity.getDataWatcher();
 			this.id = registerDataWatcher(data);
@@ -203,16 +215,15 @@ public class Status implements IExtendedEntityProperties
 		@Override
 		public void readFromNBT(NBTTagCompound tag)
 		{
-			T t = this.get();
 			this.set(GenericUtil.<T>cast(NBTBasement.instance().deserialize(tag.getTag(this.name))));
 		}
 
 		@Override
 		public void writeToNBT(NBTTagCompound tag)
 		{
-			tag.setTag(this.name, NBTBasement.instance().serialize(this.get()));
+			NBTBase base = NBTBasement.instance().serialize(this.get());
+			if (base != null)
+				tag.setTag(this.name, base);
 		}
-
-
 	}
 }
