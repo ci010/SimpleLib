@@ -22,9 +22,10 @@ public class RegBlock extends RegComponentBase<Block>
 	}
 
 	@Override
-	public Block setUnlocalizedName(String name)
+	public RegComponentBase<Block> setUnlocalizedName(String name)
 	{
-		return this.getComponent().setUnlocalizedName(name);
+		this.getComponent().setUnlocalizedName(name);
+		return this;
 	}
 
 	@Override
@@ -34,32 +35,34 @@ public class RegBlock extends RegComponentBase<Block>
 	}
 
 	@Override
-	public Block setCreativeTab(CreativeTabs tab)
+	public RegComponentBase<Block> setCreativeTab(CreativeTabs tab)
 	{
-		return this.getComponent().setCreativeTab(tab);
+		this.getComponent().setCreativeTab(tab);
+		return this;
 	}
 
 	@Override
-	public Block register(String name)
+	public RegComponentBase<Block> register(String name)
 	{
-		return GameRegistry.registerBlock(this.getComponent(), name);
+		GameRegistry.registerBlock(this.getComponent(), name);
+		return this;
 	}
 
 	@Override
-	public Block registerOre(String name)
+	public RegComponentBase<Block> registerOre(String name)
 	{
 		OreDictionary.registerOre(name, this.getComponent());
-		return this.getComponent();
+		return this;
 	}
 
 	@Override
-	public Block registerModel(String name)
+	public RegComponentBase<Block> registerModel(String name)
 	{
 		Item item = Item.getItemFromBlock(this.getComponent());
 		String regName = RegistryHelper.INSTANCE.currentMod().concat(":").concat(name);
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0,
 				new ModelResourceLocation(regName, "inventory"));
 		ModelBakery.addVariantName(item, regName);
-		return this.getComponent();
+		return this;
 	}
 }

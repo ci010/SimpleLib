@@ -1,5 +1,6 @@
 package net.simplelib.common.registry.abstracts;
 
+import api.simplelib.Local;
 import net.minecraft.client.settings.KeyBinding;
 
 /**
@@ -11,9 +12,10 @@ public abstract class KeyPair
 {
 	private KeyBinding mcImpl;
 
-	public KeyPair(String description, int keyCode, String category)
+	public KeyPair(String id, int keycode)
 	{
-		this.mcImpl = new KeyBinding(description, keyCode, category);
+		this.mcImpl = new KeyBinding(Local.trans("key." + id + ".description", id), keycode,
+				Local.trans("key." + id + ".category", id));
 	}
 
 	public final KeyBinding getKeyBinding()

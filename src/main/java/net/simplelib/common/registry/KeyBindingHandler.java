@@ -1,12 +1,14 @@
 package net.simplelib.common.registry;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.simplelib.common.registry.abstracts.KeyPair;
 import api.simplelib.common.ModHandler;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author ci010
@@ -15,11 +17,18 @@ import java.util.Collection;
 public class KeyBindingHandler
 {
 	private static int size;
-	private static ImmutableList<KeyPair> pairs;
+	private static List<KeyPair> pairs;
 
-	public static void buildList(Collection<KeyPair> in)
+	public static void add(KeyPair pair)
 	{
-		pairs = ImmutableList.copyOf(in);
+		if (pairs == null)
+			pairs = Lists.newArrayList();
+		pairs.add(pair);
+	}
+
+	public static void buildList()
+	{
+		pairs = ImmutableList.copyOf(pairs);
 		size = pairs.size();
 	}
 

@@ -2,16 +2,15 @@ package net.simplelib.common.registry.delegate;
 
 import api.simplelib.Local;
 import api.simplelib.command.ISimpleCommand;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
-import net.simplelib.common.CommonLogger;
-import api.simplelib.registry.ASMRegistryDelegate;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
 import api.simplelib.command.ModCommand;
+import api.simplelib.registry.ASMRegistryDelegate;
+import net.minecraft.command.*;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.simplelib.common.CommonLogger;
+import net.simplelib.common.DebugLogger;
+import net.simplelib.common.registry.annotation.type.ASMDelegate;
 
 /**
  * @author ci010
@@ -20,7 +19,7 @@ import api.simplelib.command.ModCommand;
 public class CommandDelegate extends ASMRegistryDelegate<ModCommand>
 {
 	@Mod.EventHandler
-	public void onServerStart(FMLServerStartedEvent event)
+	public void onServerStart(FMLServerStartingEvent event)
 	{
 		try
 		{
@@ -53,8 +52,12 @@ public class CommandDelegate extends ASMRegistryDelegate<ModCommand>
 			{
 				return;
 			}
-			Local.translate(cmd.getCommandUsage(null));
-			CommonLogger.info("Register the command {} by mod [{}].", this.getAnnotatedClass().getSimpleName(), this.getModid());
+			final String commandUsage = cmd.getCommandUsage(null);
+			if (commandUsage != null)
+				Local.trans(commandUsage);
+			DebugLogger.info("Register the command [/{}] <- [{}:{}].", cmd.getCommandName(),
+					this.getModid(), this.getAnnotatedClass());
+			((ServerCommandManager) MinecraftServer.getServer().getCommandManager()).registerCommand(cmd);
 		}
 		catch (InstantiationException e)
 		{

@@ -2,11 +2,11 @@ package net.simplelib.common.registry.delegate;
 
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import api.simplelib.registry.ASMRegistryDelegate;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
 import api.simplelib.network.ModMessage;
-import net.simplelib.network.ModNetwork;
+import api.simplelib.network.ModNetwork;
 
 /**
  * @author ci010
@@ -17,10 +17,10 @@ public class PacketRegistryDelegate extends ASMRegistryDelegate<ModMessage>
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		if (IMessage.class.isAssignableFrom(this.getAnnotatedClass()))
+		if (IMessageHandler.class.isAssignableFrom(this.getAnnotatedClass()))
 			try
 			{
-				IMessage msg = (IMessage) this.getAnnotatedClass().newInstance();
+				IMessageHandler msg = (IMessageHandler) this.getAnnotatedClass().newInstance();
 				ModNetwork.instance().registerMessage(msg);
 			}
 			catch (InstantiationException e)

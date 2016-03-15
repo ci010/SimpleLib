@@ -21,8 +21,6 @@ import java.util.List;
 @ASMDelegate
 public class KeyRegisterDelegate extends ASMRegistryDelegate<ModKeyBinding>
 {
-	private List<KeyPair> pairs = Lists.newArrayList();
-
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
@@ -38,11 +36,8 @@ public class KeyRegisterDelegate extends ASMRegistryDelegate<ModKeyBinding>
 			try
 			{
 				final KeyHandler handler = GenericUtil.cast(this.getAnnotatedClass().newInstance());
-				pairs.add(
-						new KeyPair(
-								Local.translate("key.".concat(anno.id()).concat(".description"), anno.id()),
-								anno.keyCode(),
-								Local.translate("key.".concat(anno.id()).concat(".category"), anno.id()))
+				KeyBindingHandler.add(
+						new KeyPair(anno.id(), anno.keyCode())
 						{
 							@Override
 							public void onKeyPressed()
@@ -65,6 +60,6 @@ public class KeyRegisterDelegate extends ASMRegistryDelegate<ModKeyBinding>
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		KeyBindingHandler.buildList(pairs);
+		KeyBindingHandler.buildList();
 	}
 }

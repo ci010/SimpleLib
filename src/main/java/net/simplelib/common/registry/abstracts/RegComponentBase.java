@@ -19,15 +19,15 @@ public abstract class RegComponentBase<T>
 		return component;
 	}
 
-	public abstract T setUnlocalizedName(String name);
+	public abstract RegComponentBase<T> setUnlocalizedName(String name);
 
 	public abstract String getUnlocalizedName();
 
-	public abstract T setCreativeTab(CreativeTabs tab);
+	public abstract RegComponentBase<T> setCreativeTab(CreativeTabs tab);
 
-	public abstract T register(String name);
+	public abstract RegComponentBase<T> register(String name);
 
-	public abstract T registerOre(String name);
+	public abstract RegComponentBase<T> registerOre(String name);
 
-	public abstract T registerModel(String name);
+	public abstract RegComponentBase<T> registerModel(String name);
 }

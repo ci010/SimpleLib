@@ -4,7 +4,7 @@ import api.simplelib.FileReference;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import api.simplelib.Instance;
+import api.simplelib.common.Instance;
 import api.simplelib.common.ModHandler;
 import net.simplelib.event.ClientStopEvent;
 import org.apache.commons.io.output.FileWriterWithEncoding;

@@ -6,9 +6,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.simplelib.HelperMod;
-import net.simplelib.common.CommonLogger;
+import net.simplelib.common.DebugLogger;
 import api.simplelib.registry.ASMRegistryDelegate;
-import api.simplelib.Instance;
+import api.simplelib.common.Instance;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
 import api.simplelib.common.ModHandler;
 
@@ -22,7 +22,7 @@ import java.lang.reflect.Modifier;
 public class HandlerDelegate extends ASMRegistryDelegate<ModHandler>
 {
 	@Mod.EventHandler
-	public void postInit(FMLPostInitializationEvent event) throws IllegalAccessException
+	public void postInit(FMLPostInitializationEvent event)
 	{
 		Object obj = null;
 		Field field = null;
@@ -41,7 +41,14 @@ public class HandlerDelegate extends ASMRegistryDelegate<ModHandler>
 		{
 			if (!field.isAccessible())
 				field.setAccessible(true);
-			obj = field.get(null);
+			try
+			{
+				obj = field.get(null);
+			}
+			catch (IllegalAccessException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		if (obj == null && !weak)
 			try
@@ -75,15 +82,16 @@ public class HandlerDelegate extends ASMRegistryDelegate<ModHandler>
 //		if (IFuelHandler.class.isAssignableFrom(this.getAnnotatedClass()))
 //			GameRegistry.registerFuelHandler((IFuelHandler) obj);
 		ImmutableSet<ModHandler.Type> set = ImmutableSet.copyOf(this.getAnnotation().value());
-		String info = "Register the handler [{}] for [{}] mod into";
+		String info = "Register EventHandler: [";
 		for (ModHandler.Type type : set)
-			info = info.concat(" ").concat(type.toString());
-		info = info.concat(" event bus.");
-		CommonLogger.info(info, this.getAnnotatedClass(), this.getModid());
+			info = info.concat(type.toString()).concat("|");
+		info = info.substring(0, info.length() - 1).concat("] <- [{}:{}]");
 
+		DebugLogger.info(info, this.getModid(), this.getAnnotatedClass().getName());
 		if (set.isEmpty())
 		{
-			CommonLogger.warn("The handler class [{}] doesn't contain any method needed to be registered!", this.getAnnotatedClass());
+			DebugLogger.warn("The handler class [{}] doesn't contain any method needed to be registered!",
+					this.getAnnotatedClass().getName());
 			return;
 		}
 		if (set.contains(ModHandler.Type.Terrain))

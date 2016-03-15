@@ -1,6 +1,7 @@
 package net.simplelib.common.registry.delegate;
 
 import com.google.common.collect.Maps;
+import com.sun.org.apache.xml.internal.resolver.helpers.Debug;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -10,6 +11,7 @@ import net.simplelib.HelperMod;
 import net.simplelib.common.CommonLogger;
 import api.simplelib.Local;
 import api.simplelib.registry.ASMRegistryDelegate;
+import net.simplelib.common.DebugLogger;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
 import api.simplelib.entity.ModEntity;
 import api.simplelib.utils.FMLModUtil;
@@ -46,6 +48,7 @@ public class EntityRegistryDelegate extends ASMRegistryDelegate<ModEntity>
 		String modid = this.getModid();
 		ModEntity anno = this.getAnnotation();
 		Class<? extends net.minecraft.entity.Entity> clz = GenericUtil.cast(this.getAnnotatedClass());
+		String info = "Register Entity: [{}] <- [{}]| id <- {}";
 		String name = anno.name();
 		Object mod = FMLModUtil.getModContainer(modid).getMod();
 		if (name.equals(""))
@@ -56,14 +59,13 @@ public class EntityRegistryDelegate extends ASMRegistryDelegate<ModEntity>
 		ModEntity.Spawner spawner = this.getAnnotatedClass().getAnnotation(ModEntity.Spawner.class);
 		if (spawner != null)
 		{
-			CommonLogger.info("Register entity {} for mod {} with id {} and its egg.", name, modid, id);
+			info = info.concat(" | egg");
 			EntityRegistry.registerModEntity(clz, name, id, mod, anno.trackingRange(), anno
 					.updateFrequency(), anno.sendsVelocityUpdates(), spawner.primaryColor(), spawner.secondaryColor());
-			Local.translate("entity.".concat(modid).concat(".").concat(name).concat(".name"));
+			Local.trans("entity.".concat(modid).concat(".").concat(name).concat(".name"));
 		}
 		else
 		{
-			CommonLogger.info("Register entity {} for mod {} with id {}", name, modid, id);
 			EntityRegistry.registerModEntity(clz, name, id, mod, anno.trackingRange(), anno
 					.updateFrequency(), anno.sendsVelocityUpdates());
 		}
@@ -89,9 +91,14 @@ public class EntityRegistryDelegate extends ASMRegistryDelegate<ModEntity>
 				if (renderObj != null)
 				{
 					RenderingRegistry.registerEntityRenderingHandler(clz, renderObj);
-					CommonLogger.info("Register renderer to entity {}", name);
+					info = info.concat(" | render <- {}");
+					DebugLogger.info(info, name, this.getModid(), id, render.getSimpleName());
 				}
+				else
+					DebugLogger.info(info, name, this.getModid(), id);
 			}
+			else
+				DebugLogger.info(info, name, this.getModid(), id);
 		}
 	}
 

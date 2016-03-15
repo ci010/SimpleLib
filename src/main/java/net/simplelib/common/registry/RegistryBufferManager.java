@@ -29,11 +29,6 @@ public final class RegistryBufferManager
 		return instance;
 	}
 
-	public static void close()
-	{
-		instance = null;
-	}
-
 	private Multimap<Class<? extends FMLStateEvent>, SubscriberInfo> subscriberInfoMap = HashMultimap.create();
 
 	class SubscriberInfo
@@ -70,6 +65,21 @@ public final class RegistryBufferManager
 				if (!(registryDelegateType.getGenericSuperclass() instanceof ParameterizedType))
 					throw new UnsupportedOperationException("The ASMRegistryDelegate class need to handle an " +
 							"annotation type");
+			Object delegate = null;
+			try
+			{
+				delegate = registryDelegateType.newInstance();
+			}
+			catch (InstantiationException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IllegalAccessException e)
+			{
+				e.printStackTrace();
+			}
+			if (delegate == null)
+				return;
 
 			for (Method method : registryDelegateType.getDeclaredMethods())
 			{
@@ -86,37 +96,24 @@ public final class RegistryBufferManager
 				if (methodParam == FMLServerStoppedEvent.class && methodParam == FMLServerStoppingEvent.class)
 					throw new UnsupportedOperationException("Not support FMLServerStoppedEvent and FMLServerStoppingEvent");
 
-				try
+				Class<? extends FMLStateEvent> state = GenericUtil.cast(methodParam);
+				if (asmType)
 				{
-					Class<? extends FMLStateEvent> state = GenericUtil.cast(methodParam);
-					Object delegate = registryDelegateType.newInstance();
-					if (asmType)
+					ASMRegistryDelegate asmDelegate = (ASMRegistryDelegate) delegate;
+					Class<? extends Annotation> target = GenericUtil.getGenericTypeTo(asmDelegate);
+					for (ASMDataTable.ASMData meta : table.getAll(target.getName()))
 					{
-						ASMRegistryDelegate asmDelegate = (ASMRegistryDelegate) delegate;
-						Class<? extends Annotation> target = GenericUtil.getGenericTypeTo(asmDelegate);
-						for (ASMDataTable.ASMData meta : table.getAll(target.getName()))
+						Package pkg = ASMDataUtil.getClass(meta).getPackage();
+						String modid = rootMap.getModid(pkg.getName());
+						if (modid == null)
 						{
-							Package pkg = ASMDataUtil.getClass(meta).getPackage();
-							String modid = rootMap.getModid(pkg.getName());
-							if (modid == null)
-							{
-								modid = "Anonymous";
+							modid = "Anonymous";
 //							HelperMod.metadata.childMods.add();
-							}
-							asmDelegate.addCache(modid, meta);
 						}
+						asmDelegate.addCache(modid, meta);
 					}
-					subscriberInfoMap.put(state, new SubscriberInfo(delegate, method));
 				}
-				catch (InstantiationException e)
-				{
-					//TODO log
-					e.printStackTrace();
-				}
-				catch (IllegalAccessException e)
-				{
-					e.printStackTrace();
-				}
+				subscriberInfoMap.put(state, new SubscriberInfo(delegate, method));
 			}
 		}
 	}

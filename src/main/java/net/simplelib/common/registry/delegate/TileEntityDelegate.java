@@ -7,8 +7,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.simplelib.HelperMod;
 import net.simplelib.common.CommonLogger;
 import api.simplelib.registry.ASMRegistryDelegate;
+import net.simplelib.common.DebugLogger;
 import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import api.simplelib.common.ModTileEntity;
+import api.simplelib.tileentity.ModTileEntity;
 import api.simplelib.utils.GenericUtil;
 
 /**
@@ -41,7 +42,7 @@ public class TileEntityDelegate extends ASMRegistryDelegate<ModTileEntity>
 		}
 		else
 			GameRegistry.registerTileEntity(tile, name);
-
-		CommonLogger.info("Register TileEntity {} by mod [{}]", name, this.getModid());
+		DebugLogger.info("Register TileEntity: [{}] <- [{}:{}]", name, this.getModid(), this.getAnnotatedClass().getName
+				());
 	}
 }

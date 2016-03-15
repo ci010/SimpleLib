@@ -24,6 +24,7 @@ public abstract class ReflectionAnnotatedMaker<Input, Output> implements Maker<F
 		this.map = map;
 	}
 
+
 	public ReflectionAnnotatedMaker(Map<Class<? extends Annotation>, ArgumentHelper> map, Object obj)
 	{
 		this.map = map;

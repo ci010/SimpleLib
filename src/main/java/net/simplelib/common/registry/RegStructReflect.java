@@ -1,8 +1,7 @@
 package net.simplelib.common.registry;
 
 import api.simplelib.component.Construct;
-import api.simplelib.component.ModComponentStruct;
-import com.google.common.base.Preconditions;
+import api.simplelib.component.ComponentStruct;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -71,12 +70,12 @@ public class RegStructReflect<T> extends RegComponentBase<T>
 		}
 
 		Class<?> superclass = clz.getSuperclass();
-		if (superclass.isAnnotationPresent(ModComponentStruct.class))
+		if (superclass.isAnnotationPresent(ComponentStruct.class))
 			discover(o, superclass);
 	}
 
 	@Override
-	public T setUnlocalizedName(String name)
+	public RegComponentBase<T> setUnlocalizedName(String name)
 	{
 		this.unlocalizedName = name;
 		for (int i = 0; i < itemMeta.size(); i++)
@@ -91,7 +90,7 @@ public class RegStructReflect<T> extends RegComponentBase<T>
 			blocks.get(i).setUnlocalizedName(shortName);
 			blockMeta.set(i, shortName);
 		}
-		return this.getComponent();
+		return this;
 	}
 
 	@Override
@@ -101,35 +100,35 @@ public class RegStructReflect<T> extends RegComponentBase<T>
 	}
 
 	@Override
-	public T setCreativeTab(CreativeTabs tab)
+	public RegComponentBase<T> setCreativeTab(CreativeTabs tab)
 	{
 		return null;
 	}
 
 	@Override
-	public T register(String name)
+	public RegComponentBase<T> register(String name)
 	{
 		for (int i = 0; i < itemMeta.size(); i++)
 			items.get(i).register(itemMeta.get(i));
 		for (int i = 0; i < blockMeta.size(); i++)
 			blocks.get(i).register(blockMeta.get(i));
-		return this.getComponent();
+		return this;
 	}
 
 	@Override
-	public T registerOre(String name)
+	public RegComponentBase<T> registerOre(String name)
 	{
 		//TODO consider about this
 		return null;
 	}
 
 	@Override
-	public T registerModel(String name)
+	public RegComponentBase<T> registerModel(String name)
 	{
 		for (int i = 0; i < itemMeta.size(); i++)
 			items.get(i).registerModel(itemMeta.get(i));
 		for (int i = 0; i < blockMeta.size(); i++)
 			blocks.get(i).registerModel(blockMeta.get(i));
-		return null;
+		return this;
 	}
 }

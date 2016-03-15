@@ -1,6 +1,6 @@
 package net.simplelib.common.registry;
 
-import api.simplelib.component.ModComponentStruct;
+import api.simplelib.component.ComponentStruct;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -59,7 +59,7 @@ public class NamespaceMakerComplex implements Maker<Class<?>, ImmutableSet<Names
 				Class c = f.getType();
 				if (Item.class.isAssignableFrom(c) || Block.class.isAssignableFrom(c))
 					builder.addAll(itemBlockMaker.make(f));
-				if (f.isAnnotationPresent(ModComponentStruct.class))
+				if (f.isAnnotationPresent(ComponentStruct.class))
 					builder.addAll(maker.make(f));
 			}
 			else

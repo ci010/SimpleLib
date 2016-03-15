@@ -1,6 +1,6 @@
 package net.simplelib.common.registry.delegate;
 
-import api.simplelib.component.ModComponentStruct;
+import api.simplelib.component.ComponentStruct;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
@@ -32,10 +32,10 @@ public class ModComponentDelegate extends ASMRegistryDelegate<ModComponent>
 				RegistryHelper.INSTANCE.registerItem(this.getModid(), (Item) this.getAnnotatedClass().newInstance(), name);
 			else if (Block.class.isAssignableFrom(this.getAnnotatedClass()))
 				RegistryHelper.INSTANCE.registerBlock(this.getModid(), (Block) this.getAnnotatedClass().newInstance(), name);
-			else if (this.getAnnotatedClass().isAnnotationPresent(ModComponentStruct.class))
+			else if (this.getAnnotatedClass().isAnnotationPresent(ComponentStruct.class))
 				RegistryHelper.INSTANCE.register(this.getModid(), simpleMaker.make(this.getAnnotatedClass().newInstance()));
 			else
-				CommonLogger.warn("The class {} is neither a block nor an item! Moreover, it not a ModComponentStruct. " +
+				CommonLogger.warn("The class {} is neither a block nor an item! Moreover, it not a ComponentStruct. " +
 						"It will not be registered!", this
 						.getAnnotatedClass().getName());
 		}
