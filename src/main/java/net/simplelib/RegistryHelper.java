@@ -1,28 +1,23 @@
 package net.simplelib;
 
+import api.simplelib.component.ArgumentHelper;
+import api.simplelib.component.ComponentsReference;
+import api.simplelib.component.Construct;
+import api.simplelib.sitting.Sitable;
+import api.simplelib.utils.FMLModUtil;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.simplelib.ai.AIRegistry;
-import net.simplelib.common.registry.ComponentBlock;
-import net.simplelib.common.registry.ComponentItem;
 import net.simplelib.common.registry.ContainerMeta;
 import net.simplelib.common.registry.Namespace;
-import net.simplelib.common.registry.abstracts.ArgumentHelper;
-import net.simplelib.common.registry.annotation.field.Construct;
-import net.simplelib.common.registry.annotation.type.BlockItemContainer;
-import net.simplelib.common.utils.FMLModUtil;
-import net.simplelib.network.AbstractMessageHandler;
-import net.simplelib.network.ModNetwork;
+import net.simplelib.common.registry.RegBlock;
+import net.simplelib.common.registry.RegItem;
 import net.simplelib.sitting.SitHandler;
 
 import java.lang.annotation.Annotation;
@@ -67,7 +62,7 @@ public enum RegistryHelper
 		return this.currentModid;
 	}
 
-	public void setLang(String modid, String[] lang)
+	public void setLang(String modid, String... lang)
 	{
 		if (lang == null || lang.length == 0 || lang[0].equals(""))
 			lang = new String[]
@@ -94,6 +89,14 @@ public enum RegistryHelper
 			this.containerIdx.get(modid).addRawContainer(container);
 	}
 
+	public void register(String modid, ImmutableSet set)
+	{
+		if (!this.containerIdx.containsKey(modid))
+			this.track(new ContainerMeta(modid).addUnregistered(set));
+		else
+			this.containerIdx.get(modid).addUnregistered(set);
+	}
+
 	public void registerBlock(String modid, Block block, String name)
 	{
 		this.registerBlock(modid, block, name, null);
@@ -102,7 +105,7 @@ public enum RegistryHelper
 	public void registerBlock(String modid, Block block, String name, String ore)
 	{
 		ImmutableSet temp = ImmutableSet.of(new Namespace(name,
-				new ComponentBlock(block)).setOreName(ore));
+				new RegBlock(block)).setOreName(ore));
 		this.register(modid, temp);
 	}
 
@@ -114,17 +117,10 @@ public enum RegistryHelper
 	public void registerItem(String modid, Item item, String name, String ore)
 	{
 		ImmutableSet temp = ImmutableSet.of(new Namespace(name,
-				new ComponentItem(item)).setOreName(ore));
+				new RegItem(item)).setOreName(ore));
 		this.register(modid, temp);
 	}
 
-	public void register(String modid, ImmutableSet set)
-	{
-		if (!this.containerIdx.containsKey(modid))
-			this.track(new ContainerMeta(modid).addUnregistered(set));
-		else
-			this.containerIdx.get(modid).addUnregistered(set);
-	}
 
 	public Map<Class<? extends Annotation>, ArgumentHelper> getAnnotationMap()
 	{
@@ -154,24 +150,37 @@ public enum RegistryHelper
 	 *
 	 * @param block
 	 */
-	public void registerSittableBlock(Block block)
+	public void registerSittableBlock(final Block block)
 	{
-		SitHandler.register(block);
+		SitHandler.register(new Sitable()
+		{
+			@Override
+			public Block sitableBlock()
+			{
+				return block;
+			}
+
+			@Override
+			public Situation getSituation()
+			{
+				return Sitable.DEFAULT;
+			}
+		});
 	}
 
-	/**
-	 * Register a new message with its handler class.
-	 * <p>Highly recommend to use {@link net.simplelib.common.registry.annotation.type.Message} to register this.</p>
-	 *
-	 * @param handlerClass The handler class which binds with message class
-	 * @param messageClass The message class
-	 * @param <Message>    The type of message
-	 */
-	public <Message extends IMessage> void registerMessage(Class<? extends AbstractMessageHandler<Message>>
-																   handlerClass, Class<Message> messageClass)
-	{
-		ModNetwork.instance().registerMessage(handlerClass, messageClass);
-	}
+//	/**
+//	 * Register a new message with its handler class.
+//	 * <p>Highly recommend to use {@link ModMessage} to register this.</p>
+//	 *
+//	 * @param handlerClass The handler class which binds with message class
+//	 * @param messageClass The message class
+//	 * @param <Message>    The type of message
+//	 */
+//	public <Message extends IMessage> void registerMessage(Class<? extends AbstractMessage<Message>>
+//																   handlerClass, Class<Message> messageClass)
+//	{
+//		ModNetwork.instance().registerMessage(handlerClass, messageClass);
+//	}
 
 	/**
 	 * Register custom annotation for constructing object.
@@ -204,7 +213,7 @@ public enum RegistryHelper
 
 	/**
 	 * Register containers. All the static fields with type assigning from
-	 * {@link Item}/ {@link Block}/{@link BlockItemContainer} in these containers
+	 * {@link Item}/ {@link Block}/{@link ComponentsReference} in these containers
 	 * will be registered.
 	 *
 	 * @param ifGenerateLang  If your mod need to generate language files
@@ -247,17 +256,6 @@ public enum RegistryHelper
 //
 //		if (isClear)
 //			HelperMod.LOG.info("Containers are all fine");
-	}
-
-	/**
-	 * Remove the ai in a entity living class
-	 *
-	 * @param living The class of the entity living
-	 * @param ai     The ai you want to remove
-	 */
-	public void removeAI(Class<? extends EntityLiving> living, Class<? extends EntityAIBase>... ai)
-	{
-		AIRegistry.removeAI(living, ai);
 	}
 
 	public void close()

@@ -1,5 +1,6 @@
 package net.simplelib;
 
+import api.simplelib.utils.Assert;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -10,7 +11,7 @@ import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.simplelib.common.CommonLogger;
 import net.simplelib.common.registry.RegistryBufferManager;
-import org.apache.logging.log4j.LogManager;
+import net.simplelib.login.restriction.ModRestriction;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
@@ -18,9 +19,7 @@ import java.util.Map;
 @Mod(modid = HelperMod.MODID, name = HelperMod.NAME, version = HelperMod.VERSION, useMetadata = true)
 public class HelperMod
 {
-	public static final String MODID = "helper", NAME = "Helper", VERSION = "beta 0.7";
-
-	public static final boolean DEBUG_MOD;
+	public static final String MODID = "helper", NAME = "Helper", VERSION = "beta 0.8";
 
 	@Mod.Metadata(MODID)
 	public static ModMetadata metadata;
@@ -28,7 +27,7 @@ public class HelperMod
 	@Mod.Instance(MODID)
 	public static HelperMod instance;
 
-	public static final Logger LOG = LogManager.getLogger("test");
+	public static Logger LOG;
 
 	@SidedProxy(modId = MODID, serverSide = "net.simplelib.CommonProxy", clientSide = "net.simplelib.ClientProxy")
 	public static CommonProxy proxy;
@@ -37,8 +36,6 @@ public class HelperMod
 	public void construct(FMLConstructionEvent event)
 	{
 		CommonLogger.init();
-		if (DEBUG_MOD)
-			CommonLogger.info("Detected that this is a development environment. Debug mode on.");
 		RegistryHelper.INSTANCE.container = Loader.instance().activeModContainer();
 		RegistryBufferManager.instance().load(event.getASMHarvestedData());
 		RegistryBufferManager.instance().invoke(event);
@@ -47,8 +44,11 @@ public class HelperMod
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-//		event.getModConfigurationDirectory()
+		LOG = event.getModLog();
+		if (Assert.debug())
+			LOG.info("Detected that this is a development environment. Debug mode on.");
 		RegistryBufferManager.instance().invoke(event);
+		proxy.preInit(event);
 	}
 
 	@Mod.EventHandler
@@ -63,6 +63,7 @@ public class HelperMod
 		//TODO remove this test code
 		RegistryHelper.INSTANCE.registerSittableBlock(Blocks.brick_stairs);
 		RegistryBufferManager.instance().invoke(event);
+		proxy.init(event);
 	}
 
 	@Mod.EventHandler
@@ -88,31 +89,11 @@ public class HelperMod
 	public void serverStarted(FMLServerStartedEvent event)
 	{
 		RegistryBufferManager.instance().invoke(event);
-		RegistryBufferManager.close();
 	}
 
 	@NetworkCheckHandler
 	public boolean acceptModList(Map<String, String> modList, Side side)
 	{
-		for (Map.Entry<String, String> entry : modList.entrySet())
-		{
-			System.out.println(entry.getKey());
-			System.out.println(entry.getValue());
-		}
-		return true;
-	}
-
-	static
-	{
-		boolean fail = false;
-		try
-		{
-			Class.forName("net.minecraftforge.gradle.GradleStartCommon");
-		}
-		catch (ClassNotFoundException e)
-		{
-			fail = true;
-		}
-		DEBUG_MOD = !fail;
+		return ModRestriction.acceptModList(modList, side);
 	}
 }

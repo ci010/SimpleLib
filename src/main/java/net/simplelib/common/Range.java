@@ -1,6 +1,6 @@
 package net.simplelib.common;
 
-import net.simplelib.gui.GuiComponent;
+import api.simplelib.gui.GuiComponent;
 import org.lwjgl.util.vector.Vector2f;
 
 /**

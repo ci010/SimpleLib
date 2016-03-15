@@ -4,16 +4,16 @@ import com.google.common.collect.Lists;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
-import net.simplelib.common.registry.abstracts.ASMRegistryDelegate;
-import net.simplelib.common.registry.annotation.type.LoadDelegate;
-import net.simplelib.common.utils.LoaderStateUtil;
+import api.simplelib.registry.ASMRegistryDelegate;
+import net.simplelib.common.registry.annotation.type.ASMDelegate;
+import api.simplelib.utils.LoaderStateUtil;
 
 import java.util.List;
 
 /**
  * @author ci010
  */
-@LoadDelegate
+@ASMDelegate
 public class SupportDelegate extends ASMRegistryDelegate<ModSupport>
 {
 	private List<ISupport> supports = Lists.newArrayList();

@@ -1,8 +1,19 @@
 package net.simplelib;
 
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.simplelib.common.CommonLogger;
+import net.simplelib.common.registry.ContainerMeta;
+import net.simplelib.common.registry.Namespace;
+import net.simplelib.common.registry.NamespaceMakerComplex;
+import api.simplelib.utils.NameFormattor;
+import net.simplelib.login.restriction.ModRestriction;
+
+import java.util.Iterator;
 
 public class CommonProxy
 {
@@ -13,5 +24,50 @@ public class CommonProxy
 	public boolean isSinglePlayer()
 	{
 		return Minecraft.getMinecraft().isSingleplayer();
+	}
+
+	void preInit(FMLPreInitializationEvent event)
+	{
+		NamespaceMakerComplex maker = new NamespaceMakerComplex(RegistryHelper.INSTANCE.getAnnotationMap());
+		ModRestriction.preInit(event);
+		Iterator<ContainerMeta> itr = RegistryHelper.INSTANCE.getRegistryInfo();
+		while (itr.hasNext())
+		{
+			ContainerMeta meta = itr.next();
+			RegistryHelper.INSTANCE.start(meta);
+			CommonLogger.info("Start to register [".concat(meta.modid).concat("] mod."));
+			ImmutableSet<Namespace> cache;
+			for (Class c : meta.getRawContainer())
+				if ((cache = maker.make(c)) != null)
+					meta.addUnregistered(cache);
+			RegistryHelper.INSTANCE.end();
+		}
+	}
+
+	void init(FMLInitializationEvent event)
+	{
+		Iterator<ContainerMeta> itr = RegistryHelper.INSTANCE.getRegistryInfo();
+		while (itr.hasNext())
+		{
+			ContainerMeta meta = itr.next();
+			RegistryHelper.INSTANCE.start(meta);
+			this.register(meta);
+			RegistryHelper.INSTANCE.end();
+		}
+	}
+
+	void register(ContainerMeta meta)
+	{
+		String registerName;
+		String unlocalizedName;
+		for (Namespace namespace : meta.getUnregistered())
+		{
+			registerName = NameFormattor.upperTo_(namespace.toString());
+			unlocalizedName = registerName;//NameFormattor._toPoint(registerName);
+			namespace.getComponent().setUnlocalizedName(unlocalizedName);
+			namespace.getComponent().register(registerName);
+			if (namespace.needRegOre())
+				namespace.getComponent().registerOre(namespace.getOreName());
+		}
 	}
 }

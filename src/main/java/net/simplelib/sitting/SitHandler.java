@@ -15,7 +15,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import api.simplelib.common.ModHandler;
 import api.simplelib.utils.GenericUtil;
-import net.simplelib.network.ModNetwork;
+import api.simplelib.network.ModNetwork;
 
 import java.util.List;
 import java.util.Map;

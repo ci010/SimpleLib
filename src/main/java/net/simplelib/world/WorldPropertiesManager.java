@@ -7,7 +7,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.simplelib.common.nbt.ITagSerial;
-import net.simplelib.common.registry.annotation.field.Instance;
+import api.simplelib.common.Instance;
 import api.simplelib.common.ModHandler;
 
 import java.util.Map;

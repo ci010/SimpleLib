@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.simplelib.common.nbt.ITagSerial;
 import api.simplelib.network.ModMessage;
-import net.simplelib.common.ContainerCommon;
+import api.simplelib.container.ContainerCommon;
 
 /**
  * @author ci010

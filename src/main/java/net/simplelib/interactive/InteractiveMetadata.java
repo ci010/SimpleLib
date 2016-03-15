@@ -26,6 +26,8 @@ public class InteractiveMetadata//TODO finish this...
 
 	public static void registerBase(Class<? extends Interactive.Base> base, BaseHandler handler)
 	{
+		if (handlerMap == null)
+			handlerMap = Maps.newHashMap();
 		handlerMap.put(base, handler);
 	}
 
