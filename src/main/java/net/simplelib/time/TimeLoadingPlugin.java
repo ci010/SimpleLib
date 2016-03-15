@@ -1,49 +1,51 @@
 package net.simplelib.time;
 
+import net.minecraftforge.fml.relauncher.IFMLCallHook;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
+import java.io.File;
 import java.util.Map;
 
 /**
  * @author ci010
  */
 @IFMLLoadingPlugin.MCVersion("1.8")
-public class TimeLoadingPlg implements IFMLLoadingPlugin
+public class TimeLoadingPlugin implements IFMLLoadingPlugin, IFMLCallHook
 {
+	static File src;
+
 	@Override
 	public String[] getASMTransformerClass()
 	{
-		System.out.println("transf");
-		return new String[]
-				{
-						Transformer.class.getName()
-				};
+		return new String[]{TimeTransformer.class.getName()};
 	}
 
 	@Override
 	public String getModContainerClass()
 	{
-		return TimeModContainer.class.getName();
+		return "net.simplelib.time.TimeMod";//TimeMod.class.getName();
 	}
 
 	@Override
 	public String getSetupClass()
 	{
-		return null;
+		return this.getClass().getName();
 	}
 
 	@Override
 	public void injectData(Map<String, Object> data)
 	{
-		for (Map.Entry<String, Object> entry : data.entrySet())
-		{
-			System.out.println(entry.getKey());
-			System.out.println(entry.getValue());
-		}
+		src = (File) data.get("coremodLocation");
 	}
 
 	@Override
 	public String getAccessTransformerClass()
+	{
+		return null;
+	}
+
+	@Override
+	public Void call() throws Exception
 	{
 		return null;
 	}

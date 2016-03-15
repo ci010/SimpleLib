@@ -1,22 +1,38 @@
 package net.simplelib.time;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.WorldProvider;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.objectweb.asm.Type;
 
 /**
  * @author ci010
  */
+
 public class Hook
 {
-	public static int getColor(double temp, double humi)
+	public static final String CLASS = Type.getInternalName(Hook.class),
+			GETCOLOR = "getColor", GETCOLOR_DES = "(I)I";
+
+	@SideOnly(Side.CLIENT)
+	static TimeMod.WorldProviderModified provider;
+
+	@SideOnly(Side.CLIENT)
+	static void init(TimeMod.WorldProviderModified p)
 	{
-		WorldProvider provider = Minecraft.getMinecraft().theWorld.provider;
-		if (provider instanceof TimeModContainer.WorldProviderModified)
-		{
-			TimeModContainer.WorldProviderModified p = (TimeModContainer.WorldProviderModified) provider;
-			TimeController controller = p.getController();
-//			controller.getP
-		}
-		return 0;
+		provider = p;
+	}
+
+
+	@SideOnly(Side.CLIENT)
+	public static int getColor(int color)
+	{
+		if (provider != null)
+			return provider.getController().modifyColor(color);
+		return color;
+	}
+
+	public static void setTime(long time)
+	{
+
 	}
 }
