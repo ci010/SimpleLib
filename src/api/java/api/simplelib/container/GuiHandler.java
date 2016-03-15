@@ -1,11 +1,9 @@
-package net.simplelib.network;
+package api.simplelib.container;
 
-import api.simplelib.IContainerProvider;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
-import api.simplelib.common.ModGuiHandler;
 
 import java.util.List;
 

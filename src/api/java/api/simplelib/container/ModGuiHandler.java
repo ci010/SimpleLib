@@ -1,4 +1,4 @@
-package api.simplelib.common;
+package api.simplelib.container;
 
 import net.minecraftforge.fml.common.network.IGuiHandler;
 

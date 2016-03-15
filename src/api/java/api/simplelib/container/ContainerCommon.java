@@ -1,4 +1,4 @@
-package net.simplelib.interactive;
+package api.simplelib.container;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -13,9 +13,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import api.simplelib.VarSync;
-import net.simplelib.interactive.inventory.Inventory;
+import net.simplelib.interactive.inventory.InventoryCommon;
 import net.simplelib.interactive.process.VarInteger;
-import net.simplelib.network.ModNetwork;
+import api.simplelib.network.ModNetwork;
 import net.simplelib.network.NBTWindowsMessage;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * @author ci010
  */
-public class ContainerCommon extends Container implements Inventory.Listener, VarSync.Listener
+public class ContainerCommon extends Container implements InventoryCommon.Listener, VarSync.Listener
 {
 	private ImmutableList<VarInteger> varIntegers;
 	private ImmutableList<VarSync> syncs;
@@ -45,7 +45,7 @@ public class ContainerCommon extends Container implements Inventory.Listener, Va
 		return this;
 	}
 
-	public ContainerCommon loadPlayerSlot(InventoryPlayer player)
+	public ContainerCommon load(InventoryPlayer player)
 	{
 		int index;
 		for (index = 0; index < 9; ++index)
@@ -88,7 +88,7 @@ public class ContainerCommon extends Container implements Inventory.Listener, Va
 		{
 			EntityPlayerMP playerMP = (EntityPlayerMP) iCrafting;
 			for (int num = 0; num < syncs.size(); ++num)
-				ModNetwork.instance().sendTo(new NBTWindowsMessage(this.windowId, num, syncs.get(num).get()),
+				ModNetwork.instance().sendTo(new NBTWindowsMessage(this.windowId, num, syncs.get(num)),
 						playerMP);
 		}
 	}
@@ -103,7 +103,7 @@ public class ContainerCommon extends Container implements Inventory.Listener, Va
 	@SideOnly(Side.CLIENT)
 	public void updateSync(int id, NBTTagCompound tag)
 	{
-		syncs.get(id).get().readFromNBT(tag);
+		syncs.get(id).readFromNBT(tag);
 	}
 
 	@Override
@@ -141,7 +141,7 @@ public class ContainerCommon extends Container implements Inventory.Listener, Va
 	public void onChanged(VarSync var)
 	{
 		for (EntityPlayerMP player : getPlayers())
-			ModNetwork.instance().sendTo(new NBTWindowsMessage(this.windowId, syncs.indexOf(var), var.get()),
+			ModNetwork.instance().sendTo(new NBTWindowsMessage(this.windowId, syncs.indexOf(var), var),
 					player);
 	}
 }
