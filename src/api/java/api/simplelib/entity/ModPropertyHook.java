@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation register the {@link PropertyHook}.
+ * This annotation register the {@link EntityPropertyHook}.
  *
  * @author ci010
- * @see PropertyHook
+ * @see EntityPropertyHook
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value =

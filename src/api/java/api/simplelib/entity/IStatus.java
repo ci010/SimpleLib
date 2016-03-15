@@ -7,11 +7,11 @@ import net.simplelib.common.nbt.ITagSerial;
 
 /**
  * A easy interface to create a {@link net.minecraftforge.common.IExtendedEntityProperties}.
- * <p>Use {@link PropertyHook} to attach this on an entity.</p>
+ * <p>Use {@link EntityPropertyHook} to attach this on an entity.</p>
  *
  * @author ci010
  * @see net.minecraftforge.common.IExtendedEntityProperties
- * @see PropertyHook
+ * @see EntityPropertyHook
  */
 public interface IStatus extends ITagSerial
 {

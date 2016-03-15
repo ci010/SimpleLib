@@ -13,7 +13,7 @@ import net.minecraftforge.common.IExtendedEntityProperties;
  * @see IExtendedEntityProperties
  * @see IStatus
  */
-public interface PropertyHook<E extends Entity>
+public interface EntityPropertyHook<E extends Entity>
 {
 	/**
 	 * Handle a new entity.
