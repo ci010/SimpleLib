@@ -1,4 +1,4 @@
-package net.simplelib.minecraft;
+package api.simplelib.minecraft;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;

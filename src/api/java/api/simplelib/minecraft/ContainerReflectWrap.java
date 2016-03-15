@@ -1,4 +1,4 @@
-package net.simplelib.minecraft;
+package api.simplelib.minecraft;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,7 +31,6 @@ public class ContainerReflectWrap extends Container
 				this.addSlotToContainer(new Slot(inv, offset + index * 9 + 9, 8 + offset * 18, 84 + index * 18));
 		for (index = 0; index < 9; ++index)
 			this.addSlotToContainer(new Slot(inv, index, 8 + index * 18, 142));
-		
 	}
 
 	@Override

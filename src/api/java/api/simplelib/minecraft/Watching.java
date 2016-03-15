@@ -1,4 +1,4 @@
-package net.simplelib.minecraft;
+package api.simplelib.minecraft;
 
 import java.lang.annotation.*;
 
