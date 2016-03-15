@@ -1,11 +1,11 @@
 package api.simplelib.interactive.action;
 
-import api.simplelib.IContainerProvider;
+import api.simplelib.container.IContainerProvider;
 import api.simplelib.interactive.Interactive;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.simplelib.HelperMod;
-import net.simplelib.network.GuiHandler;
+import api.simplelib.container.GuiHandler;
 
 /**
  * @author ci010

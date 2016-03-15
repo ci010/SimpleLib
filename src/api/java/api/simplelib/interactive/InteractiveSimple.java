@@ -1,13 +1,14 @@
 package api.simplelib.interactive;
 
-import api.simplelib.IContainerProvider;
+import api.simplelib.container.ContainerCommon;
+import api.simplelib.container.IContainerProvider;
 import api.simplelib.interactive.action.ActionOpenGui;
-import net.simplelib.common.ContainerProvider;
-import net.simplelib.gui.GuiProvider;
+import api.simplelib.container.ContainerProvider;
+import api.simplelib.gui.GuiProvider;
 
 /**
  * A simple solution for the {@link Interactive} with Gui.
- * <p>I highly recommend you to use {@link net.simplelib.common.ContainerCommon} as the Container here.</p>
+ * <p>I highly recommend you to use {@link ContainerCommon} as the Container here.</p>
  *
  * @author ci010
  */

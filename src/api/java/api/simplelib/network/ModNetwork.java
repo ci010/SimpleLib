@@ -1,8 +1,5 @@
-package net.simplelib.network;
+package api.simplelib.network;
 
-import api.simplelib.network.AbstractBiMessage;
-import api.simplelib.network.AbstractClientMessage;
-import api.simplelib.network.AbstractServerMessage;
 import api.simplelib.utils.GenericUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,7 +19,6 @@ public class ModNetwork
 {
 	private static ModNetwork instance;
 	private byte packetId = 0;
-	private Set<Class> registerAnonymous;
 	/**
 	 * The SimpleNetworkWrapper instance is used both to register and send
 	 * packets. Since I will be adding wrapper methods, this field is private,

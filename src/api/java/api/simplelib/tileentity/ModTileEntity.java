@@ -1,4 +1,4 @@
-package api.simplelib.common;
+package api.simplelib.tileentity;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;

@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
-import net.simplelib.gui.TextureInfo;
+import api.simplelib.gui.TextureInfo;
 
 /**
  * @author ci010

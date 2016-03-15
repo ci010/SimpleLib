@@ -10,7 +10,7 @@ public class StringLocal extends StringSource
 	public StringLocal(String id)
 	{
 		super(id);
-		localized = Local.translate(id);
+		localized = Local.trans(id);
 	}
 
 	@Override

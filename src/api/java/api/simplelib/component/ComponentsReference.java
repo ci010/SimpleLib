@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * <ul>
  * <li>{@link net.minecraft.block.Block}
  * <li>{@link net.minecraft.item.Item}
- * <li>{@link ModComponentStruct}
+ * <li>{@link ComponentStruct}
  * </ul>
  * which will be register into Minecraft.
  * <p/>

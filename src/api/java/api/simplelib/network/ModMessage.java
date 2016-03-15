@@ -2,7 +2,6 @@ package api.simplelib.network;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.simplelib.network.ModNetwork;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
