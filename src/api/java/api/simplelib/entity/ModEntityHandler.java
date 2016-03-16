@@ -6,14 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation register the {@link EntityPropertyHook}.
+ * This annotation register the {@link EntityHandler}.
  *
  * @author ci010
- * @see EntityPropertyHook
+ * @see EntityHandler
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value =
 		{ElementType.TYPE})
-public @interface ModPropertyHook
+public @interface ModEntityHandler
 {
 }
