@@ -2,7 +2,7 @@ package net.simplelib.entity;
 
 import api.simplelib.common.Nullable;
 import api.simplelib.entity.IStatus;
-import api.simplelib.entity.EntityPropertyHook;
+import api.simplelib.entity.EntityHandler;
 import com.google.common.collect.*;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
@@ -24,10 +24,10 @@ public class IPropertiesManager
 	@Instance(weak = true)
 	private static IPropertiesManager instance;
 
-	private Multimap<Class<? extends Entity>, EntityPropertyHook> map = HashMultimap.create();
+	private Multimap<Class<? extends Entity>, EntityHandler> map = HashMultimap.create();
 	private StatusCollection collection = new StatusCollection();
 
-	public void registerStatus(Class<? extends Entity> clz, EntityPropertyHook property)
+	public void registerStatus(Class<? extends Entity> clz, EntityHandler property)
 	{
 		CommonLogger.info("Register the status handler to all {}.", clz.getSimpleName());
 		if (clz == EntityPlayer.class)
@@ -69,10 +69,11 @@ public class IPropertiesManager
 	@SubscribeEvent
 	public void onEntityConstructing(EntityEvent.EntityConstructing event)
 	{
-		for (EntityPropertyHook provider : map.get(event.entity.getClass()))
+		for (EntityHandler provider : map.get(event.entity.getClass()))
 		{
-			collection.set(event.entity);
+			collection.start(event.entity);
 			provider.handle(event.entity, collection);
+			collection.end();
 		}
 	}
 }
