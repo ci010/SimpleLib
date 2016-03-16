@@ -23,4 +23,33 @@ public interface MessageCoder<T> extends IMessage, Var<T>
 		@Override
 		public void set(Void value) {}
 	};
+
+	MessageCoder<Integer> INTEGER = new MessageCoder<Integer>()
+	{
+		private int value;
+
+		@Override
+		public void fromBytes(ByteBuf buf)
+		{
+			value = buf.readInt();
+		}
+
+		@Override
+		public void toBytes(ByteBuf buf)
+		{
+			buf.writeInt(value);
+		}
+
+		@Override
+		public Integer get()
+		{
+			return value;
+		}
+
+		@Override
+		public void set(Integer value)
+		{
+			this.value = value;
+		}
+	};
 }
