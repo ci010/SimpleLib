@@ -1,27 +1,58 @@
 package test.waggon;
 
+import api.simplelib.command.ISimpleCommand;
+import api.simplelib.command.ModCommand;
+import api.simplelib.common.ModHandler;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import net.simplelib.registry.annotation.type.IPropertyHook;
-import net.simplelib.registry.annotation.type.ModEntity;
-import net.simplelib.status.StatusCommon;
-import net.simplelib.status.StatusManager;
-import net.simplelib.status.StatusProvider;
+import api.simplelib.entity.ModEntity;
+import net.minecraftforge.event.entity.EntityEvent;
 
 /**
  * @author ci010
  */
 @ModEntity
 @ModEntity.Render(RenderRewrite.class)
-@ModEntity.HasSpawner(primaryColor = 0, secondaryColor = 20)
+@ModEntity.Spawner(primaryColor = 0, secondaryColor = 20)
 public class EntityRewrite extends Entity
 {
-//	private double x, y, z, yaw, pitch, speedX, speedY, speedZ;
-
 	public EntityRewrite(World worldIn)
 	{
 		super(worldIn);
+		this.setSize(1.5f, 0.6f);
+		System.out.println("new rewrite");
+	}
+
+	@Override
+	public void setDead()
+	{
+		System.out.println("setDead");
+		super.setDead();
+	}
+
+	public AxisAlignedBB getCollisionBox(Entity entityIn)
+	{
+		return entityIn.getEntityBoundingBox();
+	}
+
+	@Override
+	public void onUpdate()
+	{
+		super.onUpdate();
+		System.out.println("update");
+	}
+
+	/**
+	 * Returns the collision bounding box for this entity
+	 */
+	public AxisAlignedBB getCollisionBoundingBox()
+	{
+		return this.getEntityBoundingBox();
 	}
 
 	@Override
@@ -32,10 +63,15 @@ public class EntityRewrite extends Entity
 		this.dataWatcher.addObject(19, 0f);
 	}
 
+
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound tagCompund)
 	{
+	}
 
+	public boolean interactFirst(EntityPlayer playerIn)
+	{
+		return false;
 	}
 
 	@Override
@@ -44,24 +80,55 @@ public class EntityRewrite extends Entity
 
 	}
 
-	@IPropertyHook
-	public static class Dmg implements StatusProvider<EntityRewrite, StatusCommon>
+	@ModCommand
+	public static class Cmd implements ISimpleCommand
 	{
 		@Override
-		public StatusCommon createStatus(EntityRewrite entity)
+		public String name()
 		{
-			return new StatusCommon(5);
-		}
-
-		public static StatusCommon getStatus(EntityRewrite entity)
-		{
-			return StatusManager.getStatus(entity, Dmg.class);
+			return "rewrite";
 		}
 
 		@Override
-		public String getId()
+		public void processCommand(ICommandSender sender, String[] args)
 		{
-			return "DamageTaken";
+			final EntityRewrite entity = new EntityRewrite(sender.getEntityWorld());
+			final BlockPos pos = sender.getPosition();
+			entity.setPosition(pos.getX(), pos.getY(), pos.getZ());
+			sender.getEntityWorld().spawnEntityInWorld(entity);
 		}
 	}
+
+	@ModHandler
+	public static class EntityCheck
+	{
+		public void canUpdate(EntityEvent.CanUpdate event)
+		{
+			if (event.entity instanceof EntityRewrite)
+			{
+				System.out.println("Rewrite can update");
+				event.canUpdate = true;
+			}
+		}
+	}
+//	@ModEntityHandler
+//	public static class Dmg implements IPropertiesHandler<EntityRewrite, StatusLinear>
+//	{
+//		@Override
+//		public StatusLinear createStatus(EntityRewrite entity)
+//		{
+//			return (StatusLinear) new StatusLinear().setMax(5);
+//		}
+//
+//		public static StatusLinear getStatus(EntityRewrite entity)
+//		{
+//			return IPropertiesManager.getStatus(entity, Dmg.class);
+//		}
+//
+//		@Override
+//		public String getId()
+//		{
+//			return "DamageTaken";
+//		}
+//	}
 }

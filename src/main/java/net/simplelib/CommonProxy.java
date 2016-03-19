@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.simplelib.common.CommonLogger;
+import net.simplelib.common.TickServerSide;
 import net.simplelib.common.registry.ContainerMeta;
 import net.simplelib.common.registry.Namespace;
 import net.simplelib.common.registry.NamespaceMakerComplex;
@@ -28,6 +29,7 @@ public class CommonProxy
 
 	void preInit(FMLPreInitializationEvent event)
 	{
+		FMLCommonHandler.instance().getMinecraftServerInstance().registerTickable(TickServerSide.INSTANCE);
 		NamespaceMakerComplex maker = new NamespaceMakerComplex(RegistryHelper.INSTANCE.getAnnotationMap());
 		ModRestriction.preInit(event);
 		Iterator<ContainerMeta> itr = RegistryHelper.INSTANCE.getRegistryInfo();

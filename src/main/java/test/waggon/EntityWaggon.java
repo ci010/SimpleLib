@@ -7,7 +7,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import net.simplelib.registry.annotation.type.ModEntity;
+import api.simplelib.entity.ModEntity;
 
 import java.util.List;
 
@@ -16,6 +16,7 @@ import java.util.List;
  */
 @ModEntity
 @ModEntity.Render(RenderWaggon.class)
+@ModEntity.Spawner(primaryColor = 13, secondaryColor = 124)
 public class EntityWaggon extends EntityLiving
 {
 	private EntityHorse horse;
@@ -24,7 +25,7 @@ public class EntityWaggon extends EntityLiving
 	public EntityWaggon(World worldIn)
 	{
 		super(worldIn);
-		this.setSize(4, 3);
+		this.setSize(2, 2);
 	}
 
 	public void linkTo(EntityHorse horse, double distance)
@@ -56,9 +57,7 @@ public class EntityWaggon extends EntityLiving
 				if (distance > this.distance)
 					this.moveHelper.setMoveTo(current.getX(), current.getY(), current.getZ(), 0.4d);
 			}
-		System.out.println("Test Thread.");
 	}
-
 
 	@Override
 	public void readEntityFromNBT(NBTTagCompound tagCompund)
@@ -99,5 +98,6 @@ public class EntityWaggon extends EntityLiving
 //		if (this.horse != null)
 //			tag.setInteger("horse", this.horse.getEntityId());
 	}
+
 
 }

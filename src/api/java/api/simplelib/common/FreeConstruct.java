@@ -7,7 +7,7 @@ import java.lang.annotation.*;
  *
  * @author ci010
  */
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.SOURCE)
 @Inherited
 public @interface FreeConstruct

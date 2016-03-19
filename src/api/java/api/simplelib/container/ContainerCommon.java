@@ -1,5 +1,7 @@
 package api.simplelib.container;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,6 +29,7 @@ public class ContainerCommon extends Container implements InventoryCommon.Listen
 {
 	private ImmutableList<VarInteger> varIntegers;
 	private ImmutableList<VarSync> syncs;
+	private Cache cache;
 
 	public VarSync getVar(int idx)
 	{

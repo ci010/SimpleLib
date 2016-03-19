@@ -106,7 +106,7 @@ public class InventoryCommon implements IInventory, ITagSerial
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int index)
+	public ItemStack removeStackFromSlot(int index)
 	{
 		if (this.holders.get(index).get() != null)
 		{
@@ -188,7 +188,7 @@ public class InventoryCommon implements IInventory, ITagSerial
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return "inventory.".concat(this.id);
 	}
@@ -202,13 +202,13 @@ public class InventoryCommon implements IInventory, ITagSerial
 	@Override
 	public IChatComponent getDisplayName()
 	{
-		return new ChatComponentText(this.getCommandSenderName());
+		return new ChatComponentText(this.getName());
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag)
 	{
-		NBTTagList tagList = tag.getTagList(this.getCommandSenderName(), 10);
+		NBTTagList tagList = tag.getTagList(this.getName(), 10);
 		for (int i = 0; i < tagList.tagCount(); ++i)
 		{
 			NBTTagCompound temp = tagList.getCompoundTagAt(i);
@@ -230,7 +230,7 @@ public class InventoryCommon implements IInventory, ITagSerial
 				this.holders.get(i).get().writeToNBT(tagCompound);
 				stackList.appendTag(tagCompound);
 			}
-		tag.setTag(this.getCommandSenderName(), stackList);
+		tag.setTag(this.getName(), stackList);
 	}
 
 	public interface Listener

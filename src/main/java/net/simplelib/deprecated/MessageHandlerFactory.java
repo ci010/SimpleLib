@@ -153,7 +153,7 @@ public class MessageHandlerFactory
 	private <T extends IMessage> String getName(T message)
 	{
 		return String.format("%s%s", getClass().getName(),
-				message.getClass().getSimpleName().concat("Handler"));
+				message.getClass().getSimpleName().concat("Manager"));
 	}
 
 	class ASMClassLoader extends ClassLoader

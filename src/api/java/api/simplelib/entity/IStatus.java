@@ -26,7 +26,7 @@ public interface IStatus extends ITagSerial
 	 * if you want a value
 	 * showing on screen or having any other usages in client side.
 	 * </p>
-	 * <p>
+	 * <p/>
 	 * The variable created by factory also doesn't need to be saved and loaded when
 	 * {@link ITagSerial#readFromNBT(NBTTagCompound)} and {@link ITagSerial#writeToNBT(NBTTagCompound)}, since they
 	 * will be saved automatically.

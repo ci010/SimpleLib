@@ -2,6 +2,9 @@ package api.simplelib.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.inventory.GuiContainer;
+
+import java.util.List;
 
 /**
  * @author ci010
@@ -10,41 +13,24 @@ public abstract class GuiComponent extends Gui implements Drawable
 {
 	protected int x, y;
 	private MouseProperty property;
+	protected List<GuiComponent> children;
 
+	/**
+	 * @return The type of this component
+	 */
 	public Type type()
 	{
 		return Type.back;
 	}
 
-	public Priority priority()
-	{
-		return Priority.normal;
-	}
-
+	/**
+	 * The type of the component. Only used for
+	 * {@link GuiContainer#drawGuiContainerBackgroundLayer(float, int, int)}
+	 * and {@link GuiContainer#drawGuiContainerForegroundLayer(int, int)}}
+	 */
 	public enum Type
 	{
 		front, back
-	}
-
-	/**
-	 * Still a beta feature.
-	 * Basically, this will decide the layer of the component.
-	 */
-	public enum Priority
-	{
-		high(2), normal(1), low(0);
-
-		Priority(int weight)
-		{
-			this.weight = weight;
-		}
-
-		int weight;
-
-		public int getWeight()
-		{
-			return weight;
-		}
 	}
 
 	public boolean hasMouseListener()
@@ -60,6 +46,18 @@ public abstract class GuiComponent extends Gui implements Drawable
 		if (property == null)
 			property = new MouseProperty();
 		return property;
+	}
+
+	/**
+	 * This is just a really simple function which indicates the order of draw of the gui.
+	 *
+	 * @param component The component may overlap this component.
+	 * @return this
+	 */
+	public GuiComponent add(GuiComponent component)
+	{
+		this.children.add(component);
+		return this;
 	}
 
 	protected void setMouseListener(MouseProperty property)

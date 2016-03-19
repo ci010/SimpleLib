@@ -24,8 +24,7 @@ public class IPropertiesDelegate extends ASMRegistryDelegate<ModEntityHandler>
 			try
 			{
 				EntityHandler hook = (EntityHandler) clz.newInstance();
-				Class<? extends Entity> entityClz = GenericUtil.getInterfaceGenericTypeTo(hook);
-				IPropertiesManager.instance().registerStatus(entityClz, hook);
+				IPropertiesManager.instance().registerStatus(hook);
 
 //				CommonLogger.info("Register AI {} to entity {} by mod [{}]", this.getAnnotatedClass().getSimpleName(),
 //						GenericUtil.getGenericType(provider), this.getModid());

@@ -5,7 +5,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.world.World;
-import net.simplelib.registry.annotation.type.ModCommand;
+import api.simplelib.command.ModCommand;
 
 /**
  * @author ci010
@@ -35,6 +35,6 @@ public class TestCommand extends CommandBase
 		waggon.setPosition(sender.getPosition().getX() + 10, sender.getPosition().getY(), sender.getPosition().getZ());
 		world.spawnEntityInWorld(horse);
 		world.spawnEntityInWorld(waggon);
-		waggon.linkTo(horse, 10);
+		waggon.linkTo(horse, 20);
 	}
 }

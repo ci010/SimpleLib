@@ -40,7 +40,7 @@ public abstract class TileEntityReflectWrap extends TileEntity implements IInven
 	protected abstract int stackSize();
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return id;
 	}
@@ -54,7 +54,7 @@ public abstract class TileEntityReflectWrap extends TileEntity implements IInven
 	@Override
 	public IChatComponent getDisplayName()
 	{
-		return new ChatComponentText(this.getCommandSenderName());
+		return new ChatComponentText(this.getName());
 	}
 
 	@Override
@@ -94,12 +94,12 @@ public abstract class TileEntityReflectWrap extends TileEntity implements IInven
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int par1)
+	public ItemStack removeStackFromSlot(int index)
 	{
-		if (this.stack[par1] != null)
+		if (this.stack[index] != null)
 		{
-			ItemStack itemstack = this.stack[par1];
-			this.stack[par1] = null;
+			ItemStack itemstack = this.stack[index];
+			this.stack[index] = null;
 			return itemstack;
 		}
 		else
@@ -170,7 +170,7 @@ public abstract class TileEntityReflectWrap extends TileEntity implements IInven
 	public void readFromNBT(NBTTagCompound tag)
 	{
 		super.readFromNBT(tag);
-		NBTTagList tagList = tag.getTagList(this.getCommandSenderName(), 10);
+		NBTTagList tagList = tag.getTagList(this.getName(), 10);
 		this.stack = new ItemStack[this.getSizeInventory()];
 		for (int i = 0; i < tagList.tagCount(); ++i)
 		{
@@ -222,6 +222,6 @@ public abstract class TileEntityReflectWrap extends TileEntity implements IInven
 				this.stack[i].writeToNBT(tagCompound);
 				tagList.appendTag(tagCompound);
 			}
-		tag.setTag(this.getCommandSenderName(), tagList);
+		tag.setTag(this.getName(), tagList);
 	}
 }

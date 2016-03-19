@@ -10,7 +10,7 @@ import api.simplelib.interactive.process.ProcessPipeline;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
+import net.minecraft.util.ITickable;
 import net.simplelib.common.VarSyncPrimitive;
 import net.simplelib.common.nbt.ITagSerial;
 import api.simplelib.interactive.meta.InteractiveProperty;
@@ -147,7 +147,7 @@ public class ProcessHandler implements ProcessPipeline.Handler, InteractivePrope
 		return ProcessPipeline.class;
 	}
 
-	public class Entity implements ProcessPipeline.Data, IUpdatePlayerListBox
+	public class Entity implements ProcessPipeline.Data, ITickable
 	{
 		private List<Process> processes;
 		private List<VarSync> vars;

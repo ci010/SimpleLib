@@ -6,6 +6,8 @@ import api.simplelib.interactive.meta.InteractivePropertyHook;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.IItemHandler;
 import net.simplelib.common.nbt.ITagSerial;
 import net.simplelib.interactive.inventory.InventoryManager;
 

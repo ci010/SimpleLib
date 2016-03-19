@@ -2,6 +2,7 @@ package api.simplelib.interactive.meta;
 
 import api.simplelib.common.FreeConstruct;
 import api.simplelib.interactive.Interactive;
+import net.minecraftforge.common.capabilities.Capability;
 import net.simplelib.common.nbt.ITagSerial;
 
 /**

@@ -1,5 +1,6 @@
 package test;
 
+import com.google.common.cache.*;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,66 +8,116 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+import net.minecraft.block.Block;
 import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Pair;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static org.objectweb.asm.Opcodes.*;
 
 /**
  * @author ci010
  */
 public class TestMain
 {
+	static interface Test<T>
+	{
+		T get();
+	}
+
 	public static void main(String[] args)
 	{
-//		IChatComponent component = new ChatComponentText("test&2string");
-//		for (Object sub : component)
-//		{
-//			System.out.println(((IChatComponent) sub).getFormattedText());
-//			System.out.println(((char) 167));
-//
-//		}
-		new TestMain().testInner(new TestInterfaceImpl()
-		{
-			String s = "init";
-		});
-
+		System.out.println(inv(1.1f, 0.05f, 0.1f, 1));
 	}
 
-	void testInner(TestInterface t)
+	static private LoadingCache<Byte, Byte> lazyLoading = CacheBuilder.newBuilder().
+			maximumSize(1).expireAfterWrite(1500, TimeUnit.MILLISECONDS).removalListener(
+			new RemovalListener<Byte, Byte>()
+			{
+				@Override
+				public void onRemoval(RemovalNotification<Byte, Byte> notification)
+				{
+					System.out.println("remove");
+				}
+			}).build(
+			new CacheLoader<Byte, Byte>()
+			{
+				@Override
+				public Byte load(Byte key) throws Exception
+				{
+					return (byte) 0;
+				}
+			});
+	private static byte KEY = 0, VALID = 1, NULL = -1;
+
+	static Pair<Float, Float> inv(float x1, float y1, float x2, float y2)
 	{
-		for (Field field : t.getClass().getDeclaredFields())
-		{
-			System.out.println(field.getName());
-			System.out.println(field.getType());
-			System.out.println(field.isAccessible());
-			try
-			{
-				System.out.println(field.get(t));
-			}
-			catch (IllegalAccessException e)
-			{
-				e.printStackTrace();
-			}
-
-			field.setAccessible(true);
-			System.out.println(field.isAccessible());
-			try
-			{
-				field.set(t, "end");
-				System.out.println(field.get(t));
-
-			}
-			catch (IllegalAccessException e)
-			{
-				e.printStackTrace();
-			}
-
-		}
+		float b = (x1 * y1 - x2 - y2) / (x1 - x2);
+		float a = x1 * y1 - b * x1;
+		return Pair.of(a, b);
 	}
+
+	static void testRegional()
+	{
+
+	}
+
+	static void testCache()
+	{
+//		lazyLoading.put((byte) 0, (byte) 1);
+//		while (true)
+//		{
+//lazyLoading.refresh();
+//			System.out.println(lazyLoading.getUnchecked(KEY));
+//			try
+//			{
+//				Thread.sleep(100);
+//			}
+//			catch (InterruptedException e)
+//			{
+//				e.printStackTrace();
+//			}
+//		}
+	}
+
+	static void testTemp()
+	{
+//		TickSimulation.INSTANCE.addTask();
+		TickSimulation.INSTANCE.start();
+	}
+
+	static void testColor()
+	{
+		int x = 100, y = 100, z = 100;
+		int pos = (x & 0x7F) |
+				(y & 0x7F) << 7 |
+				(z & 0x7F) << 14;
+		System.out.println(pos);
+		int a = pos & 0x7F, b = (pos >> 7) & 0x7F, c = (pos >> 14) & 0x7F;
+		System.out.println(a);
+		System.out.println(b);
+		System.out.println(c);
+		World world = null;
+		Block.getIdFromBlock(world.getBlockState(null).getBlock());
+	}
+
+	static class Node
+	{
+		String name, description;
+		Object value;
+		private Object defaultValue;
+
+	}
+
 
 	class Inner
 	{

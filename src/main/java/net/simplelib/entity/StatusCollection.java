@@ -1,17 +1,20 @@
 package net.simplelib.entity;
 
-import api.simplelib.entity.IStatus;
 import api.simplelib.entity.EntityHandler;
+import api.simplelib.entity.IStatus;
+import api.simplelib.entity.IStatusUpdate;
 import com.google.common.collect.Sets;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.Set;
+import java.util.WeakHashMap;
 
 /**
  * @author ci010
@@ -21,6 +24,12 @@ public class StatusCollection implements EntityHandler.Manager
 	private AIManagerImpl ai = new AIManagerImpl();
 	private Entity delegate;
 	private boolean hasAI;
+	private WeakHashMap<Entity, ITickable> updateWeakHashMap;
+
+	StatusCollection(WeakHashMap<Entity, ITickable> updateWeakHashMap)
+	{
+		this.updateWeakHashMap = updateWeakHashMap;
+	}
 
 	void start(Entity entity)
 	{
@@ -50,6 +59,8 @@ public class StatusCollection implements EntityHandler.Manager
 	{
 		Status real = new Status(id, status);
 		delegate.registerExtendedProperties(id, real);
+		if (status instanceof ITickable)
+			updateWeakHashMap.put(this.delegate, (ITickable) status);
 		return this;
 	}
 
@@ -76,7 +87,7 @@ public class StatusCollection implements EntityHandler.Manager
 		}
 	}
 
-	public static class AIManagerImpl implements EntityHandler.AIManager
+	public class AIManagerImpl implements EntityHandler.AIManager
 	{
 		private EntityAITasks delegate;
 		private Set<Class<? extends EntityAIBase>> removedCache = Sets.newHashSet();

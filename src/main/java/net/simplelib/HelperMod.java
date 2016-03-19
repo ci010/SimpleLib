@@ -2,6 +2,7 @@ package net.simplelib;
 
 import api.simplelib.utils.Assert;
 import net.minecraft.init.Blocks;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModMetadata;
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.simplelib.common.CommonLogger;
 import net.simplelib.common.registry.RegistryBufferManager;
+import net.simplelib.entity.IPropertiesManager;
 import net.simplelib.login.restriction.ModRestriction;
 import org.apache.logging.log4j.Logger;
 
@@ -88,6 +90,8 @@ public class HelperMod
 	@Mod.EventHandler
 	public void serverStarted(FMLServerStartedEvent event)
 	{
+		if (IPropertiesManager.enable())
+			MinecraftServer.getServer().registerTickable(IPropertiesManager.instance());
 		RegistryBufferManager.instance().invoke(event);
 	}
 

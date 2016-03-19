@@ -96,12 +96,9 @@ public class HandlerDelegate extends ASMRegistryDelegate<ModHandler>
 		}
 		if (set.contains(ModHandler.Type.Terrain))
 			MinecraftForge.TERRAIN_GEN_BUS.register(obj);
-		if (set.contains(ModHandler.Type.Forge))
+		if (set.contains(ModHandler.Type.Forge) || set.contains(ModHandler.Type.FML))
 			MinecraftForge.EVENT_BUS.register(obj);
-		if (set.contains(ModHandler.Type.FML))
-			FMLCommonHandler.instance().bus().register(obj);
 		if (set.contains(ModHandler.Type.OreGen))
 			MinecraftForge.ORE_GEN_BUS.register(obj);
-
 	}
 }

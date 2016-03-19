@@ -8,11 +8,17 @@ import api.simplelib.interactive.inventory.SlotInfo;
 import api.simplelib.interactive.inventory.SpaceInfo;
 import api.simplelib.interactive.meta.InteractiveProperty;
 import api.simplelib.interactive.meta.ModInteractiveMeta;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.simplelib.HelperMod;
 import net.simplelib.interactive.process.VarItemHolder;
 
@@ -23,7 +29,8 @@ import java.util.List;
  */
 @ModInteractiveMeta
 public class InventoryManager implements Inventory.Manager,
-										 InteractiveProperty<Inventory.Data, Inventory.Meta, Inventory>
+										 InteractiveProperty<Inventory.Data, Inventory.Meta, Inventory>,
+										 Inventory.Meta
 {
 	private String id;
 	protected List<SpaceInfo> spaces;
@@ -73,20 +80,7 @@ public class InventoryManager implements Inventory.Manager,
 	@Override
 	public Inventory.Meta getMeta()
 	{
-		return new Inventory.Meta()
-		{
-			@Override
-			public ImmutableList<SpaceInfo> getSpaces()
-			{
-				return ImmutableList.copyOf(spaces);
-			}
-
-			@Override
-			public ImmutableList<SlotInfo> getSlots()
-			{
-				return ImmutableList.copyOf(discrete);
-			}
-		};
+		return this;
 	}
 
 	@Override
@@ -108,7 +102,19 @@ public class InventoryManager implements Inventory.Manager,
 		return false;
 	}
 
-	public static class Container implements Inventory.Data
+	@Override
+	public ImmutableList<SpaceInfo> getSpaces()
+	{
+		return ImmutableList.copyOf(spaces);
+	}
+
+	@Override
+	public ImmutableList<SlotInfo> getSlots()
+	{
+		return ImmutableList.copyOf(discrete);
+	}
+
+	public static class Container implements Inventory.Data, IItemHandlerModifiable
 	{
 		private ImmutableList<InventoryCommon> inventories;
 
@@ -120,7 +126,8 @@ public class InventoryManager implements Inventory.Manager,
 		@Override
 		public void assign(SlotInfo info, Var<ItemStack> holder)
 		{
-			this.inventories.get(info.parent()).assign(info, (VarItemHolder) holder);
+			if (holder instanceof VarItemHolder)
+				this.inventories.get(info.parent()).assign(info, (VarItemHolder) holder);
 		}
 
 		@Override
@@ -147,6 +154,39 @@ public class InventoryManager implements Inventory.Manager,
 		{
 			for (InventoryCommon inventory : inventories)
 				inventory.writeToNBT(tag);
+		}
+
+		@Override
+		public void setStackInSlot(int slot, ItemStack stack)
+		{
+
+		}
+
+		@Override
+		public int getSlots()
+		{
+			int size = 0;
+			for (InventoryCommon inventory : inventories)
+				size += inventory.getSizeInventory();
+			return size;
+		}
+
+		@Override
+		public ItemStack getStackInSlot(int slot)
+		{
+			return null;
+		}
+
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			return null;
+		}
+
+		@Override
+		public ItemStack extractItem(int slot, int amount, boolean simulate)
+		{
+			return null;
 		}
 	}
 

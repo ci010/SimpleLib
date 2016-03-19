@@ -16,7 +16,7 @@ import net.minecraftforge.common.IExtendedEntityProperties;
  * @see IExtendedEntityProperties
  * @see IStatus
  */
-public interface EntityHandler<E extends Entity>
+public interface EntityHandler
 {
 	/**
 	 * Handle a new entity.
@@ -24,7 +24,7 @@ public interface EntityHandler<E extends Entity>
 	 * @param entity  The entity you want to handle.
 	 * @param manager The manager which provide you ability to add custom properties to the entity.
 	 */
-	void handle(E entity, Manager manager);
+	void handle(Entity entity, Manager manager);
 
 	interface Manager
 	{

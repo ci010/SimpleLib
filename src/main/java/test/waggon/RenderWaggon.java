@@ -3,8 +3,6 @@ package test.waggon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -14,12 +12,12 @@ import net.minecraft.util.ResourceLocation;
  */
 public class RenderWaggon extends RenderLiving
 {
-	ModelWaggon model;
+	Model model;
 
 	public RenderWaggon()
 	{
-		super(Minecraft.getMinecraft().getRenderManager(), new ModelWaggon(), 3);
-		System.out.println("Render and model init.");
+		super(Minecraft.getMinecraft().getRenderManager(), new Model(), 1);
+		System.out.println("Render and model handle.");
 	}
 
 	@Override
@@ -61,11 +59,11 @@ public class RenderWaggon extends RenderLiving
 		return cowTextures;
 	}
 
-	static class ModelWaggon extends ModelBase
+	static class Model extends ModelBase
 	{
 		ModelRenderer block;
 
-		public ModelWaggon()
+		public Model()
 		{
 			this.block = new ModelRenderer(this, 28, 8);
 			this.block.addBox(-5.0F, -10.0F, -7.0F, 10, 16, 8, false);
@@ -79,6 +77,4 @@ public class RenderWaggon extends RenderLiving
 //			GlStateManager.popMatrix();
 		}
 	}
-
-
 }

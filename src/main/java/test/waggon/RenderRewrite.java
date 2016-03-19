@@ -1,5 +1,6 @@
 package test.waggon;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
@@ -16,11 +17,11 @@ import net.minecraft.util.ResourceLocation;
 public class RenderRewrite extends Render
 {
 	static ResourceLocation location = new ResourceLocation("textures/entity/boat.png");
-	ModelBase base;
+	private ModelBase base;
 
-	protected RenderRewrite(RenderManager renderManager)
+	public RenderRewrite()
 	{
-		super(renderManager);
+		super(Minecraft.getMinecraft().getRenderManager());
 		base = new ModelTest();
 	}
 
@@ -34,13 +35,12 @@ public class RenderRewrite extends Render
 	public void doRender(Entity entity, double x, double y, double z, float entityYaw, float partialTicks)
 	{
 		pushMatrix();
+		System.out.println("render");
 		translate(x, y, z);
 		rotate(180 - entityYaw, 0f, 1f, 0f);
-//		enableAlpha();
 		scale(1.5, 1.5, 1.5);
 		this.bindEntityTexture(entity);
 		this.base.render(entity, 0f, 0f, 0f, 0f, 0f, 0.0625F);
-//		disableAlpha();
 		popMatrix();
 		super.doRender(entity, x, y, z, entityYaw, partialTicks);
 	}

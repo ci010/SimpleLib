@@ -4,20 +4,25 @@ import api.simplelib.interactive.meta.InteractivePropertyHook;
 import api.simplelib.utils.GenericUtil;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.simplelib.common.nbt.ITagSerial;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ci010
  */
-public class InteractiveEntity implements ITagSerial
+public class InteractiveEntity implements ICapabilitySerializable<NBTTagCompound>
 {
 	protected World world;
 	protected String id;
 	private BlockPos pos;
 	private List<ITagSerial> properties;
+	private Map<String, Object> capabilities;
 
 	protected InteractiveEntity(String id, World world, List<ITagSerial> properties)
 	{
@@ -55,21 +60,45 @@ public class InteractiveEntity implements ITagSerial
 		return null;
 	}
 
+//	@Override
+//	public void readFromNBT(NBTTagCompound tag)
+//	{
+//		this.id = tag.getString("interactive_id");
+//		if (properties != null)
+//			for (ITagSerial property : properties)
+//				property.readFromNBT(tag);
+//	}
+//
+//	@Override
+//	public void writeToNBT(NBTTagCompound tag)
+//	{
+//		tag.setString("interactive_id", this.id);
+//		if (properties != null)
+//			for (ITagSerial property : properties)
+//				property.writeToNBT(tag);
+//	}
+
 	@Override
-	public void readFromNBT(NBTTagCompound tag)
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		this.id = tag.getString("interactive_id");
-		if (properties != null)
-			for (ITagSerial property : properties)
-				property.readFromNBT(tag);
+		return capabilities.containsKey(capability.getName());
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound tag)
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		tag.setString("interactive_id", this.id);
-		if (properties != null)
-			for (ITagSerial property : properties)
-				property.writeToNBT(tag);
+		return GenericUtil.cast(capabilities.get(capability.getName()));
+	}
+
+	@Override
+	public NBTTagCompound serializeNBT()
+	{
+		return null;
+	}
+
+	@Override
+	public void deserializeNBT(NBTTagCompound nbt)
+	{
+
 	}
 }

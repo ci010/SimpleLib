@@ -1,42 +1,39 @@
 package net.simplelib.entity;
 
+import api.simplelib.common.Instance;
+import api.simplelib.common.ModHandler;
 import api.simplelib.common.Nullable;
-import api.simplelib.entity.IStatus;
 import api.simplelib.entity.EntityHandler;
-import com.google.common.collect.*;
-import net.minecraft.client.entity.EntityPlayerSP;
+import api.simplelib.entity.IStatus;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.simplelib.common.CommonLogger;
-import api.simplelib.common.Instance;
-import api.simplelib.common.ModHandler;
+
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * @author ci010
  */
 @ModHandler
-public class IPropertiesManager
+public class IPropertiesManager implements ITickable
 {
 	@Instance(weak = true)
 	private static IPropertiesManager instance;
 
-	private Multimap<Class<? extends Entity>, EntityHandler> map = HashMultimap.create();
-	private StatusCollection collection = new StatusCollection();
+	private ArrayList<EntityHandler> handlers = Lists.newArrayList();
+	private WeakHashMap<Entity, ITickable> updateWeakHashMap = new WeakHashMap<Entity, ITickable>();
+	private StatusCollection collection = new StatusCollection(updateWeakHashMap);
 
-	public void registerStatus(Class<? extends Entity> clz, EntityHandler property)
+	public void registerStatus(EntityHandler property)
 	{
-		CommonLogger.info("Register the status handler to all {}.", clz.getSimpleName());
-		if (clz == EntityPlayer.class)
-		{
-			map.put(EntityPlayerSP.class, property);
-			map.put(EntityPlayerMP.class, property);
-			return;
-		}
-		map.put(clz, property);
+		CommonLogger.info("Register EntityHandler: [{}]", property.getClass());
+		handlers.add(property);
 	}
 
 	public static boolean enable()
@@ -69,11 +66,20 @@ public class IPropertiesManager
 	@SubscribeEvent
 	public void onEntityConstructing(EntityEvent.EntityConstructing event)
 	{
-		for (EntityHandler provider : map.get(event.entity.getClass()))
+		for (EntityHandler handler : this.handlers)
 		{
 			collection.start(event.entity);
-			provider.handle(event.entity, collection);
+			handler.handle(event.entity, collection);
 			collection.end();
 		}
+	}
+
+	@Override
+	public void update()
+	{
+		for (Map.Entry<Entity, ITickable> entry : this.updateWeakHashMap.entrySet())
+			if (entry.getKey().isEntityAlive())
+				entry.getValue().update();
+			else updateWeakHashMap.remove(entry.getKey());
 	}
 }

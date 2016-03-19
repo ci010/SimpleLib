@@ -27,14 +27,6 @@ public class GuiContainerCommon extends GuiContainer
 		super(inventorySlotsIn);
 		List<GuiComponent> components = Lists.newArrayList();
 		provider.provideComponents(components);
-		Comparator<GuiComponent> comp = new Comparator<GuiComponent>()
-		{
-			@Override
-			public int compare(GuiComponent o1, GuiComponent o2)
-			{
-				return o1.priority().getWeight() - o2.priority().getWeight();
-			}
-		};
 		for (GuiComponent component : components)
 			if (component.type() == GuiComponent.Type.front)
 			{
@@ -53,8 +45,6 @@ public class GuiContainerCommon extends GuiContainer
 			Slot slot = (Slot) o;
 			back.add(new TileTexture(GuiUtil.slot, slot.xDisplayPosition, slot.yDisplayPosition));
 		}
-		Collections.sort(front, comp);
-		Collections.sort(back, comp);
 	}
 
 	@Override
@@ -101,16 +91,24 @@ public class GuiContainerCommon extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		for (Drawable guiComponent : front)
+		for (GuiComponent guiComponent : front)
+		{
 			guiComponent.draw();
+			for (GuiComponent child : guiComponent.children)
+				child.draw();
+		}
 
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
 	{
-		for (Drawable guiComponent : back)
+		for (GuiComponent guiComponent : back)
+		{
 			guiComponent.draw();
+			for (GuiComponent child : guiComponent.children)
+				child.draw();
+		}
 	}
 
 	@Override
