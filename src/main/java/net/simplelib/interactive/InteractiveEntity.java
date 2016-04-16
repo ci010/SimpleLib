@@ -1,35 +1,39 @@
 package net.simplelib.interactive;
 
-import api.simplelib.interactive.meta.InteractivePropertyHook;
-import api.simplelib.utils.GenericUtil;
+//import api.simplelib.interactive.meta.InteractivePropertyHook;
+
+import api.simplelib.interactive.Interactive;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.simplelib.common.nbt.ITagSerial;
-
-import java.util.List;
-import java.util.Map;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import api.simplelib.utils.ITagSerializable;
 
 /**
  * @author ci010
  */
-public class InteractiveEntity implements ICapabilitySerializable<NBTTagCompound>
+public class InteractiveEntity implements Interactive.Entity
 {
 	protected World world;
 	protected String id;
 	private BlockPos pos;
-	private List<ITagSerial> properties;
-	private Map<String, Object> capabilities;
+	private ITagSerializable[] properties;
+	private ICapabilityProvider[] providers;
 
-	protected InteractiveEntity(String id, World world, List<ITagSerial> properties)
+	protected InteractiveEntity(String id, World world)
 	{
 		this.id = id;
 		this.world = world;
 		this.pos = BlockPos.ORIGIN;
-		this.properties = properties;
+	}
+
+	protected InteractiveEntity load(ITagSerializable[] properties, ICapabilityProvider[] providers)
+	{
+		this.properties = properties.length == 0 ? null : properties;
+		this.providers = providers.length == 0 ? null : providers;
+		return this;
 	}
 
 	public void setPos(BlockPos pos)
@@ -37,11 +41,19 @@ public class InteractiveEntity implements ICapabilitySerializable<NBTTagCompound
 		this.pos = pos;
 	}
 
+	@Override
 	public BlockPos getPos()
 	{
 		return this.pos;
 	}
 
+//	@Override
+	public String id()
+	{
+		return "entity";
+	}
+
+	@Override
 	public World getWorld()
 	{
 		return world;
@@ -52,53 +64,47 @@ public class InteractiveEntity implements ICapabilitySerializable<NBTTagCompound
 		return this.id;
 	}
 
-	public <Data extends ITagSerial, T extends InteractivePropertyHook<Data, ?>> Data get(Class<T> propertyType)
+	@Override
+	public void readFromNBT(NBTTagCompound tag)
 	{
-		for (ITagSerial property : this.properties)
-			if (propertyType == property.getClass())
-				return GenericUtil.cast(property);
-		return null;
+		this.id = tag.getString("interactive_id");
+		if (properties != null)
+			for (ITagSerializable property : properties)
+				property.readFromNBT(tag);
 	}
 
-//	@Override
-//	public void readFromNBT(NBTTagCompound tag)
-//	{
-//		this.id = tag.getString("interactive_id");
-//		if (properties != null)
-//			for (ITagSerial property : properties)
-//				property.readFromNBT(tag);
-//	}
-//
-//	@Override
-//	public void writeToNBT(NBTTagCompound tag)
-//	{
-//		tag.setString("interactive_id", this.id);
-//		if (properties != null)
-//			for (ITagSerial property : properties)
-//				property.writeToNBT(tag);
-//	}
+	@Override
+	public void writeToNBT(NBTTagCompound tag)
+	{
+		tag.setString("interactive_id", this.id);
+		if (properties != null)
+			for (ITagSerializable property : properties)
+				property.writeToNBT(tag);
+	}
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		return capabilities.containsKey(capability.getName());
+		if (this.properties == null)
+			return false;
+		for (ICapabilityProvider provider : providers)
+			if (provider.hasCapability(capability, facing))
+				return true;
+		return false;
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		return GenericUtil.cast(capabilities.get(capability.getName()));
-	}
-
-	@Override
-	public NBTTagCompound serializeNBT()
-	{
+		if (this.properties == null)
+			return null;
+		T data;
+		for (ICapabilityProvider provider : providers)
+		{
+			data = provider.getCapability(capability, facing);
+			if (data != null)
+				return data;
+		}
 		return null;
-	}
-
-	@Override
-	public void deserializeNBT(NBTTagCompound nbt)
-	{
-
 	}
 }

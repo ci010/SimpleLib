@@ -1,5 +1,7 @@
 package net.simplelib.time;
 
+import api.simplelib.FileReference;
+import api.simplelib.network.ModNetwork;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -12,9 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.simplelib.common.nbt.ITagSerial;
-import api.simplelib.FileReference;
-import api.simplelib.network.ModNetwork;
+import api.simplelib.utils.ITagSerializable;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * @author ci010
  */
-public class TimeController implements ITagSerial
+public class TimeController implements ITagSerializable
 {
 	private final World world;
 	private long periodTick = 24000L;
@@ -136,7 +136,7 @@ public class TimeController implements ITagSerial
 		tag.setLong("periodTick", periodTick);
 	}
 
-	class Period implements ITagSerial
+	class Period implements ITagSerializable
 	{
 		private String id;
 		private int dayPerPeriod;

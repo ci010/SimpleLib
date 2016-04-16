@@ -43,7 +43,7 @@ public class Range
 
 
 	/**
-	 * Maybe I could make an interface that has the standard to getMeta all the elements fulfilling the requirement of
+	 * Maybe I could make an interface that has the standard to build all the elements fulfilling the requirement of
 	 * creating a new RangeSquare.
 	 *
 	 * @param gui

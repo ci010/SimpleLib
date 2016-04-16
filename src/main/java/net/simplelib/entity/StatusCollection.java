@@ -3,6 +3,7 @@ package net.simplelib.entity;
 import api.simplelib.entity.EntityHandler;
 import api.simplelib.entity.IStatus;
 import api.simplelib.entity.IStatusUpdate;
+import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -65,11 +66,11 @@ public class StatusCollection implements EntityHandler.Manager
 	}
 
 	@Override
-	public EntityHandler.AIManager getAIManager()
+	public Optional<EntityHandler.AIManager> getAIManager()
 	{
 		if (hasAI)
-			return ai;
-		return null;
+			return Optional.<EntityHandler.AIManager>of(ai);
+		return Optional.absent();
 	}
 
 	@Cancelable

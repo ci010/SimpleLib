@@ -1,5 +1,6 @@
 package test;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -24,21 +26,36 @@ import api.simplelib.common.ModHandler;
 public class TestHandler
 {
 	@SubscribeEvent
+	public void onFinishUse(PlayerUseItemEvent.Finish event)
+	{
+		System.out.println("finish event");
+	}
+
+	@SubscribeEvent
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
 		if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)
 		{
-			System.out.println(event.world.getBiomeGenForCoords(event.pos).getFloatTemperature(event.pos));
+			if (event.entityPlayer.isSneaking())
+			{
+				Minecraft.getMinecraft().thePlayer.capabilities.allowEdit =
+						!Minecraft.getMinecraft().thePlayer.capabilities.allowEdit;
+				System.out.println("change to" + Minecraft.getMinecraft().thePlayer.isAllowEdit());
+			}
+			else
+			{
+				System.out.println(Minecraft.getMinecraft().thePlayer.isAllowEdit());
+			}
 		}
 	}
 
-	@SubscribeEvent
-	public void onMouse(GuiScreenEvent.InitGuiEvent.Post e)
-	{
+//	@SubscribeEvent
+//	public void onMouse(GuiScreenEvent.InitGuiEvent.Post e)
+//	{
 //		System.out.println("try play");
 //		Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation
 //				("helper", "bgm.e")));
-	}
+//	}
 
 	@SubscribeEvent
 	public void bottom(GuiScreenEvent.ActionPerformedEvent event)
@@ -49,6 +66,7 @@ public class TestHandler
 	@SubscribeEvent
 	public void breakBlock(BlockEvent.BreakEvent event)
 	{
+//		if(event.state.getBlock().getProperty()== Material.rock||)
 //		event.setCanceled(true);
 	}
 

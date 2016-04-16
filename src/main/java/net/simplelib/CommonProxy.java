@@ -29,7 +29,7 @@ public class CommonProxy
 
 	void preInit(FMLPreInitializationEvent event)
 	{
-		FMLCommonHandler.instance().getMinecraftServerInstance().registerTickable(TickServerSide.INSTANCE);
+//		FMLCommonHandler.instance().getMinecraftServerInstance().registerTickable(TickServerSide.INSTANCE);
 		NamespaceMakerComplex maker = new NamespaceMakerComplex(RegistryHelper.INSTANCE.getAnnotationMap());
 		ModRestriction.preInit(event);
 		Iterator<ContainerMeta> itr = RegistryHelper.INSTANCE.getRegistryInfo();

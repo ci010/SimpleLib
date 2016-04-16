@@ -1,5 +1,6 @@
 package net.simplelib.common;
 
+import api.simplelib.UpdateSafe;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -13,15 +14,22 @@ public enum TickServerSide implements ITickable
 	INSTANCE;
 
 	private WeakHashMap<Object, ITickable> updateWeakHashMap = new WeakHashMap<Object, ITickable>();
+	private WeakHashMap<Object, UpdateSafe> safeWeakHashMap = new WeakHashMap<Object, UpdateSafe>();
 
 	public void put(Object key, ITickable tickable)
 	{
+		if (tickable instanceof UpdateSafe)
+			safeWeakHashMap.put(key, (UpdateSafe) tickable);
 		updateWeakHashMap.put(key, tickable);
 	}
 
 	public ITickable remove(Object key)
 	{
-		return updateWeakHashMap.remove(key);
+		if (updateWeakHashMap.containsKey(key))
+			return updateWeakHashMap.remove(key);
+		if (safeWeakHashMap.containsKey(key))
+			return safeWeakHashMap.remove(key);
+		return null;
 	}
 
 	@Override
@@ -29,5 +37,8 @@ public enum TickServerSide implements ITickable
 	{
 		for (ITickable tickable : updateWeakHashMap.values())
 			tickable.update();
+		for (UpdateSafe updateSafe : safeWeakHashMap.values())
+			if (updateSafe.shouldUpdate())
+				updateSafe.update();
 	}
 }

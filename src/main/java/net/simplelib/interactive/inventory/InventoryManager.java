@@ -1,14 +1,14 @@
 package net.simplelib.interactive.inventory;
 
+import api.simplelib.Context;
 import api.simplelib.Var;
 import api.simplelib.interactive.Interactive;
 import api.simplelib.interactive.inventory.Inventory;
-import api.simplelib.interactive.inventory.InventoryRule;
+import api.simplelib.minecraft.inventory.InventoryRule;
 import api.simplelib.interactive.inventory.SlotInfo;
 import api.simplelib.interactive.inventory.SpaceInfo;
 import api.simplelib.interactive.meta.InteractiveProperty;
 import api.simplelib.interactive.meta.ModInteractiveMeta;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.inventory.IInventory;
@@ -17,109 +17,131 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.simplelib.HelperMod;
 import net.simplelib.interactive.process.VarItemHolder;
+import api.simplelib.utils.ITagSerializable;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * @author ci010
  */
 @ModInteractiveMeta
-public class InventoryManager implements Inventory.Manager,
-										 InteractiveProperty<Inventory.Data, Inventory.Meta, Inventory>,
-										 Inventory.Meta
+public class InventoryManager implements InteractiveProperty,
+										 Callable<Inventory.InvData>
 {
-	private String id;
-	protected List<SpaceInfo> spaces;
-	protected List<SlotInfo> discrete;
-
-	@Override
-	public SlotInfo newSingletonSlot(int x, int y)
+	private class WorkerManager implements Inventory.Manager, Worker
 	{
-		if (this.discrete == null)
-			discrete = Lists.newArrayList();
-		SlotInfo slotInfo = new Info(0, discrete.size(), x, y);
-		discrete.add(slotInfo);
-		return slotInfo;
-	}
+		protected List<SpaceInfo> spaces;
+		protected List<SlotInfo> discrete;
+		private String id;
 
-	@Override
-	public SpaceInfo newSlotSpace(int x, int y, int row, int column)
-	{
-		if (this.spaces == null)
-			spaces = Lists.newArrayList();
-		if (row == 1 && column == 1)
-			HelperMod.LOG.warn("Attempting create a single slot space!\n Highly recommond to use newSingletonSlot to " +
-					"handle this;");
-		SpaceInfoImpl spaceInfo = new SpaceInfoImpl(spaces.size(), x, y, row, column);
-		spaces.add(spaceInfo);
-		return spaceInfo;
-	}
-
-	@Override
-	public Inventory.Data buildProperty()
-	{
-		List<InventoryCommon> temp = Lists.newArrayList();
-		InventoryCommon inv;
-		if (discrete != null)
+		@Override
+		public SlotInfo newSingletonSlot(int x, int y)
 		{
-			inv = new InventoryCommon("default", this.discrete.size(), null, InventoryCommon.COMMON);
-			temp.add(inv);
+			if (this.discrete == null)
+				discrete = Lists.newArrayList();
+			SlotInfo slotInfo = new Info(0, discrete.size(), x, y);
+			discrete.add(slotInfo);
+			return slotInfo;
 		}
-		for (int i = 0; i < this.spaces.size(); i++)
+
+		@Override
+		public SpaceInfo newSlotSpace(int x, int y, int row, int column)
 		{
-			SpaceInfoImpl spaceInfo = (SpaceInfoImpl) this.spaces.get(i);
-			temp.add(new InventoryCommon(id + "." + i, spaceInfo.count, null, spaceInfo.rule));
+			if (this.spaces == null)
+				spaces = Lists.newArrayList();
+			if (row == 1 && column == 1)
+				HelperMod.LOG.warn("Attempting create a single slot space!\n Highly recommond to use newSingletonSlot to " +
+						"handle this;");
+			SpaceInfoImpl spaceInfo = new SpaceInfoImpl(spaces.size(), x, y, row, column);
+			spaces.add(spaceInfo);
+			return spaceInfo;
 		}
-		return new Container(ImmutableList.copyOf(temp));
+
+		@Override
+		public boolean init(Interactive interactive)
+		{
+			if (interactive instanceof Inventory)
+				((Inventory) interactive).provideInventory(this);
+			if (this.spaces.isEmpty() && this.discrete.isEmpty())
+				return false;
+			this.id = interactive.getId();
+			return true;
+		}
+
+		@Override
+		public ITagSerializable buildProperty(Context context)
+		{
+			List<InventoryCommon> temp = Lists.newArrayList();
+			InventoryCommon inv;
+			if (discrete != null)
+			{
+				inv = new InventoryCommon("default", discrete.size(), null, InventoryRule.COMMON);
+				temp.add(inv);
+			}
+			for (int i = 0; i < spaces.size(); i++)
+			{
+				SpaceInfoImpl spaceInfo = (SpaceInfoImpl) spaces.get(i);
+				temp.add(new InventoryCommon(id + "." + i, spaceInfo.count, null, spaceInfo.rule));
+			}
+			return new Container(this, ImmutableList.copyOf(temp));
+		}
 	}
 
+
+
 	@Override
-	public Inventory.Meta getMeta()
+	public Worker newWorker()
 	{
-		return this;
+		return new WorkerManager();
 	}
 
 	@Override
-	public Class<Inventory> getHook()
+	public void build()
+	{
+		CapabilityManager.INSTANCE.register(Inventory.InvData.class, new Capability.IStorage<Inventory.InvData>()
+		{
+			@Override
+			public NBTBase writeNBT(Capability<Inventory.InvData> capability, Inventory.InvData instance, EnumFacing side)
+			{
+				NBTTagCompound tag = new NBTTagCompound();
+				instance.writeToNBT(tag);
+				return tag;
+			}
+
+			@Override
+			public void readNBT(Capability<Inventory.InvData> capability, Inventory.InvData instance, EnumFacing side, NBTBase nbt)
+			{
+				if (nbt instanceof NBTTagCompound)
+					instance.readFromNBT((NBTTagCompound) nbt);
+			}
+		}, this);
+	}
+
+	@Override
+	public Class<? extends Interactive> interfaceType()
 	{
 		return Inventory.class;
 	}
 
 	@Override
-	public boolean init(Interactive interactive)
+	public Inventory.InvData call() throws Exception
 	{
-		if (interactive instanceof api.simplelib.interactive.inventory.Inventory)
-		{
-			((api.simplelib.interactive.inventory.Inventory) interactive).provideInventory(this);
-			this.id = interactive.getId();
-			if (!this.spaces.isEmpty())
-				return true;
-		}
-		return false;
+		return null;
 	}
 
-	@Override
-	public ImmutableList<SpaceInfo> getSpaces()
-	{
-		return ImmutableList.copyOf(spaces);
-	}
-
-	@Override
-	public ImmutableList<SlotInfo> getSlots()
-	{
-		return ImmutableList.copyOf(discrete);
-	}
-
-	public static class Container implements Inventory.Data, IItemHandlerModifiable
+	public class Container implements Inventory.InvData, IItemHandlerModifiable
 	{
 		private ImmutableList<InventoryCommon> inventories;
+		private WorkerManager manager;
 
-		public Container(ImmutableList<InventoryCommon> inventories)
+		public Container(WorkerManager manager, ImmutableList<InventoryCommon> inventories)
 		{
+			this.manager = manager;
 			this.inventories = inventories;
 		}
 
@@ -140,6 +162,18 @@ public class InventoryManager implements Inventory.Manager,
 		public IInventory getInventory(SpaceInfo info)
 		{
 			return inventories.get(info.id());
+		}
+
+		@Override
+		public ImmutableList<SpaceInfo> getSpacesInfo()
+		{
+			return ImmutableList.copyOf(manager.spaces);
+		}
+
+		@Override
+		public ImmutableList<SlotInfo> getSlotsInfo()
+		{
+			return ImmutableList.copyOf(manager.discrete);
 		}
 
 		@Override

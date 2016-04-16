@@ -1,6 +1,6 @@
 package net.simplelib.interactive.inventory;
 
-import api.simplelib.interactive.inventory.InventoryRule;
+import api.simplelib.minecraft.inventory.InventoryRule;
 import api.simplelib.interactive.inventory.SlotInfo;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,37 +10,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
-import net.simplelib.common.nbt.ITagSerial;
 import net.simplelib.interactive.process.VarItemHolder;
+import api.simplelib.utils.ITagSerializable;
 
 import java.util.List;
 
 /**
  * @author ci010
  */
-public class InventoryCommon implements IInventory, ITagSerial
+public class InventoryCommon implements IInventory, ITagSerializable
 {
-	public static final InventoryRule COMMON = new InventoryRule()
-	{
-		@Override
-		public boolean isUsebleByPlayer(EntityPlayer player)
-		{
-			return true;
-		}
-
-		@Override
-		public boolean isItemValid(ItemStack stack)
-		{
-			return true;
-		}
-
-		@Override
-		public int getInventoryStackLimit()
-		{
-			return 64;
-		}
-	};
-
 	protected String id;
 	protected InventoryRule rule;
 	protected ImmutableList<String> namespace;

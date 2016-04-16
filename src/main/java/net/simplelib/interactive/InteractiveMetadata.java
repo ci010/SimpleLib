@@ -1,26 +1,23 @@
 package net.simplelib.interactive;
 
-import api.simplelib.interactive.meta.InteractiveProperty;
+import api.simplelib.Context;
 import api.simplelib.interactive.Interactive;
-import api.simplelib.interactive.meta.InteractivePropertyHook;
-import api.simplelib.interactive.base.BaseHandler;
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.interactive.base.wrapper.BaseHandler;
+import api.simplelib.interactive.meta.InteractiveProperty;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.simplelib.HelperMod;
-import net.simplelib.common.nbt.ITagSerial;
+import api.simplelib.utils.ITagSerializable;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author ci010
  */
-public class InteractiveMetadata//TODO finish this...
+public class InteractiveMetadata implements Interactive.MetaData
 {
 	private static Map<Class<? extends Interactive.Base>, BaseHandler> handlerMap;
 
@@ -31,40 +28,29 @@ public class InteractiveMetadata//TODO finish this...
 		handlerMap.put(base, handler);
 	}
 
-	public static BaseHandler getBaseHandler(Interactive.Base base)
-	{
-		return handlerMap.get(base.getClass());
-	}
-
 	////////////////////////////
 
-	private static Map<Class, Class<? extends InteractiveProperty>> metaDataConstructMap;//TODO handle this.
+	private static Map<Class, InteractiveProperty> metaDataConstructMap;//TODO handle this.
 
 	public static void registerMeta(Class<? extends InteractiveProperty> meta)
 	{
 		System.out.println("register meta" + meta.getName());
-		Type type = meta.getGenericInterfaces()[1];
-		ParameterizedType t = (ParameterizedType) type;
-		Type[] actualTypeArguments = t.getActualTypeArguments();
-		Type data = actualTypeArguments[0], metaData = actualTypeArguments[1];
-		Class intf = (Class) actualTypeArguments[2];
-		for (Type interfaceType : intf.getGenericInterfaces())
-		{
-			if (interfaceType instanceof ParameterizedType)
-			{
-				t = (ParameterizedType) interfaceType;
-				if (t.getRawType() == InteractivePropertyHook.class)
-				{
-					Type[] types = t.getActualTypeArguments();
-					boolean b = types[0] == data && types[1] == metaData;
-					if (!b)
-						throw new IllegalArgumentException();
-				}
-			}
-		}
 		if (metaDataConstructMap == null)
 			metaDataConstructMap = Maps.newHashMap();
-		metaDataConstructMap.put(intf, meta);
+		try
+		{
+			InteractiveProperty metaInstance = meta.newInstance();
+			metaInstance.build();
+			metaDataConstructMap.put(metaInstance.interfaceType(), metaInstance);
+		}
+		catch (InstantiationException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IllegalAccessException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 
@@ -79,27 +65,22 @@ public class InteractiveMetadata//TODO finish this...
 	public static void register(Interactive interactive)
 	{
 		InteractiveMetadata metadata = new InteractiveMetadata(interactive);
-		if (registerMap.containsKey(metadata.id))
+		interactive.build();
+		interactive.getBase().setup(interactive, metadata);
+//		handlerMap.get(interactive.getBase().getClass()).setup(interactive, metadata);
+		if (registerMap.containsKey(interactive.getId()))
 		{
 			HelperMod.LOG.fatal("The duplicated id!");
 			throw new IllegalArgumentException("The duplicated id!");
 		}
-		registerMap.put(metadata.id, metadata);
+		registerMap.put(interactive.getId(), metadata);
 	}
 
 	////////////////////////////
 
 
+	private ImmutableList<InteractiveProperty.Worker> workers;
 	private String id;
-	private ImmutableList<InteractiveProperty> metas;
-
-	public <Meta, G extends InteractivePropertyHook<? extends ITagSerial, Meta>> Meta getMeta(Class<G> hook)
-	{
-		for (InteractiveProperty meta : metas)
-			if (meta.getHook() == hook)
-				return GenericUtil.cast(meta.getMeta());
-		return null;
-	}
 
 	private InteractiveMetadata(Interactive provider)
 	{
@@ -107,44 +88,49 @@ public class InteractiveMetadata//TODO finish this...
 
 		Class<?>[] interfaces = provider.getClass().getInterfaces();
 
-		ImmutableList.Builder<InteractiveProperty> builder = ImmutableList.builder();
-
+		ImmutableList.Builder<InteractiveProperty.Worker> builder = ImmutableList.builder();
 		for (Class<?> anInterface : interfaces)
 		{
-			Class<? extends InteractiveProperty> aClass = metaDataConstructMap.get(anInterface);
-			if (aClass != null)
+			InteractiveProperty meta = metaDataConstructMap.get(anInterface);
+			if (meta != null)
 			{
-				try
-				{
-					InteractiveProperty meta = aClass.newInstance();
-					if (!meta.init(provider))
-						continue;
-					builder.add(meta);
-				}
-				catch (InstantiationException e)
-				{
-					e.printStackTrace();
-				}
-				catch (IllegalAccessException e)
-				{
-					e.printStackTrace();
-				}
+				InteractiveProperty.Worker worker = meta.newWorker();
+				if (worker.init(provider))
+					builder.add(worker);
 			}
 		}
-		this.metas = builder.build();
+		this.workers = builder.build();
 	}
 
 
-	public InteractiveEntity createEntity(World world)
+	public Interactive.Entity createEntity(Context context)
 	{
-		ImmutableList.Builder<ITagSerial> builder = ImmutableList.builder();
-		for (InteractiveProperty meta : metas)
+		List<ITagSerializable> builder = Lists.newArrayList();
+		List<ICapabilityProvider> lst = Lists.newArrayList();
+		InteractiveEntity entity = new InteractiveEntity(this.id, context.getWorld());
+		for (InteractiveProperty.Worker worker : workers)
 		{
-			ITagSerial data = meta.buildProperty();
+			ITagSerializable data = worker.buildProperty(entity);
 			if (data == null)
 				continue;
 			builder.add(data);
+			if (data instanceof ICapabilityProvider)
+				lst.add((ICapabilityProvider) data);
 		}
-		return new InteractiveEntity(this.id, world, builder.build());
+		return entity.load(
+				builder.toArray(new ITagSerializable[builder.size()])
+				, lst.toArray(new ICapabilityProvider[lst.size()]));
+	}
+
+	@Override
+	public String id()
+	{
+		return this.id;
+	}
+
+	@Override
+	public ImmutableList<InteractiveProperty.Worker> workers()
+	{
+		return this.workers;
 	}
 }

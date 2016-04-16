@@ -1,8 +1,10 @@
 package test.api;
 
 
+import api.simplelib.ContextBlockInteract;
 import api.simplelib.interactive.BlockInteractive;
 import api.simplelib.interactive.Interactive;
+import api.simplelib.utils.ContextFactory;
 import com.google.common.base.Predicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -64,18 +66,18 @@ public class BlockAdapterInteractive extends Block
 		@Override
 		public TileEntity createNewTileEntity(World worldIn, int meta)
 		{
-			return TileEntityDummy.newTileEntity(this.meta.createEntity(worldIn));
+			return TileEntityDummy.newTileEntity(this.meta.createEntity(ContextFactory.newContext(worldIn)));
 		}
 	}
 
 	private BlockInteractive real;
-	private Interactive.Action action;
+	private Interactive interactive;
 
 	public BlockAdapterInteractive(BlockInteractive real, Interactive interactive)
 	{
 		super(real.getMaterial());
 		this.real = real;
-		this.action = interactive.getAction();
+		this.interactive = interactive;
 	}
 
 	@Override
@@ -258,12 +260,56 @@ public class BlockAdapterInteractive extends Block
 	@Override
 	public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {return real.canPlaceBlockAt(worldIn, pos);}
 
-	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
-	{
-		action.interactWith(playerIn, pos);
-		return real.onBlockActivated(worldIn, pos, state, playerIn, side, hitX, hitY, hitZ);
-	}
+//	@Override
+//	public boolean onBlockActivated(final World worldIn, final BlockPos pos, IBlockState state, EntityPlayer playerIn, final EnumFacing side, final float hitX, final float hitY, final float hitZ)
+//	{
+//		ContextBlockInteract context = new ContextBlockInteract()
+//		{
+//			@Override
+//			public EnumFacing getSide()
+//			{
+//				return side;
+//			}
+//
+//			@Override
+//			public float hitX()
+//			{
+//				return hitX;
+//			}
+//
+//			@Override
+//			public float hitY()
+//			{
+//				return hitY;
+//			}
+//
+//			@Override
+//			public float hitZ()
+//			{
+//				return hitZ;
+//			}
+//
+//			@Override
+//			public World getWorld()
+//			{
+//				return worldIn;
+//			}
+//
+//			@Override
+//			public BlockPos getPos()
+//			{
+//				return pos;
+//			}
+//
+//			@Override
+//			public String id()
+//			{
+//				return "right";
+//			}
+//		};
+//		this.interactive.getAction(context).interactWith(playerIn, context);
+//		return real.onBlockActivated(worldIn, pos, state, playerIn, side, hitX, hitY, hitZ);
+//	}
 
 	@Override
 	public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, Entity entityIn) {real.onEntityCollidedWithBlock(worldIn, pos, entityIn);}

@@ -1,14 +1,14 @@
 package net.simplelib.network;
 
+import api.simplelib.container.ContainerCommon;
 import api.simplelib.network.AbstractClientMessage;
+import api.simplelib.network.ModMessage;
 import api.simplelib.network.NBTCoder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.simplelib.common.nbt.ITagSerial;
-import api.simplelib.network.ModMessage;
-import api.simplelib.container.ContainerCommon;
+import api.simplelib.utils.ITagSerializable;
 
 /**
  * @author ci010
@@ -19,7 +19,7 @@ public class NBTWindowsMessage extends AbstractClientMessage<NBTTagCompound>
 	public NBTWindowsMessage()
 	{super(new NBTCoder());}
 
-	public NBTWindowsMessage(int windowId, int id, ITagSerial seril)
+	public NBTWindowsMessage(int windowId, int id, ITagSerializable seril)
 	{
 		super(new NBTCoder());
 		NBTTagCompound tag = new NBTTagCompound();
@@ -34,8 +34,8 @@ public class NBTWindowsMessage extends AbstractClientMessage<NBTTagCompound>
 	@Override
 	public IMessage handleClientMessage(EntityPlayer player, NBTTagCompound data, MessageContext ctx)
 	{
-		if (player.openContainer != null && player.openContainer.windowId == data.getInteger("windowId") && player.openContainer instanceof
-				ContainerCommon)
+		if (player.openContainer != null && player.openContainer.windowId == data.getInteger("windowId") &&
+				player.openContainer instanceof ContainerCommon)
 			((ContainerCommon) player.openContainer).updateSync(data.getInteger("id"), data.getCompoundTag("data"));
 		return null;
 	}

@@ -1,6 +1,5 @@
 package test;
 
-import com.google.common.cache.*;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,17 +11,11 @@ import net.minecraft.block.Block;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static org.objectweb.asm.Opcodes.*;
 
 /**
  * @author ci010
@@ -36,28 +29,29 @@ public class TestMain
 
 	public static void main(String[] args)
 	{
-		System.out.println(inv(1.1f, 0.05f, 0.1f, 1));
+		TestRefer.test();
+//		System.out.println(inv(1.1f, 0.05f, 0.1f, 1));
 	}
 
-	static private LoadingCache<Byte, Byte> lazyLoading = CacheBuilder.newBuilder().
-			maximumSize(1).expireAfterWrite(1500, TimeUnit.MILLISECONDS).removalListener(
-			new RemovalListener<Byte, Byte>()
-			{
-				@Override
-				public void onRemoval(RemovalNotification<Byte, Byte> notification)
-				{
-					System.out.println("remove");
-				}
-			}).build(
-			new CacheLoader<Byte, Byte>()
-			{
-				@Override
-				public Byte load(Byte key) throws Exception
-				{
-					return (byte) 0;
-				}
-			});
-	private static byte KEY = 0, VALID = 1, NULL = -1;
+//	static private LoadingCache<Byte, Byte> lazyLoading = CacheBuilder.newBuilder().
+//			maximumSize(1).expireAfterWrite(1500, TimeUnit.MILLISECONDS).removalListener(
+//			new RemovalListener<Byte, Byte>()
+//			{
+//				@Override
+//				public void onRemoval(RemovalNotification<Byte, Byte> notification)
+//				{
+//					System.out.println("remove");
+//				}
+//			}).build(
+//			new CacheLoader<Byte, Byte>()
+//			{
+//				@Override
+//				public Byte load(Byte key) throws Exception
+//				{
+//					return (byte) 0;
+//				}
+//			});
+//	private static byte KEY = 0, VALID = 1, NULL = -1;
 
 	static Pair<Float, Float> inv(float x1, float y1, float x2, float y2)
 	{
@@ -66,10 +60,6 @@ public class TestMain
 		return Pair.of(a, b);
 	}
 
-	static void testRegional()
-	{
-
-	}
 
 	static void testCache()
 	{

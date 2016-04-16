@@ -19,7 +19,6 @@ public class RegInteractiveDelegate extends ASMRegistryDelegate<ModInteractive>
 		try
 		{
 			Interactive interactive = (Interactive) this.getAnnotatedClass().newInstance();
-			InteractiveMetadata.getBaseHandler(interactive.getBase()).handle(interactive);
 			InteractiveMetadata.register(interactive);
 		}
 		catch (InstantiationException e)

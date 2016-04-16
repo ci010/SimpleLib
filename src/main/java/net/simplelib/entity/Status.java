@@ -1,8 +1,8 @@
 package net.simplelib.entity;
 
 import api.simplelib.Var;
-import api.simplelib.entity.IStatus;
 import api.simplelib.VarFactory;
+import api.simplelib.entity.IStatus;
 import api.simplelib.utils.GenericUtil;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.DataWatcher;
@@ -11,8 +11,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
-import net.simplelib.common.nbt.ITagSerial;
 import net.simplelib.common.nbt.NBTBasement;
+import api.simplelib.utils.ITagSerializable;
 
 import java.util.List;
 
@@ -177,7 +177,7 @@ public class Status implements IExtendedEntityProperties
 		return watching.get(idx);
 	}
 
-	public abstract class VarWatchingImpl<T> implements Var<T>, ITagSerial
+	public abstract class VarWatchingImpl<T> implements Var<T>, ITagSerializable
 	{
 		private DataWatcher delegate;
 		private String name;

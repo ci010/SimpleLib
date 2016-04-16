@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author ci010
  */
-@ModGuiHandler
+//@ModGuiHandler
 @Deprecated
 public class GuiPortSyncHandler implements IGuiHandler
 {
@@ -37,19 +37,19 @@ public class GuiPortSyncHandler implements IGuiHandler
 
 	public static void openGui(int id, EntityPlayer player, int x, int y, int z)
 	{
-		if (side == Side.SERVER)
-		{
-			List<VarSync> temp = Lists.newArrayList();
-			//TODO consider if I need to store this reference
-			IGuiPortHandler handler = registered.get(id);
-			handler.getPort(player, x, y, z).provideSyncReference(temp);
-			int winId = current.size();
-			SyncPortalServer server = new SyncPortalServer(winId, temp);
-			current.add(server);
-//			ModNetwork.instance().sendTo(new OpenGuiMessage(id, winId, x, y, z), (EntityPlayerMP) player);
-			if (handler instanceof Container)
-				player.openGui(HelperMod.instance, id, player.worldObj, x, y, z);
-		}
+//		if (side == Side.SERVER)
+//		{
+//			List<VarSync> temp = Lists.newArrayList();
+//			//TODO consider if I need to store this reference
+//			IGuiPortHandler handler = registered.get(id);
+//			handler.getPort(player, x, y, z).provideSyncReference(temp);
+//			int winId = current.size();
+//			SyncPortalServer server = new SyncPortalServer(winId, temp);
+//			current.add(server);
+////			ModNetwork.instance().sendTo(new OpenGuiMessage(id, winId, x, y, z), (EntityPlayerMP) player);
+//			if (handler instanceof Container)
+//				player.openGui(HelperMod.instance, id, player.worldObj, x, y, z);
+//		}
 	}
 
 	@Override

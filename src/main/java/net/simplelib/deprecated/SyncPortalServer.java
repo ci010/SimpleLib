@@ -12,30 +12,30 @@ import java.util.List;
 @Deprecated
 public class SyncPortalServer extends SyncPortal
 {
-	private List<EntityPlayerMP> listener;
-
-	public SyncPortalServer(int id, List<VarSync> data)
-	{
-		super(id, data);
-	}
-
-	public void addListner(EntityPlayerMP playerMP)
-	{
-		if (listener == null)
-			listener = Lists.newArrayList();
-		this.listener.add(playerMP);
-	}
-
-	public void removeListener(EntityPlayerMP entityPlayer)
-	{
-		if (listener != null)
-			listener.remove(entityPlayer);
-	}
-
-	@Override
-	protected void sendChange(int winId, int id, VarSync seril)
-	{
-//		for (EntityPlayerMP playerMP : listener)
-//			ModNetwork.instance().sendTo(new NBTWindowsMessage(winId, id, seril.get()), playerMP);
-	}
+//	private List<EntityPlayerMP> listener;
+//
+//	public SyncPortalServer(int id, List<VarSync> data)
+//	{
+//		super(id, data);
+//	}
+//
+//	public void addListner(EntityPlayerMP playerMP)
+//	{
+//		if (listener == null)
+//			listener = Lists.newArrayList();
+//		this.listener.add(playerMP);
+//	}
+//
+//	public void removeListener(EntityPlayerMP entityPlayer)
+//	{
+//		if (listener != null)
+//			listener.remove(entityPlayer);
+//	}
+//
+//	@Override
+//	protected void sendChange(int winId, int id, VarSync seril)
+//	{
+////		for (EntityPlayerMP playerMP : listener)
+////			ModNetwork.instance().sendTo(new NBTWindowsMessage(winId, id, seril.get()), playerMP);
+//	}
 }

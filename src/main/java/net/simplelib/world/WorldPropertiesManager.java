@@ -1,14 +1,14 @@
 package net.simplelib.world;
 
+import api.simplelib.common.Instance;
+import api.simplelib.common.ModHandler;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.simplelib.common.nbt.ITagSerial;
-import api.simplelib.common.Instance;
-import api.simplelib.common.ModHandler;
+import api.simplelib.utils.ITagSerializable;
 
 import java.util.Map;
 
@@ -16,7 +16,7 @@ import java.util.Map;
  * @author ci010
  */
 @ModHandler
-public class WorldPropertiesManager implements ITagSerial
+public class WorldPropertiesManager implements ITagSerializable
 {
 	@Instance
 	private static WorldPropertiesManager instnace;

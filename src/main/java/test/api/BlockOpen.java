@@ -35,5 +35,4 @@ class BlockOpen extends Block
 	{
 		return super.createStackedBlock(state);
 	}
-
 }
