@@ -68,8 +68,6 @@ public class ContainerWrap extends Container
 	@Override
 	public void onCraftGuiOpened(ICrafting iCrafting)
 	{
-		for (int i = 0; i < varIntegers.size(); ++i)
-			iCrafting.sendProgressBarUpdate(this, i, varIntegers.get(i).get());
 		if (iCrafting instanceof EntityPlayerMP)
 		{
 			EntityPlayerMP playerMP = (EntityPlayerMP) iCrafting;
@@ -94,14 +92,6 @@ public class ContainerWrap extends Container
 	public void detectAndSendChanges()
 	{
 		super.detectAndSendChanges();
-		int num;
-		for (EntityPlayerMP player : getPlayers())
-			for (num = 0; num < varIntegers.size(); ++num)
-			{
-				VarInteger i = varIntegers.get(num);
-				if (i.isDirty())
-					player.sendProgressBarUpdate(this, num, i.get());
-			}
 	}
 
 	@Override
@@ -118,9 +108,9 @@ public class ContainerWrap extends Container
 	@Override
 	protected void finalize() throws Throwable
 	{
-		super.finalize();
-		for (VarSync sync : this.syncs)
-			sync.removeListener(this);
+//		super.finalize();
+//		for (VarSync sync : this.syncs)
+//			sync.removeListener(this);
 	}
 
 	//	@Override

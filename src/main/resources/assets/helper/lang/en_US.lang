@@ -1,0 +1,7 @@
+cfg.restrict.mode=Mode
+cfg.restrict.mode.limit=Limit Mod
+cfg.restrict.mode.limit.comment=This can be "BlackList" or "WhiteList" or "WeakWhiteList".(Ignore case) BlackList will reject the client if it contains any mods listed in Limit Range session. WhiteList will only allow the client has ALL the mods listed in the Limit Range. WeakWhiteList doesn't require that client contains exactly the same mods in the list, but containing the mods out of list will be denied.
+cfg.restrict.mode.source=Limit Source
+cfg.restrict.mode.source.comment=This can be "List" or "Mod". List will make the "Limit Range" come from the Limit Range session in this config file. Mod will make the "Limit Range" come from all the mods installed in server.
+cfg.restrict.range=Limit Range
+cfg.restrict.range.comment=The format is: [Modid] [version].(Modid+space+version) If you don't want to limit version, you can write * instead.

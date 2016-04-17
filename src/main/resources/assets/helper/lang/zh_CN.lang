@@ -1,0 +1,7 @@
+cfg.restrict.mode=模式
+cfg.restrict.mode.limit=限制模式
+cfg.restrict.mode.limit.comment=这个地方可以填写“BlackList”或者“WhiteList”或者“WeakWhiteList”（不区分大小写）。BlackList模式会拒绝所有含有列在“限制范围”内mods的客户端。WhiteList 模式只允许拥有和“限制范围”部分列出的mod一模一样的客户端连接服务器。WeakWhiteList模式虽然不需要客户端和“限制范围”部分列出的mod一模一样，但是如果客户端安装了超出“限制范围”的mod，客户端就会被拒绝连接进服务器。
+cfg.restrict.mode.source=限制来源
+cfg.restrict.mode.source.comment=这个地方可以填写“List”或者“Mod”。List模式下，mod的“限制范围”将会取自下面“限制范围”列表。Mod模式下，mod的“限制范围”将会来自服务器安装的mod。
+cfg.restrict.range=限制范围
+cfg.restrict.range.comment=限制范围的格式是: [Modid] [version].(读作modid空格version) 如果不限制版本，version部分就写*，即是所有版本都有效

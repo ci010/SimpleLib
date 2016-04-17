@@ -34,8 +34,8 @@ public class BlockCompiled extends Block
 {
 	private ComponentBlock delegate;
 	private IProperty[] properties;
-	private Break moduleBreak = BlockModules.BREAK.getDefaultState();
-	private RainDrop rainDrop = BlockModules.RAIN_DROP.getDefaultState();
+	private Break moduleBreak;//= BlockModules.BREAK.getDefaultState();
+	private RainDrop rainDrop;//= BlockModules.RAIN_DROP.getDefaultState();
 
 	public BlockCompiled(BlockCompiledInfo info)
 	{

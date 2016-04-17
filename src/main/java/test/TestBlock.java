@@ -35,7 +35,6 @@ public class TestBlock extends BlockStone
 //		assets\foodcraft\textures\blocks
 	}
 
-
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
@@ -58,7 +57,6 @@ public class TestBlock extends BlockStone
 		System.out.println("onBlockHarvested");
 		super.onBlockHarvested(worldIn, pos, state, player);
 	}
-
 
 	@Override
 	public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest)

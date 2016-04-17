@@ -31,9 +31,9 @@ public class GameComponents
 
 	private static void registerBlock(String modid, ComponentBlock block)
 	{
-		BlockCompiledInfo builder = new BlockCompiledInfo();
-		block.build(builder);
-		RegistryHelper.INSTANCE.registerBlock(modid, new BlockCompiled(block, builder), block.getId());
+//		BlockCompiledInfo builder = new BlockCompiledInfo();
+//		block.build(builder);
+//		RegistryHelper.INSTANCE.registerBlock(modid, new BlockCompiled(block, builder), block.getId());
 	}
 
 	private static void registerItem(ComponentItem item)

@@ -10,6 +10,7 @@ import api.simplelib.interactive.meta.InteractiveProperty;
 import api.simplelib.interactive.meta.ModInteractiveMeta;
 import api.simplelib.interactive.process.Process;
 import api.simplelib.interactive.process.ProcessPipeline;
+import api.simplelib.minecraft.Callback;
 import api.simplelib.utils.GenericUtil;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
@@ -59,7 +60,7 @@ public class ProcessHandler implements InteractiveProperty,
 			}
 
 			@Override
-			public <T extends Enum<T>> Var<T> newState(T state, VarNotify.Callback<T> callback)
+			public <T extends Enum<T>> Var<T> newState(T state, Callback<T> callback)
 			{
 				VarSync<T> var = new VarSync<T>()
 				{

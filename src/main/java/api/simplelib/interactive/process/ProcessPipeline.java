@@ -7,6 +7,7 @@ import api.simplelib.VarNotify;
 import api.simplelib.VarSync;
 import api.simplelib.interactive.Interactive;
 import api.simplelib.interactive.inventory.SlotInfo;
+import api.simplelib.minecraft.Callback;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -48,7 +49,7 @@ public interface ProcessPipeline extends Interactive
 		 */
 		Var<ItemStack> newStack(SlotInfo info);
 
-		<T extends Enum<T>> Var<T> newState(T state, VarNotify.Callback<T> callback);
+		<T extends Enum<T>> Var<T> newState(T state, Callback<T> callback);
 	}
 
 	/**

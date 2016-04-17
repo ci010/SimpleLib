@@ -7,6 +7,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import test.api.component.Context;
 import test.api.component.GameComponent;
 import test.api.component.item.capabilities.CustomInfo;
 import test.api.component.item.capabilities.Damageable;
@@ -17,7 +18,7 @@ import test.api.component.item.module.usage.RightClickAction;
 /**
  * @author ci010
  */
-public interface ComponentItem extends GameComponent<GameComponent.Builder, ContextItem>
+public interface ComponentItem extends GameComponent<GameComponent.Builder, Context>
 {
 	@CapabilityInject(Nameable.class)
 	Capability<Nameable> nameble = null;

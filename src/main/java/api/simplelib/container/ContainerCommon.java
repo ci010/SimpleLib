@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * @author ci010
  */
-public class ContainerCommon extends Container implements InventoryCommon.Listener, VarNotify.Callback
+public class ContainerCommon extends Container implements InventoryCommon.Listener//, VarNotify.Callback
 {
 	private ImmutableList<VarInteger> varIntegers;
 	private ImmutableList<VarSync> syncs;
@@ -41,8 +41,8 @@ public class ContainerCommon extends Container implements InventoryCommon.Listen
 	public ContainerCommon load(List<VarSync> syncs)
 	{
 		this.syncs = ImmutableList.copyOf(syncs);
-		for (VarSync sync : this.syncs)
-			sync.addListener(this);
+//		for (VarSync sync : this.syncs)
+//			sync.addListener(this);
 		return this;
 	}
 
@@ -138,13 +138,13 @@ public class ContainerCommon extends Container implements InventoryCommon.Listen
 //		this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.worldObj));
 	}
 
-	@Override
-	protected void finalize() throws Throwable
-	{
-		super.finalize();
-		for (VarSync sync : this.syncs)
-			sync.removeListener(this);
-	}
+//	@Override
+//	protected void finalize() throws Throwable
+//	{
+//		super.finalize();
+//		for (VarSync sync : this.syncs)
+//			sync.removeListener(this);
+//	}
 
 	@Override
 	public void onInventoryChange(IInventory inventoryIn)
@@ -152,17 +152,17 @@ public class ContainerCommon extends Container implements InventoryCommon.Listen
 		onCraftMatrixChanged(inventoryIn);
 	}
 
-	@Override
-	public void onChange(Var var, @Nullable Context context)
-	{
-		if (syncs.contains(var))
-		{
-			int i = syncs.indexOf(var);
-			for (EntityPlayerMP playerMP : getPlayers())
-			{
-				ModNetwork.instance().sendTo(new NBTWindowsMessage(this.windowId, i, (ITagSerializable) var),
-						playerMP);
-			}
-		}
-	}
+//	@Override
+//	public void onChange(Var var, @Nullable Context context)
+//	{
+//		if (syncs.contains(var))
+//		{
+//			int i = syncs.indexOf(var);
+//			for (EntityPlayerMP playerMP : getPlayers())
+//			{
+//				ModNetwork.instance().sendTo(new NBTWindowsMessage(this.windowId, i, (ITagSerializable) var),
+//						playerMP);
+//			}
+//		}
+//	}
 }
