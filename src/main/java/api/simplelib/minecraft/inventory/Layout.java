@@ -1,11 +1,15 @@
 package api.simplelib.minecraft.inventory;
 
+import api.simplelib.common.NotNull;
+import net.simplelib.common.Vector2i;
+
 /**
  * @author ci010
  */
 public interface Layout
 {
-	int getX(InventoryElement element);
+	Vector2i NULL = new Vector2i(-1, -1);
 
-	int getY(InventoryElement element);
+	@NotNull
+	Vector2i getPos(int id);
 }

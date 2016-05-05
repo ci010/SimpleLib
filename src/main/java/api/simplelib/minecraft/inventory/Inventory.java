@@ -11,7 +11,5 @@ public interface Inventory extends IItemHandler, Iterable<InventoryElement>, ISi
 {
 	Callback.Container getCallback();
 
-	void setLayout(Layout layout);
-
 	Layout getLayout();
 }

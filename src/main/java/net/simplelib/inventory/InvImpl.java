@@ -1,4 +1,4 @@
-package api.simplelib.minecraft.inventory.impl;
+package net.simplelib.inventory;
 
 import api.simplelib.minecraft.Callback;
 import api.simplelib.minecraft.inventory.InventoryElement;
@@ -22,7 +22,7 @@ import java.util.LinkedList;
 /**
  * @author ci010
  */
-public class InvImpl implements Inventory
+public class InvImpl implements Inventory, ISidedInventory
 {
 	private ArrayList<ItemStack> stacks;
 	private EnumMap<EnumFacing, int[]> sideMap;
@@ -58,12 +58,13 @@ public class InvImpl implements Inventory
 		this.wrap = new InvWrapper(this);
 	}
 
-	void build(EnumMap<EnumFacing, int[]> sideMap, int size, ArrayList<InventoryElement> elements)
+	void build(EnumMap<EnumFacing, int[]> sideMap, int size, ArrayList<InventoryElement> elements, Layout layout)
 	{
 		this.sideMap = sideMap;
 		this.size = size;
 		this.elements = elements;
 		this.stacks = Lists.newArrayListWithCapacity(this.size);
+		this.layout = layout;
 	}
 
 	@Override
@@ -81,7 +82,7 @@ public class InvImpl implements Inventory
 	@Override
 	public int getSlots()
 	{
-		return 0;
+		return size;
 	}
 
 	@Override
@@ -93,12 +94,18 @@ public class InvImpl implements Inventory
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 	{
-		return wrap.insertItem(slot, stack, simulate);
+		int s = stack.stackSize;
+		ItemStack r = wrap.insertItem(slot, stack, simulate);
+		if (!simulate && s != r.stackSize)
+			markDirty();
+		return r;
 	}
 
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate)
 	{
+		if (!simulate && amount != 0)
+			this.markDirty();
 		return wrap.extractItem(slot, amount, simulate);
 	}
 
@@ -255,7 +262,7 @@ public class InvImpl implements Inventory
 		return this.container;
 	}
 
-	@Override
+	//	@Override
 	public void setLayout(Layout layout)
 	{
 		this.layout = layout;
@@ -270,6 +277,6 @@ public class InvImpl implements Inventory
 	@Override
 	public Iterator<InventoryElement> iterator()
 	{
-		return null;
+		return elements.iterator();
 	}
 }

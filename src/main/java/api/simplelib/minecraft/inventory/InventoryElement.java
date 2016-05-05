@@ -1,17 +1,18 @@
 package api.simplelib.minecraft.inventory;
 
-import api.simplelib.minecraft.Callback;
+import com.google.common.base.Optional;
+import net.minecraft.item.ItemStack;
 
 /**
  * @author ci010
  */
-public interface InventoryElement<T extends InventoryElement<T>>
+public interface InventoryElement extends Iterable<ItemStack>
 {
 	int id();
 
 	InventoryRule getRule();
 
-	Callback.Container<T> callbackContainer();
-
 	Inventory parent();
+
+	Optional<String> name();
 }

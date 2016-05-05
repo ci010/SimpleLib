@@ -1,11 +1,15 @@
-package api.simplelib.minecraft.inventory.impl;
+package net.simplelib.inventory;
 
-import api.simplelib.minecraft.inventory.InventoryElement;
 import api.simplelib.minecraft.inventory.InventoryRule;
+import api.simplelib.minecraft.inventory.InventorySlot;
+import api.simplelib.minecraft.inventory.InventorySpace;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 /**
  * @author ci010
@@ -14,10 +18,15 @@ public class SlotRuled extends Slot
 {
 	private InventoryRule rule;
 
-	public static SlotRuled of(InventoryElement element)
+	public static SlotRuled of(InventorySlot element)
 	{
-		return new SlotRuled(element.parent(), element.id(), element.parent().getLayout().getX(element),
-				element.parent().getLayout().getY(element), element.getRule());
+		return new SlotRuled(element.parent(), element.id(), element.parent().getLayout().getX(element.id()),
+				element.parent().getLayout().getY(element.id()), element.getRule());
+	}
+
+	public static List<SlotRuled> of(InventorySpace space)
+	{
+		return Lists.newArrayList();//TODO finish this
 	}
 
 	public SlotRuled(IInventory inventoryIn, int index, int xPosition, int yPosition, InventoryRule rule)

@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 /**
  * @author ci010
  */
-public interface InventorySlot extends InventoryElement<InventorySlot>
+public interface InventorySlot extends InventoryElement
 {
 	/**
 	 * Returns the ItemStack in a given slot.

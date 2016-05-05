@@ -1,5 +1,6 @@
 package api.simplelib.minecraft.inventory;
 
+import api.simplelib.common.Nullable;
 import net.minecraft.util.EnumFacing;
 
 /**
@@ -7,13 +8,21 @@ import net.minecraft.util.EnumFacing;
  */
 public interface InventoryBuilder
 {
-	Inventory buildInventory();
+	InventorySpace newSpace(int size, @Nullable EnumFacing facing, InventoryRule rule);
 
-	InventorySpace newSpace(int size, EnumFacing facing, InventoryRule rule);
+	InventorySpace newSpace(int size, @Nullable EnumFacing facing);
 
-	InventorySpace newSpace(int size, EnumFacing facing);
+	InventorySlot newSlot(@Nullable EnumFacing facing);
 
-	InventorySlot newSlot(EnumFacing facing);
+	InventorySlot newSlot(@Nullable EnumFacing facing, InventoryRule rule);
 
-	InventorySlot newSlot(EnumFacing facing, InventoryRule rule);
+	InventoryBuilder allocName(InventoryElement element, String name);
+
+	InventoryBuilder allocLength(InventorySpace space, int length);
+
+	InventoryBuilder allocPos(InventoryElement element, int x, int y);
+
+	int currentSize();
+
+	InventoryElement getElement(int i);
 }

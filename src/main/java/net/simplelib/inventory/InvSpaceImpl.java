@@ -1,14 +1,13 @@
-package api.simplelib.minecraft.inventory.impl;
+package net.simplelib.inventory;
 
-import api.simplelib.minecraft.Callback;
 import api.simplelib.minecraft.inventory.Inventory;
 import api.simplelib.minecraft.inventory.InventoryRule;
+import api.simplelib.minecraft.inventory.InventorySlot;
 import api.simplelib.minecraft.inventory.InventorySpace;
-import com.google.common.collect.Lists;
+import com.google.common.base.Optional;
 import net.minecraft.item.ItemStack;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 
 /**
  * @author ci010
@@ -17,48 +16,26 @@ public class InvSpaceImpl implements InventorySpace
 {
 	private int size, offset;
 	private InventoryRule rule = InventoryRule.COMMON;
-	private Inventory delegate;
-	private Callback.Container<InventorySpace> container = new Callback.Container<InventorySpace>()
-	{
-		private LinkedList<Callback<InventorySpace>> spaces = Lists.newLinkedList();
-
-		@Override
-		public void add(Callback<InventorySpace> callBack)
-		{
-			spaces.add(callBack);
-		}
-
-		@Override
-		public void remove(Callback<InventorySpace> callBack)
-		{
-			spaces.remove(callBack);
-		}
-
-		@Override
-		public Iterator<Callback<InventorySpace>> iterator()
-		{
-			return spaces.iterator();
-		}
-	};
+	private Inventory parent;
+	private String name;
 
 	public InvSpaceImpl(Inventory delegate, int id, int size)
 	{
 		this.size = size;
 		this.offset = id;
-		this.delegate = delegate;
+		this.parent = delegate;
 	}
 
-	private void markDirty()
+	void setName(String name)
 	{
-		for (Callback<InventorySpace> callBack : container)
-			callBack.onChange(this);
+		this.name = name;
 	}
 
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 	{
 		if (slot < size)
-			return delegate.insertItem(slot + offset, stack, simulate);
+			return parent.insertItem(slot + offset, stack, simulate);
 		return null;
 	}
 
@@ -66,7 +43,7 @@ public class InvSpaceImpl implements InventorySpace
 	public ItemStack extractItem(int slot, int amount, boolean simulate)
 	{
 		if (slot < size)
-			return delegate.extractItem(slot + offset, amount, simulate);
+			return parent.extractItem(slot + offset, amount, simulate);
 		return null;
 	}
 
@@ -80,19 +57,19 @@ public class InvSpaceImpl implements InventorySpace
 			@Override
 			public boolean hasNext()
 			{
-				return current < delegate.getSlots();
+				return current < parent.getSlots();
 			}
 
 			@Override
 			public ItemStack next()
 			{
-				return delegate.getStackInSlot(current++);
+				return parent.getStackInSlot(current++);
 			}
 
 			@Override
 			public void remove()
 			{
-
+				throw new UnsupportedOperationException();
 			}
 		};
 	}
@@ -117,14 +94,15 @@ public class InvSpaceImpl implements InventorySpace
 	@Override
 	public Inventory parent()
 	{
-		return delegate;
+		return parent;
 	}
 
 	@Override
-	public Callback.Container<InventorySpace> callbackContainer()
+	public Optional<String> name()
 	{
-		return container;
+		return Optional.fromNullable(name);
 	}
+
 
 	@Override
 	public int getSlots()
@@ -135,7 +113,7 @@ public class InvSpaceImpl implements InventorySpace
 	@Override
 	public ItemStack getStackInSlot(int slot)
 	{
-		return delegate.getStackInSlot(slot + offset);
+		return parent.getStackInSlot(slot + offset);
 	}
 
 }
