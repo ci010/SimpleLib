@@ -1,4 +1,4 @@
-package api.simplelib.utils;
+package api.simplelib;
 
 /**
  * @author ci010

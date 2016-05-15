@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.simplelib.HelperMod;
 import net.simplelib.common.CommonLogger;
-import api.simplelib.Local;
+import api.simplelib.utils.Local;
 import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.DebugLogger;
 import api.simplelib.LoadingDelegate;

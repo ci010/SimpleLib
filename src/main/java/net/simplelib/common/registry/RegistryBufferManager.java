@@ -1,7 +1,7 @@
 package net.simplelib.common.registry;
 
 import api.simplelib.registry.ModProxy;
-import api.simplelib.utils.Instance;
+import api.simplelib.Instance;
 import com.google.common.base.Optional;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;

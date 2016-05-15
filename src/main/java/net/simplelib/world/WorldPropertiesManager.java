@@ -1,6 +1,6 @@
 package net.simplelib.world;
 
-import api.simplelib.utils.Instance;
+import api.simplelib.Instance;
 import api.simplelib.registry.ModHandler;
 import api.simplelib.utils.CapabilityUtils;
 import api.simplelib.seril.ITagSerializable;

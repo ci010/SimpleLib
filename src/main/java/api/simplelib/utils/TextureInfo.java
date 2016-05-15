@@ -1,4 +1,4 @@
-package api.simplelib.gui;
+package api.simplelib.utils;
 
 import net.minecraft.util.ResourceLocation;
 
@@ -48,4 +48,5 @@ public class TextureInfo
 	{
 		return height;
 	}
+
 }

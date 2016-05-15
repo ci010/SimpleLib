@@ -1,9 +1,9 @@
 package net.simplelib.client;
 
-import api.simplelib.gui.components.GuiComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
@@ -32,13 +32,14 @@ public class LoadingScreenLoader extends Gui
 		return instance;
 	}
 
-	private GuiComponent currentScreen;
+	private GuiScreen currentScreen;
 	private Set<ISound> allowedSound;
 
-	public void start(GuiComponent component)
+	public void start(GuiScreen component)
 	{
 		Minecraft.getMinecraft().getSoundHandler().pauseSounds();
 		MinecraftForge.EVENT_BUS.register(this);
+		currentScreen = component;
 		allowedSound = new HashSet<ISound>();
 	}
 

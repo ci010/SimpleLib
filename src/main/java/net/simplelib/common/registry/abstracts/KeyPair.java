@@ -1,6 +1,6 @@
 package net.simplelib.common.registry.abstracts;
 
-import api.simplelib.Local;
+import api.simplelib.utils.Local;
 import net.minecraft.client.settings.KeyBinding;
 
 /**

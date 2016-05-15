@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.simplelib.HelperMod;
 import net.simplelib.common.DebugLogger;
 import api.simplelib.registry.ASMRegistryDelegate;
-import api.simplelib.utils.Instance;
+import api.simplelib.Instance;
 import api.simplelib.LoadingDelegate;
 import api.simplelib.registry.ModHandler;
 

@@ -1,6 +1,6 @@
 package net.simplelib.entity;
 
-import api.simplelib.utils.Instance;
+import api.simplelib.Instance;
 import api.simplelib.registry.ModHandler;
 import api.simplelib.utils.Nullable;
 import api.simplelib.entity.EntityHandler;

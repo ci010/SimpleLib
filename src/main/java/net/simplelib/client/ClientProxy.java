@@ -1,6 +1,6 @@
 package net.simplelib.client;
 
-import api.simplelib.Local;
+import api.simplelib.utils.Local;
 import api.simplelib.utils.Environment;
 import net.minecraftforge.fml.relauncher.Side;
 import net.simplelib.CommonProxy;

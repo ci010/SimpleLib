@@ -1,6 +1,6 @@
 package net.simplelib.common.registry.delegate;
 
-import api.simplelib.Local;
+import api.simplelib.utils.Local;
 import api.simplelib.registry.command.ISimpleCommand;
 import api.simplelib.registry.command.ModCommand;
 import api.simplelib.registry.ASMRegistryDelegate;

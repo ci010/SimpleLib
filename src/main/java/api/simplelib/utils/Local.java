@@ -1,4 +1,4 @@
-package api.simplelib;
+package api.simplelib.utils;
 
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;

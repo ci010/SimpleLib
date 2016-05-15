@@ -1,6 +1,6 @@
 package net.simplelib.login.restriction;
 
-import api.simplelib.Local;
+import api.simplelib.utils.Local;
 import com.google.common.collect.Maps;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;

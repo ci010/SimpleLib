@@ -1,7 +1,7 @@
 package api.simplelib.sound;
 
 import api.simplelib.utils.FileReference;
-import api.simplelib.utils.Instance;
+import api.simplelib.Instance;
 import api.simplelib.registry.ModHandler;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

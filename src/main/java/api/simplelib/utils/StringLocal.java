@@ -1,7 +1,5 @@
 package api.simplelib.utils;
 
-import api.simplelib.Local;
-
 /**
  * @author ci010
  */

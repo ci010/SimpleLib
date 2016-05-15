@@ -1,5 +1,6 @@
-package api.simplelib.utils;
+package api.simplelib;
 
+import api.simplelib.utils.GenericUtil;
 import com.google.common.base.Optional;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.simplelib.HelperMod;

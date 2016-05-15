@@ -7,7 +7,7 @@ import test.interactive.meta.InteractiveProperty;
 import test.interactive.meta.ModInteractiveMeta;
 import test.interactive.process.Process;
 import test.interactive.process.ProcessPipeline;
-import api.simplelib.utils.Callback;
+import api.simplelib.Callback;
 import api.simplelib.utils.GenericUtil;
 import api.simplelib.seril.ITagSerializer;
 import api.simplelib.vars.Var;

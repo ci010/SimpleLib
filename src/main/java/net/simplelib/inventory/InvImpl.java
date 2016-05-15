@@ -1,6 +1,6 @@
 package net.simplelib.inventory;
 
-import api.simplelib.utils.Callback;
+import api.simplelib.Callback;
 import api.simplelib.inventory.InventoryElement;
 import api.simplelib.inventory.Inventory;
 import api.simplelib.inventory.Layout;

@@ -1,6 +1,6 @@
 package api.simplelib.vars;
 
-import api.simplelib.utils.Callback;
+import api.simplelib.Callback;
 
 /**
  * @author ci010

@@ -1,6 +1,6 @@
 package api.simplelib.inventory;
 
-import api.simplelib.utils.Callback;
+import api.simplelib.Callback;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraftforge.items.IItemHandler;
 
