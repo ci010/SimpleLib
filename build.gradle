@@ -1,34 +1,37 @@
+
+// For those who want the bleeding edge
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.0.2'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
-
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "0.2beta"
-group= "net.ci010.simplelib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "simplelib"
+/*
+// for people who want stable - not yet functional for MC 1.8.8 - we require the forgegradle 2.1 snapshot
+plugins {
+    id "net.minecraftforge.gradle.forge" version "2.0.2"
+}
+*/
+version = "0.0.1beta"
+group= mod_group // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "simple_lib"
 
 minecraft {
-    version = "1.8" + "-" + "11.14.4.1563"
+    version = minecraft_version + "-" + forge_version
 	if (file('../minecraft').exists()){
 		runDir = "../minecraft"
 	} else {
 		runDir = "assets"
 	}
-    mappings = "stable_17"
+    mappings = mcp_mapping_version
 }
 
 dependencies {
@@ -36,10 +39,18 @@ dependencies {
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
-
-    // content examples
+      
+    // real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
+
+    // the 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
+    //provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+
+    // the deobf configurations:  'deobfCompile' and 'deobfProvided' are the same as the normal compile and provided,
+    // except that these dependencies get remapped to your current MCP mappings
+    //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+    //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
 
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
@@ -65,12 +76,4 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
-}
-
-idea
-{
-	module
-	{
-		inheritOutputDirs = true 
-	} 
 }
