@@ -1,4 +1,4 @@
-package api.simplelib.minecraft.inventory;
+package api.simplelib.inventory;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -8,4 +8,7 @@ import net.minecraftforge.items.IItemHandler;
  */
 public interface InventorySpace extends IItemHandler, Iterable<ItemStack>, InventoryElement
 {
+	int xSize();
+
+	int ySize();
 }

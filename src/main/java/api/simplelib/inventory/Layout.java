@@ -1,6 +1,6 @@
-package api.simplelib.minecraft.inventory;
+package api.simplelib.inventory;
 
-import api.simplelib.common.NotNull;
+import api.simplelib.utils.NotNull;
 import net.simplelib.common.Vector2i;
 
 /**

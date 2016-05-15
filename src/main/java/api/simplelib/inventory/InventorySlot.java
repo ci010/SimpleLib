@@ -1,4 +1,4 @@
-package api.simplelib.minecraft.inventory;
+package api.simplelib.inventory;
 
 import net.minecraft.item.ItemStack;
 

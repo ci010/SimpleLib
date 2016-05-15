@@ -1,6 +1,6 @@
-package api.simplelib.minecraft.inventory;
+package api.simplelib.inventory;
 
-import api.simplelib.interactive.inventory.Inventory;
+import test.interactive.inventory.Inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
