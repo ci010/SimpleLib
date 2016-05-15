@@ -156,14 +156,6 @@ public class GenericUtil
 		else throw new ClassCastException();
 	}
 
-	public static <T> T[] newArray(int size)
-	{
-		return (T[]) new Object[size];
-	}
 
-	public static <T> T[] newArray(T... obj)
-	{
-		return obj;
-	}
 }
 

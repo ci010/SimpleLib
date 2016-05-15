@@ -1,6 +1,6 @@
 package api.simplelib.network;
 
-import api.simplelib.Var;
+import api.simplelib.vars.Var;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 

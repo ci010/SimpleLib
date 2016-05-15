@@ -1,31 +1,30 @@
 package api.simplelib.minecraft;
 
-import api.simplelib.Var;
-import api.simplelib.VarSync;
-import api.simplelib.minecraft.inventory.*;
-import api.simplelib.utils.GenericUtil;
-import api.simplelib.utils.ITagSerializer;
+import api.simplelib.remote.Syncable;
+import api.simplelib.inventory.*;
+import api.simplelib.seril.ITagSerializer;
+import api.simplelib.vars.Var;
+import api.simplelib.vars.VarSync;
+import api.simplelib.vars.VarSyncBase;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 
-import java.util.Collections;
+import java.util.List;
 
 /**
  * @author ci010
  */
-public abstract class TileEntityWrap extends TileEntity
+public abstract class TileEntityWrap extends TileEntity implements Syncable
 {
-	protected ImmutableList<VarSync> varSync = ImmutableList.of();
+	protected ImmutableList<VarSyncBase> varSync = ImmutableList.of();
 	protected Inventory inventory;
 
 	public TileEntityWrap()
 	{
 		TileBuilderImpl builder = new TileBuilderImpl(this);
-		this.build(builder);
+//		this.build(builder);
 		builder.done();
 	}
 
@@ -47,5 +46,11 @@ public abstract class TileEntityWrap extends TileEntity
 		InventorySlot newSlot(EnumFacing facing);
 
 		InventorySlot newSlot(EnumFacing facing, InventoryRule rule);
+	}
+
+	@Override
+	public List<VarSync> getAllSync()
+	{
+		return null;
 	}
 }

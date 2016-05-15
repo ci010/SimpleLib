@@ -1,5 +1,6 @@
 package api.simplelib.utils;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
@@ -7,6 +8,7 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
@@ -34,6 +36,35 @@ public class ASMDataUtil
 	public static <Anno extends Annotation> Anno getAnnotation(ASMDataTable.ASMData data, Class<Anno> clz)
 	{
 		return getClass(data).getAnnotation(clz);
+	}
+
+	public static Field getField(ASMDataTable.ASMData data)
+	{
+		try
+		{
+			return getClass(data).getField(data.getObjectName());
+		}
+		catch (NoSuchFieldException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static Optional<Object> getObject(ASMDataTable.ASMData data)
+	{
+		try
+		{
+			return Optional.fromNullable(getClass(data).getField(data.getObjectName()).get(null));
+		}
+		catch (NoSuchFieldException e)
+		{
+			return Optional.absent();
+		}
+		catch (IllegalAccessException e)
+		{
+			return Optional.absent();
+		}
 	}
 
 	/**

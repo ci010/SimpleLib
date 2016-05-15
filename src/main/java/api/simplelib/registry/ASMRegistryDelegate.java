@@ -1,11 +1,13 @@
 package api.simplelib.registry;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import api.simplelib.utils.ASMDataUtil;
 import api.simplelib.utils.GenericUtil;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -23,12 +25,16 @@ public abstract class ASMRegistryDelegate<T extends Annotation>
 		Class<?> clz;
 		String modid;
 		T annotation;
+		Optional<Object> target;
+		Optional<Field> field;
 
-		public ASMCache(Class<?> clz, String modid, T annotation)
+		public ASMCache(Class<?> clz, String modid, T annotation, Optional<Object> target, Optional<Field> field)
 		{
 			this.clz = clz;
 			this.modid = modid;
 			this.annotation = annotation;
+			this.target = target;
+			this.field = field;
 		}
 	}
 
@@ -61,6 +67,13 @@ public abstract class ASMRegistryDelegate<T extends Annotation>
 		return this.current.annotation;
 	}
 
+	protected Optional<Object> getObject()
+	{
+		return this.current.target;
+	}
+
+	protected Optional<Field> getField() {return this.current.field;}
+
 	public final void addCache(String modid, ASMDataTable.ASMData data)
 	{
 		if (modid == null)
@@ -68,6 +81,8 @@ public abstract class ASMRegistryDelegate<T extends Annotation>
 		Class<?> clz = ASMDataUtil.getClass(data);
 		Class<? extends T> type = GenericUtil.getGenericTypeTo(this);
 		T annotation = ASMDataUtil.getAnnotation(data, type);
-		cache.add(new ASMCache(clz, modid, annotation));
+		Optional<Field> f = Optional.fromNullable(ASMDataUtil.getField(data));
+		Optional<Object> o = ASMDataUtil.getObject(data);
+		cache.add(new ASMCache(clz, modid, annotation, o, f));
 	}
 }

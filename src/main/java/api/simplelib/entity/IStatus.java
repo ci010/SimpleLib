@@ -1,9 +1,9 @@
 package api.simplelib.entity;
 
-import api.simplelib.VarFactory;
+import api.simplelib.vars.VarSyncFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import api.simplelib.utils.ITagSerializable;
+import api.simplelib.seril.ITagSerializable;
 
 /**
  * A easy interface to create a {@link net.minecraftforge.common.IExtendedEntityProperties}.
@@ -38,5 +38,5 @@ public interface IStatus extends ITagSerializable
 	 * @param entity  The entity.
 	 * @param factory The factory which provide the variable auto-synchronized between Server and Client sides.
 	 */
-	void build(Entity entity, VarFactory factory);
+	void build(Entity entity, VarSyncFactory factory);
 }

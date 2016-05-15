@@ -1,6 +1,6 @@
 package api.simplelib.entity;
 
-import api.simplelib.common.Nullable;
+import api.simplelib.utils.Nullable;
 import net.minecraft.entity.Entity;
 import net.simplelib.entity.IPropertiesManager;
 

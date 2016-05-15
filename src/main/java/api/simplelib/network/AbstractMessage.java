@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.simplelib.HelperMod;
 
 abstract class AbstractMessage<T> implements IMessageHandler<AbstractMessage<T>, IMessage>, IMessage
 {
@@ -26,7 +27,7 @@ abstract class AbstractMessage<T> implements IMessageHandler<AbstractMessage<T>,
 	public IMessage onMessage(AbstractMessage<T> message, MessageContext ctx)
 	{
 		if (ctx.side.isClient())
-			return handleClientMessage(getSinglePlayer(), message.delegate.get(), ctx);
+			return handleClientMessage(HelperMod.proxy.getPlayer(), message.delegate.get(), ctx);
 		else
 			return handleServerMessage(ctx.getServerHandler().playerEntity, message.delegate.get(), ctx);
 	}

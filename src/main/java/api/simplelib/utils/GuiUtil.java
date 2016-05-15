@@ -20,6 +20,8 @@ public class GuiUtil
 
 	public static final TextureManager texture = mc.getTextureManager();
 
+	public static final ResourceLocation inv = new ResourceLocation("textures/gui/container/inventory.png");
+
 	public static final TextureInfo slot = new TextureInfo(
 			new ResourceLocation("textures/gui/container/inventory.png"), 7, 141, 18, 18);
 

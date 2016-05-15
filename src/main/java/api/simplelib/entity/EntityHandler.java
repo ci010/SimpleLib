@@ -1,5 +1,6 @@
 package api.simplelib.entity;
 
+import api.simplelib.registry.ModEntityHandler;
 import com.google.common.base.Optional;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
