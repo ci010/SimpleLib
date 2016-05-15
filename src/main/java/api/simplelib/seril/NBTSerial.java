@@ -1,6 +1,6 @@
-package net.simplelib.common.nbt;
+package api.simplelib.seril;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,10 +17,10 @@ import java.util.Map;
  */
 public class NBTSerial
 {
-	private Map<Class, Deserializer> deserializerMap;
-	private Map<Class, Serializer> serializerMap;
+	private Map<Class, NBTDeserializer> deserializerMap;
+	private Map<Class, NBTSerializer> serializerMap;
 
-	public NBTTagCompound toNBTCompound(Object obj)
+	public <T> NBTTagCompound toTag(T obj)
 	{
 		NBTBase base = this.toNBTBase(obj);
 		NBTTagBuilder builder = NBTTagBuilder.newBuilder();
@@ -28,6 +28,13 @@ public class NBTSerial
 			return (NBTTagCompound) base;
 		else
 			return builder.addTag("obj", base).build();
+	}
+
+	public <T> Optional<T> fromTag(NBTTagCompound tag, Class<T> type)
+	{
+		if (deserializerMap.containsKey(type))
+			return Optional.fromNullable(GenericUtil.<NBTDeserializer<T>>cast(deserializerMap.get(type)).deserialize(tag));
+		return Optional.absent();
 	}
 
 	public NBTTagList toNBTList(List list)
@@ -43,9 +50,11 @@ public class NBTSerial
 		return null;
 	}
 
-	private NBTBase toNBTBase(Object obj)
+	private <T> NBTBase toNBTBase(T obj)
 	{
 		Class type = obj.getClass();
+		if (serializerMap.containsKey(obj.getClass()))
+			return GenericUtil.<NBTSerializer<T>>cast(serializerMap.get(obj.getClass())).serialize(obj);
 		NBTBase base = NBTBasement.instance().serialize(obj);
 		if (base != null)
 			return base;
@@ -68,68 +77,38 @@ public class NBTSerial
 		}
 	}
 
-	public <T> T fromNBT(NBTTagCompound tag, Class<T> type)
-	{
-//		if (deserializerMap.containsKey(type))
-//			return GenericUtil.<Deserializer<T>>cast(deserializerMap.get(type)).deserialize(tag, type);
-//		else
-//		{
-//
-//		}
-		return null;
-	}
 
-	public <T> Deserializer<T> getDeserializer(Class<T> clz)
+	public <T> NBTDeserializer<T> getDeserializer(Class<T> clz)
 	{
 		if (deserializerMap.containsKey(clz))
 			return GenericUtil.cast(deserializerMap.get(clz));
 		return null;
 	}
 
-	public <T> Serializer<T> getSerializer(Class<T> clz)
+	public <T> NBTSerializer<T> getSerializer(Class<T> clz)
 	{
 		if (serializerMap.containsKey(clz))
 			return GenericUtil.cast(serializerMap.get(clz));
 		return null;
 	}
 
-	public <T> T fromNBTBase(NBTBase base)
-	{
-//		base.getId();
-//		return GenericUtil.<Deserializer<T>>cast(deserializerMap.get(clz)).deserialize(base, clz);
-		return null;
-	}
-
-	public <T> T fromNBT(NBTTagCompound tag, Class<T> type, Deserializer.Tag<T> deserializer)
-	{
-		deserializer.deserialize(tag, type);
-		return null;
-	}
-
-	public NBTSerial with(Deserializer deserializer)
+	public <T> NBTSerial with(NBTDeserializer<T> deserializer, Class<T> clz)
 	{
 		if (deserializerMap == null)
 			deserializerMap = Maps.newHashMap();
-		deserializerMap.put(GenericUtil.getGenericTypeTo(deserializer), deserializer);
+		deserializerMap.put(clz, deserializer);
 		return this;
 	}
 
-	public NBTSerial with(Serializer serializer)
+	public <T> NBTSerial with(NBTSerializer<T> serializer, Class<T> clz)
 	{
-		serializerMap.put(GenericUtil.getGenericTypeTo(serializer), serializer);
+		if (this.serializerMap == null)
+			this.serializerMap = Maps.newHashMap();
+		serializerMap.put(clz, serializer);
 		return this;
 	}
-
 
 	public NBTSerial()
 	{
-		serializerMap = Maps.newHashMap();
-		ImmutableList<NBTBasement.FullSerializer> list = NBTBasement.instance().getList();
-		for (NBTBasement.FullSerializer full : list)
-		{
-//			Serializer serializer = full;
-//			Deserializer deserializer = full;
-//			this.with(serializer).with(deserializer);
-		}
 	}
 }

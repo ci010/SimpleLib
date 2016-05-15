@@ -1,4 +1,4 @@
-package api.simplelib.utils;
+package api.simplelib.seril;
 
 import net.minecraft.nbt.NBTTagCompound;
 

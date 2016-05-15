@@ -1,4 +1,4 @@
-package net.simplelib.common.nbt;
+package api.simplelib.seril;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author ci010
  */
-public class NBTBasement implements Deserializer<Object>, Serializer<Object>
+public class NBTBasement implements NBTDeserializer.Base<Object>, NBTSerializer.Base<Object>
 {
 	private static NBTBasement instance;
 
@@ -36,7 +36,7 @@ public class NBTBasement implements Deserializer<Object>, Serializer<Object>
 			throw new IllegalArgumentException("Cannot directly deserialize an NBTTagCompound!");
 		if (base.getId() == 9)
 			throw new IllegalArgumentException("Cannot directly deserialize an NBTTagList!");
-		return GenericUtil.<Deserializer<Object>>cast(built_in.get(base.getId())).deserialize(base);
+		return GenericUtil.<NBTDeserializer.Base<Object>>cast(built_in.get(base.getId())).deserialize(base);
 	}
 
 	@Override
@@ -44,11 +44,11 @@ public class NBTBasement implements Deserializer<Object>, Serializer<Object>
 	{
 		FullSerializer serializer = built_in_map.get(data.getClass());
 		if (serializer != null)
-			return GenericUtil.<Serializer<Object>>cast(serializer).serialize(data);
+			return GenericUtil.<NBTSerializer<Object>>cast(serializer).serialize(data);
 		return null;
 	}
 
-	interface FullSerializer<T> extends Deserializer<T>, Serializer<T> {}
+	interface FullSerializer<T> extends NBTDeserializer.Base<T>, NBTSerializer.Base<T> {}
 
 	private ImmutableList<FullSerializer> built_in;
 	private ImmutableMap<Class, FullSerializer> built_in_map;
@@ -235,6 +235,4 @@ public class NBTBasement implements Deserializer<Object>, Serializer<Object>
 			mapBuilder.put(GenericUtil.getInterfaceGenericTypeTo(fullSerializer), fullSerializer);
 		built_in_map = mapBuilder.build();
 	}
-
-
 }
