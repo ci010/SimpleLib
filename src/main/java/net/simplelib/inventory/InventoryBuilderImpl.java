@@ -1,6 +1,8 @@
 package net.simplelib.inventory;
 
-import api.simplelib.minecraft.inventory.*;
+import api.simplelib.utils.Nullable;
+import api.simplelib.inventory.InventoryBuilder;
+import api.simplelib.inventory.*;
 import api.simplelib.utils.ArrayUtils;
 import net.minecraft.util.EnumFacing;
 import net.simplelib.common.Vector2i;
@@ -26,8 +28,35 @@ public class InventoryBuilderImpl implements InventoryBuilder
 		return inv;
 	}
 
-	public InventorySpace newSpace(int size, EnumFacing facing, InventoryRule rule)
+//	public InventorySpace newSpace(int size, EnumFacing facing, InventoryRule rule)
+//	{
+//		if (facing != null)
+//		{
+//			int[] newArr = new int[size];
+//			for (int i = 0; i < size; i++)
+//				newArr[i] = currentIdx + size;
+//			if (sideMap.containsKey(facing))
+//				newArr = ArrayUtils.concat(sideMap.get(facing), newArr);
+//			sideMap.put(facing, newArr);
+//		}
+//		InvSpaceImpl space = new InvSpaceImpl(inv, currentIdx, size, 0);
+//		space.setRule(rule);
+//		currentIdx += size;
+//		elements.add(space);
+//		for (int i = 0; i < size; i++)
+//			layout.list.add(new Vector2i(0, 18 * i));
+//		return space;
+//	}
+//
+//	public InventorySpace newSpace(int size, EnumFacing facing)
+//	{
+//		return this.newSpace(size, facing, null);
+//	}
+
+	@Override
+	public InventorySpace newSpace(int xSize, int ySize, @Nullable EnumFacing facing, InventoryRule rule)
 	{
+		int size = xSize * ySize;
 		if (facing != null)
 		{
 			int[] newArr = new int[size];
@@ -37,23 +66,25 @@ public class InventoryBuilderImpl implements InventoryBuilder
 				newArr = ArrayUtils.concat(sideMap.get(facing), newArr);
 			sideMap.put(facing, newArr);
 		}
-		InvSpaceImpl space = new InvSpaceImpl(inv, currentIdx, size);
+		InvSpaceImpl space = new InvSpaceImpl(inv, currentIdx, xSize, ySize);
 		space.setRule(rule);
 		currentIdx += size;
 		elements.add(space);
-		for (int i = 0; i < size; i++)
-			layout.list.add(new Vector2i(0, 18 * i));
+		for (int y = 0; y < ySize; y++)
+			for (int x = 0; x < xSize; x++)
+				layout.list.add(new Vector2i(x * 18, 18 * y));
 		return space;
 	}
 
-	public InventorySpace newSpace(int size, EnumFacing facing)
+	@Override
+	public InventorySpace newSpace(int xSize, int ySize, @Nullable EnumFacing facing)
 	{
-		return this.newSpace(size, facing, null);
+		return this.newSpace(xSize, ySize, facing, InventoryRule.COMMON);
 	}
 
 	public InventorySlot newSlot(EnumFacing facing)
 	{
-		return this.newSlot(facing, null);
+		return this.newSlot(facing, InventoryRule.COMMON);
 	}
 
 	public InventorySlot newSlot(EnumFacing facing, InventoryRule rule)
@@ -73,23 +104,20 @@ public class InventoryBuilderImpl implements InventoryBuilder
 		return slotSpace;
 	}
 
-	private class LayoutContainer implements Layout
-	{
-		private ArrayList<Vector2i> list = new ArrayList<Vector2i>();
-
-		@Override
-		public Vector2i getPos(int id)
-		{
-			return list.get(id);
-		}
-	}
-
-	private LayoutContainer layout = new LayoutContainer();
+	private LayoutBase layout = new LayoutBase();
 
 	@Override
 	public InventoryBuilder allocPos(InventoryElement element, int x, int y)
 	{
-		layout.list.set(element.id(), new Vector2i(x, y));
+		if (element instanceof InventorySpace)
+		{
+			InventorySpace space = (InventorySpace) element;
+			int count = 0;
+			for (int yP = 0; y < space.ySize(); y++)
+				for (int xP = 0; x < space.xSize(); x++)
+					layout.list.set(count++, new Vector2i(xP * 18 + x, 18 * yP + y));
+		}
+		else layout.list.set(element.id(), new Vector2i(x, y));
 		return this;
 	}
 
@@ -103,27 +131,27 @@ public class InventoryBuilderImpl implements InventoryBuilder
 		return this;
 	}
 
-	@Override
-	public InventoryBuilder allocLength(InventorySpace space, int length)
-	{
-		int id = space.id();
-		Vector2i std = layout.list.get(id);
-		int currentX = std.getX(), currentY = std.getY(), currentCount = 0;
-		for (int i = id; i < space.getSlots(); i++)
-		{
-			if (currentCount < length)
-				currentX += 18;
-			else
-			{
-				currentCount = 0;
-				currentX = std.getX();
-				currentY += 18;
-			}
-			++currentCount;
-			layout.list.set(i, new Vector2i(currentX, currentY));
-		}
-		return this;
-	}
+	//	@Override
+//	public InventoryBuilder allocLength(InventorySpace space, int length)
+//	{
+//		int id = space.id();
+//		Vector2i std = layout.list.get(id);
+//		int currentX = std.getX(), currentY = std.getY(), currentCount = 0;
+//		for (int i = id; i < space.getSlots(); i++)
+//		{
+//			if (currentCount < length)
+//				currentX += 18;
+//			else
+//			{
+//				currentCount = 0;
+//				currentX = std.getX();
+//				currentY += 18;
+//			}
+//			++currentCount;
+//			layout.list.set(i, new Vector2i(currentX, currentY));
+//		}
+//		return this;
+//	}
 
 	@Override
 	public int currentSize()

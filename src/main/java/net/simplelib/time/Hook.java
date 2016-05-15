@@ -7,7 +7,7 @@ import org.objectweb.asm.Type;
 /**
  * @author ci010
  */
-
+@SideOnly(Side.CLIENT)
 public class Hook
 {
 	public static final String CLASS = Type.getInternalName(Hook.class),

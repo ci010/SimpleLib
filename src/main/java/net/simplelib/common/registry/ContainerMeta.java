@@ -14,7 +14,7 @@ public class ContainerMeta
 {
 	public final String modid;
 	private boolean ifGenerateLang, ifGenerateModel;
-	private String[] langType;
+	private String[] langType = new String[]{"zh_CN", "en_US"};
 	private Set<Class> rawContainer;
 	private ModelHandler<RegComponentBase> modelHandler;
 	private Set<Namespace> unregistered;

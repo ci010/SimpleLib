@@ -5,16 +5,16 @@ package net.simplelib.common;
  */
 public class RangeSquare
 {
-	Range x, y;
+	RangeBase xRange, yRange;
 
-	public RangeSquare(Range x, Range y)
+	public RangeSquare(RangeBase x, RangeBase y)
 	{
-		this.x = x;
-		this.y = y;
+		this.xRange = x;
+		this.yRange = y;
 	}
 
 	public boolean isInside(int x, int y)
 	{
-		return this.x.include(x) && this.y.include(y);
+		return this.xRange.include(x) && this.yRange.include(y);
 	}
 }

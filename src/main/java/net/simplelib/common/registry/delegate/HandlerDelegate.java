@@ -2,23 +2,24 @@ package net.simplelib.common.registry.delegate;
 
 import com.google.common.collect.ImmutableSet;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.simplelib.HelperMod;
 import net.simplelib.common.DebugLogger;
 import api.simplelib.registry.ASMRegistryDelegate;
-import api.simplelib.common.Instance;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import api.simplelib.common.ModHandler;
+import api.simplelib.utils.Instance;
+import api.simplelib.LoadingDelegate;
+import api.simplelib.registry.ModHandler;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 /**
  * @author ci010
  */
-@ASMDelegate
+@LoadingDelegate
 public class HandlerDelegate extends ASMRegistryDelegate<ModHandler>
 {
 	@Mod.EventHandler
@@ -53,7 +54,10 @@ public class HandlerDelegate extends ASMRegistryDelegate<ModHandler>
 		if (obj == null && !weak)
 			try
 			{
-				obj = this.getAnnotatedClass().newInstance();
+				Constructor<?> constructor = this.getAnnotatedClass().getDeclaredConstructor();
+				if (!constructor.isAccessible())
+					constructor.setAccessible(true);
+				obj = constructor.newInstance();
 				setField = true;
 			}
 			catch (InstantiationException e)
@@ -64,9 +68,19 @@ public class HandlerDelegate extends ASMRegistryDelegate<ModHandler>
 			{
 				e.printStackTrace();
 			}
+			catch (NoSuchMethodException e)
+			{
+				e.printStackTrace();
+			}
+			catch (InvocationTargetException e)
+			{
+				e.printStackTrace();
+			}
 		if (field != null && setField)
 			try
 			{
+				if (!field.isAccessible())
+					field.setAccessible(true);
 				field.set(null, obj);
 			}
 			catch (IllegalAccessException e)
@@ -75,7 +89,7 @@ public class HandlerDelegate extends ASMRegistryDelegate<ModHandler>
 			}
 		if (obj == null)
 		{
-			HelperMod.LOG.fatal("Cannot create an instance of {}. It will not be registered as a handler.");
+			HelperMod.LOG.fatal("Cannot create an instance of {}. It will not be registered as a handler.", this.getAnnotatedClass());
 			return;
 		}
 

@@ -4,13 +4,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.simplelib.RegistryHelper;
 import api.simplelib.registry.ASMRegistryDelegate;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import api.simplelib.component.ComponentsReference;
+import api.simplelib.LoadingDelegate;
+import api.simplelib.registry.components.ComponentsReference;
 
 /**
  * @author ci010
  */
-@ASMDelegate
+@LoadingDelegate
 public class ReferenceDelegate extends ASMRegistryDelegate<ComponentsReference>
 {
 	@Mod.EventHandler

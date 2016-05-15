@@ -5,17 +5,16 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.simplelib.HelperMod;
-import net.simplelib.common.CommonLogger;
 import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.DebugLogger;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import api.simplelib.tileentity.ModTileEntity;
+import api.simplelib.LoadingDelegate;
+import api.simplelib.registry.ModTileEntity;
 import api.simplelib.utils.GenericUtil;
 
 /**
  * @author ci010
  */
-@ASMDelegate
+@LoadingDelegate
 public class TileEntityDelegate extends ASMRegistryDelegate<ModTileEntity>
 {
 	@Mod.EventHandler

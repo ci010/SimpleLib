@@ -1,9 +1,6 @@
-package api.simplelib.container;
+package net.simplelib.deprecated;
 
-import api.simplelib.Context;
-import api.simplelib.Var;
-import api.simplelib.VarNotify;
-import api.simplelib.common.Nullable;
+import api.simplelib.VarSyncBase;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,12 +13,10 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import api.simplelib.VarSync;
-import api.simplelib.utils.ITagSerializable;
 import net.simplelib.interactive.inventory.InventoryCommon;
 import net.simplelib.interactive.process.VarInteger;
 import api.simplelib.network.ModNetwork;
-import net.simplelib.network.NBTWindowsMessage;
+import net.simplelib.network.SyncMessage;
 
 import java.util.List;
 
@@ -31,14 +26,14 @@ import java.util.List;
 public class ContainerCommon extends Container implements InventoryCommon.Listener//, VarNotify.Callback
 {
 	private ImmutableList<VarInteger> varIntegers;
-	private ImmutableList<VarSync> syncs;
+	private ImmutableList<VarSyncBase> syncs;
 
-	public VarSync getVar(int idx)
+	public VarSyncBase getVar(int idx)
 	{
 		return syncs.get(idx);
 	}
 
-	public ContainerCommon load(List<VarSync> syncs)
+	public ContainerCommon load(List<VarSyncBase> syncs)
 	{
 		this.syncs = ImmutableList.copyOf(syncs);
 //		for (VarSync sync : this.syncs)
@@ -95,7 +90,7 @@ public class ContainerCommon extends Container implements InventoryCommon.Listen
 		{
 			EntityPlayerMP playerMP = (EntityPlayerMP) iCrafting;
 			for (int num = 0; num < syncs.size(); ++num)
-				ModNetwork.instance().sendTo(new NBTWindowsMessage(this.windowId, num, syncs.get(num)),
+				ModNetwork.instance().sendTo(new SyncMessage(this.windowId, num, syncs.get(num)),
 						playerMP);
 		}
 	}

@@ -1,16 +1,16 @@
 package net.simplelib.interactive;
 
-import api.simplelib.interactive.Interactive;
-import api.simplelib.interactive.ModInteractive;
+import test.interactive.Interactive;
+import test.interactive.ModInteractive;
 import api.simplelib.registry.ASMRegistryDelegate;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
+import api.simplelib.LoadingDelegate;
 
 /**
  * @author ci010
  */
-@ASMDelegate
+@LoadingDelegate
 public class RegInteractiveDelegate extends ASMRegistryDelegate<ModInteractive>
 {
 	@Mod.EventHandler

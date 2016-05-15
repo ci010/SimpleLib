@@ -1,8 +1,8 @@
 package net.simplelib.entity;
 
-import api.simplelib.common.Instance;
-import api.simplelib.common.ModHandler;
-import api.simplelib.common.Nullable;
+import api.simplelib.utils.Instance;
+import api.simplelib.registry.ModHandler;
+import api.simplelib.utils.Nullable;
 import api.simplelib.entity.EntityHandler;
 import api.simplelib.entity.IStatus;
 import com.google.common.collect.Lists;

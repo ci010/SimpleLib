@@ -8,13 +8,13 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.HelperMod;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import api.simplelib.container.ModGuiHandler;
+import api.simplelib.LoadingDelegate;
+import api.simplelib.registry.ModGuiHandler;
 
 /**
  * @author ci010
  */
-@ASMDelegate
+@LoadingDelegate
 public class IGuiHandlerDelegate extends ASMRegistryDelegate<ModGuiHandler>
 {
 	@Mod.EventHandler

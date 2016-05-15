@@ -1,10 +1,9 @@
 package net.simplelib.login;
 
-import api.simplelib.command.ISimpleCommand;
-import api.simplelib.command.ModCommand;
+import api.simplelib.registry.command.ISimpleCommand;
+import api.simplelib.registry.command.ModCommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.simplelib.login.LoginSystem;
 
 /**
  * @author ci010

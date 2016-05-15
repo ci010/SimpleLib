@@ -2,10 +2,13 @@ package net.simplelib;
 
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.simplelib.common.CommonLogger;
 import net.simplelib.common.TickServerSide;
 import net.simplelib.common.registry.ContainerMeta;
@@ -18,6 +21,11 @@ import java.util.Iterator;
 
 public class CommonProxy
 {
+	public Side getSide()
+	{
+		return Side.SERVER;
+	}
+
 	public boolean isClient() {return false;}
 
 	public boolean isClientSide() {return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;}
@@ -25,6 +33,12 @@ public class CommonProxy
 	public boolean isSinglePlayer()
 	{
 		return Minecraft.getMinecraft().isSingleplayer();
+	}
+
+	@SideOnly(Side.CLIENT)
+	public EntityPlayer getPlayer()
+	{
+		return Minecraft.getMinecraft().thePlayer;
 	}
 
 	void preInit(FMLPreInitializationEvent event)
@@ -58,7 +72,7 @@ public class CommonProxy
 		}
 	}
 
-	void register(ContainerMeta meta)
+	protected void register(ContainerMeta meta)
 	{
 		String registerName;
 		String unlocalizedName;

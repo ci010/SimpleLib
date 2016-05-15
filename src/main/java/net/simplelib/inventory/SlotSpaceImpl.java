@@ -1,15 +1,13 @@
 package net.simplelib.inventory;
 
-import api.simplelib.minecraft.Callback;
-import api.simplelib.minecraft.inventory.Inventory;
-import api.simplelib.minecraft.inventory.InventoryRule;
-import api.simplelib.minecraft.inventory.InventorySlot;
+import api.simplelib.inventory.Inventory;
+import api.simplelib.inventory.InventoryRule;
+import api.simplelib.inventory.InventorySlot;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
 import net.minecraft.item.ItemStack;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 
 /**
  * @author ci010
@@ -17,7 +15,6 @@ import java.util.LinkedList;
 public class SlotSpaceImpl implements InventorySlot
 {
 	private InventoryRule rule;
-	//	private LinkedList<Callback<InventorySlot>> callBacks = new LinkedList<Callback<InventorySlot>>();
 	private String name;
 	private Inventory parent;
 	private int index;
@@ -60,31 +57,6 @@ public class SlotSpaceImpl implements InventorySlot
 	{
 		this.rule = rule;
 	}
-//
-//	@Override
-//	public Callback.Container<InventorySlot> callbackContainer()
-//	{
-//		return new Callback.Container<InventorySlot>()
-//		{
-//			@Override
-//			public void add(Callback<InventorySlot> callBack)
-//			{
-//				callBacks.add(callBack);
-//			}
-//
-//			@Override
-//			public void remove(Callback<InventorySlot> callBack)
-//			{
-//				callBacks.remove(callBack);
-//			}
-//
-//			@Override
-//			public Iterator<Callback<InventorySlot>> iterator()
-//			{
-//				return callBacks.iterator();
-//			}
-//		};
-//	}
 
 	@Override
 	public ItemStack getStackInSlot()

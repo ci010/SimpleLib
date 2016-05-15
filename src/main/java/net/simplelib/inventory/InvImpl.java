@@ -1,9 +1,9 @@
 package net.simplelib.inventory;
 
-import api.simplelib.minecraft.Callback;
-import api.simplelib.minecraft.inventory.InventoryElement;
-import api.simplelib.minecraft.inventory.Inventory;
-import api.simplelib.minecraft.inventory.Layout;
+import api.simplelib.utils.Callback;
+import api.simplelib.inventory.InventoryElement;
+import api.simplelib.inventory.Inventory;
+import api.simplelib.inventory.Layout;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;

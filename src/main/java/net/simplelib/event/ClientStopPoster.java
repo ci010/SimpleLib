@@ -4,7 +4,7 @@ import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import api.simplelib.common.ModHandler;
+import api.simplelib.registry.ModHandler;
 
 /**
  * @author ci010

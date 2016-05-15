@@ -35,6 +35,10 @@ public class TimeLoadingPlugin implements IFMLLoadingPlugin, IFMLCallHook
 	@Override
 	public void injectData(Map<String, Object> data)
 	{
+		for (Map.Entry<String, Object> entry : data.entrySet())
+		{
+			System.out.println(entry.getKey() + " " + entry.getValue());
+		}
 		src = (File) data.get("coremodLocation");
 	}
 

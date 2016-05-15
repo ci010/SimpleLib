@@ -1,17 +1,19 @@
 package net.simplelib.interactive.process;
 
-import api.simplelib.Context;
-import api.simplelib.Var;
-import api.simplelib.VarNotify;
-import api.simplelib.VarSync;
-import api.simplelib.interactive.Interactive;
-import api.simplelib.interactive.inventory.SlotInfo;
-import api.simplelib.interactive.meta.InteractiveProperty;
-import api.simplelib.interactive.meta.ModInteractiveMeta;
-import api.simplelib.interactive.process.Process;
-import api.simplelib.interactive.process.ProcessPipeline;
-import api.simplelib.minecraft.Callback;
+import test.interactive.Context;
+import test.interactive.Interactive;
+import test.interactive.inventory.SlotInfo;
+import test.interactive.meta.InteractiveProperty;
+import test.interactive.meta.ModInteractiveMeta;
+import test.interactive.process.Process;
+import test.interactive.process.ProcessPipeline;
+import api.simplelib.utils.Callback;
 import api.simplelib.utils.GenericUtil;
+import api.simplelib.seril.ITagSerializer;
+import api.simplelib.vars.Var;
+import api.simplelib.vars.VarNotify;
+import api.simplelib.vars.VarSync;
+import api.simplelib.vars.VarSyncBase;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -24,7 +26,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.simplelib.common.VarSyncPrimitive;
 import net.simplelib.interactive.inventory.InventoryManager;
 import org.apache.commons.lang3.tuple.Pair;
-import api.simplelib.utils.ITagSerializable;
+import api.simplelib.seril.ITagSerializable;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -38,7 +40,7 @@ public class ProcessHandler implements InteractiveProperty,
 {
 	private List<Process> cache = Lists.newArrayList();
 	private List<Pair<SlotInfo, Var<ItemStack>>> stackCache = Lists.newArrayList();
-	private List<VarSync> varCache = Lists.newArrayList();
+	private List<VarSyncBase> varCache = Lists.newArrayList();
 
 	private class WorkerProcess implements Worker, ProcessPipeline.Handler
 	{
@@ -60,9 +62,9 @@ public class ProcessHandler implements InteractiveProperty,
 			}
 
 			@Override
-			public <T extends Enum<T>> Var<T> newState(T state, Callback<T> callback)
+			public <T extends Enum<T>> Var<T> newState(T state, Callback<VarNotify<T>> callback)
 			{
-				VarSync<T> var = new VarSync<T>()
+				VarSyncBase<T> var = new VarSyncBase<T>()
 				{
 					@Override
 					public void readFromNBT(NBTTagCompound tag)
@@ -82,7 +84,7 @@ public class ProcessHandler implements InteractiveProperty,
 			}
 
 			@Override
-			public Var<Integer> newInteger(String name, int i)
+			public VarSync<Integer> newInteger(String name, int i)
 			{
 				VarSyncPrimitive<Integer> var = new VarSyncPrimitive<Integer>(name, i);
 				varCache.add(var);
@@ -90,7 +92,7 @@ public class ProcessHandler implements InteractiveProperty,
 			}
 
 			@Override
-			public Var<Float> newFloat(String name, float f)
+			public VarSync<Float> newFloat(String name, float f)
 			{
 				VarSyncPrimitive<Float> var = new VarSyncPrimitive<Float>(name, f);
 				varCache.add(var);
@@ -98,7 +100,7 @@ public class ProcessHandler implements InteractiveProperty,
 			}
 
 			@Override
-			public Var<Short> newShort(String name, short l)
+			public VarSync<Short> newShort(String name, short l)
 			{
 				VarSyncPrimitive<Short> var = new VarSyncPrimitive<Short>(name, l);
 				varCache.add(var);
@@ -106,7 +108,7 @@ public class ProcessHandler implements InteractiveProperty,
 			}
 
 			@Override
-			public Var<Byte> newByte(String name, byte b)
+			public VarSync<Byte> newByte(String name, byte b)
 			{
 				VarSyncPrimitive<Byte> var = new VarSyncPrimitive<Byte>(name, b);
 				varCache.add(var);
@@ -114,11 +116,44 @@ public class ProcessHandler implements InteractiveProperty,
 			}
 
 			@Override
-			public Var<String> newString(String name, String s)
+			public VarSync<String> newString(String name, String s)
 			{
 				VarSyncPrimitive<String> var = new VarSyncPrimitive<String>(name, s);
 				varCache.add(var);
 				return var;
+			}
+
+			@Override
+			public VarSync<Double> newDouble(String name, double d)
+			{
+				return null;
+			}
+
+			@Override
+			public <T extends Enum<T>> VarSync<T> newEnum(String name, T e, Class<T> enumClass)
+			{
+				VarSyncBase<T> var = new VarSyncBase<T>()
+				{
+					@Override
+					public void readFromNBT(NBTTagCompound tag)
+					{
+						this.load(Enum.valueOf(this.get().getDeclaringClass(), tag.getString("enum-name")));
+					}
+
+					@Override
+					public void writeToNBT(NBTTagCompound tag)
+					{
+						tag.setString("enum-name", this.get().name());
+					}
+				};
+				varCache.add(var);
+				return var;
+			}
+
+			@Override
+			public <T> VarSync<T> newVar(T init, ITagSerializer<T> serializer)
+			{
+				return null;
 			}
 		};
 
@@ -208,11 +243,11 @@ public class ProcessHandler implements InteractiveProperty,
 	public class Entity implements ProcessPipeline.Data, ITickable, ICapabilityProvider
 	{
 		private List<Process> processes;
-		private List<VarSync> vars;
+		private List<VarSyncBase> vars;
 		private List<Pair<SlotInfo, Var<ItemStack>>> stack;
 		private Context context;
 
-		public Entity(List<Process> processes, List<VarSync> vars, List<Pair<SlotInfo, Var<ItemStack>>> stack, Context
+		public Entity(List<Process> processes, List<VarSyncBase> vars, List<Pair<SlotInfo, Var<ItemStack>>> stack, Context
 				context)
 		{
 			this.processes = processes;
@@ -226,7 +261,7 @@ public class ProcessHandler implements InteractiveProperty,
 			return stack;
 		}
 
-		public List<VarSync> getVars()
+		public List<VarSyncBase> getVars()
 		{
 			return vars;
 		}

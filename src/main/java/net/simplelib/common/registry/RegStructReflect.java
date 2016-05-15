@@ -1,7 +1,7 @@
 package net.simplelib.common.registry;
 
-import api.simplelib.component.Construct;
-import api.simplelib.component.ComponentStruct;
+import api.simplelib.registry.components.Construct;
+import api.simplelib.registry.components.ComponentStruct;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;

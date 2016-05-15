@@ -1,7 +1,6 @@
 package net.simplelib.common.registry.delegate;
 
 import com.google.common.collect.Maps;
-import com.sun.org.apache.xml.internal.resolver.helpers.Debug;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -12,9 +11,9 @@ import net.simplelib.common.CommonLogger;
 import api.simplelib.Local;
 import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.DebugLogger;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import api.simplelib.entity.ModEntity;
-import api.simplelib.utils.FMLModUtil;
+import api.simplelib.LoadingDelegate;
+import api.simplelib.registry.ModEntity;
+import api.simplelib.utils.FMLLoadingUtil;
 import api.simplelib.utils.GenericUtil;
 
 import java.lang.reflect.Constructor;
@@ -24,7 +23,7 @@ import java.util.Map;
 /**
  * @author ci010
  */
-@ASMDelegate
+@LoadingDelegate
 public class EntityRegistryDelegate extends ASMRegistryDelegate<ModEntity>
 {
 	static Map<String, Integer> modidCache = Maps.newHashMap();
@@ -50,7 +49,8 @@ public class EntityRegistryDelegate extends ASMRegistryDelegate<ModEntity>
 		Class<? extends net.minecraft.entity.Entity> clz = GenericUtil.cast(this.getAnnotatedClass());
 		String info = "Register Entity: [{}] <- [{}]| id <- {}";
 		String name = anno.name();
-		Object mod = FMLModUtil.getModContainer(modid).getMod();
+		System.out.println(modid);
+		Object mod = FMLLoadingUtil.getModContainer(modid).getMod();
 		if (name.equals(""))
 			name = clz.getSimpleName();
 		int id = anno.id();

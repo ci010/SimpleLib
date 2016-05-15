@@ -1,6 +1,6 @@
 package net.simplelib.login;
 
-import api.simplelib.common.NotNull;
+import api.simplelib.utils.NotNull;
 import com.google.common.cache.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

@@ -1,8 +1,8 @@
 package net.simplelib.interactive;
 
-import api.simplelib.interactive.Interactive;
-import api.simplelib.interactive.process.ProcessPipeline;
-import api.simplelib.tileentity.ModTileEntity;
+import test.interactive.Interactive;
+import test.interactive.process.ProcessPipeline;
+import api.simplelib.registry.ModTileEntity;
 import api.simplelib.utils.ContextFactory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;

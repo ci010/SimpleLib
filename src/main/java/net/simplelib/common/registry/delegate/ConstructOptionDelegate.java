@@ -1,11 +1,11 @@
 package net.simplelib.common.registry.delegate;
 
-import api.simplelib.component.Construct;
+import api.simplelib.registry.components.Construct;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.simplelib.RegistryHelper;
 import api.simplelib.registry.ASMRegistryDelegate;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
+import api.simplelib.LoadingDelegate;
 import api.simplelib.utils.GenericUtil;
 
 import java.lang.annotation.Annotation;
@@ -13,7 +13,7 @@ import java.lang.annotation.Annotation;
 /**
  * @author ci010
  */
-@ASMDelegate
+@LoadingDelegate
 public class ConstructOptionDelegate extends ASMRegistryDelegate<Construct.Option>
 {
 	@Mod.EventHandler

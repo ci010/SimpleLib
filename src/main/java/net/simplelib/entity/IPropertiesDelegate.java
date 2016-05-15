@@ -1,18 +1,16 @@
 package net.simplelib.entity;
 
-import api.simplelib.entity.ModEntityHandler;
+import api.simplelib.registry.ModEntityHandler;
 import api.simplelib.entity.EntityHandler;
-import api.simplelib.utils.GenericUtil;
-import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import api.simplelib.registry.ASMRegistryDelegate;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
+import api.simplelib.LoadingDelegate;
 
 /**
  * @author ci010
  */
-@ASMDelegate
+@LoadingDelegate
 public class IPropertiesDelegate extends ASMRegistryDelegate<ModEntityHandler>
 {
 	@Mod.EventHandler

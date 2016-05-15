@@ -4,14 +4,14 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import api.simplelib.registry.ASMRegistryDelegate;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
+import api.simplelib.LoadingDelegate;
 import api.simplelib.network.ModMessage;
 import api.simplelib.network.ModNetwork;
 
 /**
  * @author ci010
  */
-@ASMDelegate
+@LoadingDelegate
 public class PacketRegistryDelegate extends ASMRegistryDelegate<ModMessage>
 {
 	@EventHandler

@@ -1,10 +1,8 @@
 package net.simplelib;
 
-import api.simplelib.component.ArgumentHelper;
-import api.simplelib.component.ComponentsReference;
-import api.simplelib.component.Construct;
+import api.simplelib.registry.components.ArgumentHelper;
 import api.simplelib.sitting.Sitable;
-import api.simplelib.utils.FMLModUtil;
+import api.simplelib.utils.FMLLoadingUtil;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -48,12 +46,12 @@ public enum RegistryHelper
 
 	public void start(ContainerMeta meta)
 	{
-		FMLModUtil.setActiveContainer(FMLModUtil.getModContainer(currentModid = meta.modid));
+		FMLLoadingUtil.setActiveContainer(FMLLoadingUtil.getModContainer(currentModid = meta.modid));
 	}
 
 	public void end()
 	{
-		FMLModUtil.setActiveContainer(container);
+		FMLLoadingUtil.setActiveContainer(container);
 		currentModid = container.getModId();
 	}
 
@@ -227,35 +225,6 @@ public enum RegistryHelper
 		for (Class<?> container : containers)
 			meta.addRawContainer(container);
 		this.track(meta);
-	}
-
-	/**
-	 * Check if all the fields are created.
-	 */
-	public void check()
-	{
-//		boolean isClear = true;
-//		for (ContainerMeta meta : containerIdx.values())
-//			for (Field f : meta.getFields())
-//				try
-//				{
-//					if (f.get(null) == null)
-//					{
-//						HelperMod.LOG.fatal("field" + f.getName() + "is NULL!");
-//						isClear = false;
-//					}
-//				}
-//				catch (IllegalArgumentException e)
-//				{
-//					e.printStackTrace();
-//				}
-//				catch (IllegalAccessException e)
-//				{
-//					e.printStackTrace();
-//				}
-//
-//		if (isClear)
-//			HelperMod.LOG.info("Containers are all fine");
 	}
 
 	public void close()

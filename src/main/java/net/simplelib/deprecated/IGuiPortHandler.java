@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public interface IGuiPortHandler
 {
-	ISyncPort getPort(EntityPlayer player, int x, int y, int z);
+	ISyncPort_DE getPort(EntityPlayer player, int x, int y, int z);
 
 	GuiScreen getGui(EntityPlayer player, int x, int y, int z);
 }

@@ -1,5 +1,9 @@
 package net.simplelib.time;
 
+import api.simplelib.utils.FileReference;
+import api.simplelib.registry.command.ModCommand;
+import api.simplelib.network.ModNetwork;
+import api.simplelib.utils.GenericUtil;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import net.minecraft.client.AnvilConverterException;
@@ -16,7 +20,10 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.terraingen.BiomeEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.common.DummyModContainer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.LoadController;
+import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -24,10 +31,6 @@ import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import api.simplelib.FileReference;
-import api.simplelib.command.ModCommand;
-import api.simplelib.utils.GenericUtil;
-import api.simplelib.network.ModNetwork;
 
 import java.io.File;
 import java.io.IOException;
@@ -144,12 +147,8 @@ public class TimeMod extends DummyModContainer
 				{
 					List<SaveFormatComparator> saveList = GenericUtil.cast(Minecraft.getMinecraft().getSaveLoader().getSaveList());
 					for (SaveFormatComparator token : saveList)
-					{
 						if (event.world.getWorldInfo().getWorldName().equals(token.getDisplayName()))
-						{
 							saveDir = new File(FileReference.getSave(), token.getFileName());
-						}
-					}
 				}
 				catch (AnvilConverterException e)
 				{

@@ -1,11 +1,11 @@
 package net.simplelib.common.registry;
 
-import api.simplelib.FileReference;
+import api.simplelib.utils.FileReference;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import api.simplelib.common.Instance;
-import api.simplelib.common.ModHandler;
+import api.simplelib.utils.Instance;
+import api.simplelib.registry.ModHandler;
 import net.simplelib.event.ClientStopEvent;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 

@@ -1,15 +1,15 @@
 package net.simplelib.interactive;
 
-import api.simplelib.Context;
-import api.simplelib.interactive.Interactive;
-import api.simplelib.interactive.base.wrapper.BaseHandler;
-import api.simplelib.interactive.meta.InteractiveProperty;
+import test.interactive.Context;
+import test.interactive.Interactive;
+import test.interactive.base.wrapper.BaseHandler;
+import test.interactive.meta.InteractiveProperty;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.simplelib.HelperMod;
-import api.simplelib.utils.ITagSerializable;
+import api.simplelib.seril.ITagSerializable;
 
 import java.util.List;
 import java.util.Map;

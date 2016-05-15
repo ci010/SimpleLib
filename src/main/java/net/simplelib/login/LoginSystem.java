@@ -1,10 +1,10 @@
 package net.simplelib.login;
 
 import api.simplelib.Local;
-import api.simplelib.common.Instance;
-import api.simplelib.common.ModHandler;
-import api.simplelib.common.NotNull;
-import api.simplelib.common.Nullable;
+import api.simplelib.utils.Instance;
+import api.simplelib.registry.ModHandler;
+import api.simplelib.utils.NotNull;
+import api.simplelib.utils.Nullable;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldSettings;

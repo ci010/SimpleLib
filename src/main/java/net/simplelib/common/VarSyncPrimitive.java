@@ -1,14 +1,14 @@
 package net.simplelib.common;
 
-import api.simplelib.VarSync;
 import api.simplelib.utils.GenericUtil;
+import api.simplelib.vars.VarSyncBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.simplelib.common.nbt.NBTBasement;
+import api.simplelib.seril.NBTBasement;
 
 /**
  * @author ci010
  */
-public class VarSyncPrimitive<T> extends VarSync<T>
+public class VarSyncPrimitive<T> extends VarSyncBase<T>
 {
 	private String id;
 
@@ -23,7 +23,7 @@ public class VarSyncPrimitive<T> extends VarSync<T>
 	{
 		if (tag.getTag(id) == null)
 			return;
-		this.set(GenericUtil.<T>cast(NBTBasement.instance().deserialize(tag.getTag(id))));
+		this.data = (GenericUtil.<T>cast(NBTBasement.instance().deserialize(tag.getTag(id))));
 	}
 
 	@Override

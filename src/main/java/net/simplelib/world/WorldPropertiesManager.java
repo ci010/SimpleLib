@@ -1,14 +1,17 @@
 package net.simplelib.world;
 
-import api.simplelib.common.Instance;
-import api.simplelib.common.ModHandler;
-import com.google.common.collect.ImmutableMap;
+import api.simplelib.utils.Instance;
+import api.simplelib.registry.ModHandler;
+import api.simplelib.utils.CapabilityUtils;
+import api.simplelib.seril.ITagSerializable;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.capabilities.CapabilityDispatcher;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import api.simplelib.utils.ITagSerializable;
 
 import java.util.Map;
 
@@ -18,79 +21,56 @@ import java.util.Map;
 @ModHandler
 public class WorldPropertiesManager implements ITagSerializable
 {
+	private Map<Integer, CapabilityDispatcher> dimensions;
+	public NBTTagCompound cache;
+
 	@Instance
-	private static WorldPropertiesManager instnace;
+	private static WorldPropertiesManager instance = new WorldPropertiesManager();
 
 	public static WorldPropertiesManager instance()
 	{
-		if (instnace == null)
-			instnace = new WorldPropertiesManager();
-		return instnace;
+		return instance;
 	}
 
+	private WorldPropertiesManager()
 	{
-		Integer[] ids = DimensionManager.getStaticDimensionIDs();
-		ImmutableMap.Builder<Integer, Map<String, IExtendedWorldProperties>> builder = ImmutableMap.builder();
-		for (Integer id : ids)
-			builder.put(id, Maps.<String, IExtendedWorldProperties>newHashMap());
-		dimensions = builder.build();
-	}
-
-	private ImmutableMap<Integer, Map<String, IExtendedWorldProperties>> dimensions;
-
-	public IExtendedWorldProperties getProperties(int dimension, String id)
-	{
-		return dimensions.get(dimension).get(id);
-	}
-
-	public void register(int dimension, String id, IExtendedWorldProperties properties)
-	{
-		Map<String, IExtendedWorldProperties> map = dimensions.get(dimension);
-		map.put(id, properties);
+		dimensions = Maps.newHashMapWithExpectedSize(DimensionManager.getIDs().length);
 	}
 
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load event)
 	{
-		for (IExtendedWorldProperties properties : dimensions.get(event.world.provider.getDimensionId()).values())
-			properties.load(event.world);
+		CapabilityDispatcher dispatcher = CapabilityUtils.gatherCapabilities(new AttachWorldCapEvent(event.world));
+		if (dispatcher != null)
+		{
+			int dimension = event.world.provider.getDimensionId();
+			if (cache != null)
+				dispatcher.deserializeNBT(cache.getCompoundTag(dimension + ""));
+			dimensions.put(dimension, dispatcher);
+		}
 	}
 
-	@SubscribeEvent
-	public void onWorldUnload(WorldEvent.Unload event)
+	public ICapabilityProvider getWorldCap(int dimension)
 	{
-		for (IExtendedWorldProperties properties : dimensions.get(event.world.provider.getDimensionId()).values())
-			properties.unload(event.world);
+		return this.dimensions.get(dimension);
+	}
+
+	public ICapabilityProvider getWorldCap(World world)
+	{
+		return getWorldCap(world.provider.getDimensionId());
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag)
 	{
-		for (Map.Entry<Integer, Map<String, IExtendedWorldProperties>> propertyEntry : dimensions.entrySet())
-			if (tag.hasKey(propertyEntry.getKey().toString()))
-			{
-				NBTTagCompound dim = tag.getCompoundTag(propertyEntry.getKey().toString());
-				for (Map.Entry<String, IExtendedWorldProperties> entry : propertyEntry.getValue().entrySet())
-					if (dim.hasKey(entry.getKey()))
-						entry.getValue().readFromNBT(tag.getCompoundTag(entry.getKey()));
-			}
+		for (Map.Entry<Integer, CapabilityDispatcher> entry : dimensions.entrySet())
+			entry.getValue().deserializeNBT(tag.getCompoundTag(entry.getKey().toString()));
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound tag)
 	{
-		for (Map.Entry<Integer, Map<String, IExtendedWorldProperties>> propertyEntry : dimensions.entrySet())
-		{
-			NBTTagCompound dim = new NBTTagCompound();
-			for (Map.Entry<String, IExtendedWorldProperties> entry : propertyEntry.getValue().entrySet())
-			{
-				NBTTagCompound compound = new NBTTagCompound();
-				entry.getValue().writeToNBT(compound);
-				dim.setTag(entry.getKey(), compound);
-			}
-			if (!dim.hasNoTags())
-				tag.setTag(propertyEntry.getKey().toString(), dim);
-		}
-
+		for (Map.Entry<Integer, CapabilityDispatcher> entry : dimensions.entrySet())
+			tag.setTag(entry.getKey().toString(), entry.getValue().serializeNBT());
 	}
 }

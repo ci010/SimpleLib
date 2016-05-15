@@ -1,22 +1,19 @@
 package net.simplelib.inventory;
 
-import api.simplelib.minecraft.inventory.*;
-import api.simplelib.utils.ArrayUtils;
+import api.simplelib.inventory.InventoryBuilder;
+import api.simplelib.inventory.*;
 import com.google.common.base.Optional;
 import com.google.gson.*;
-import net.minecraft.util.EnumFacing;
 import net.simplelib.common.Vector2i;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.EnumMap;
 
 /**
  * @author ci010
  */
 public class InventoryToJson
 {
-	public static String layoutToJson(final Inventory inv)
+	public static String inventoryToJson(final Inventory inv)
 	{
 		GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Layout.class, new JsonSerializer<Layout>()
 		{
@@ -34,20 +31,8 @@ public class InventoryToJson
 					object.addProperty("type", element instanceof InventorySpace ? "space" : "slot");
 					if (element instanceof InventorySpace)
 					{
-						int spaceId = element.id();
-						Layout layout = inv.getLayout();
-						Vector2i pos = layout.getPos(spaceId);
-						int std = pos.getY(), count = 0;
-						for (int i = spaceId; i < ((InventorySpace) element).getSlots(); i++)
-						{
-							pos = layout.getPos(spaceId);
-							int y = pos.getY();
-							if (std == y)
-								count++;
-							else
-								break;
-						}
-						object.addProperty("length", count);
+						object.addProperty("xSize", ((InventorySpace) element).xSize());
+						object.addProperty("ySize", ((InventorySpace) element).ySize());
 					}
 					JsonArray pos = new JsonArray();
 					Vector2i srcPos = src.getPos(element.id());
@@ -101,9 +86,6 @@ public class InventoryToJson
 								{
 									find = true;
 									builder.allocPos(element, x, y);
-									if (element instanceof InventorySpace)
-										if (obj.has("length"))
-											builder.allocLength((InventorySpace) element, obj.get("length").getAsInt());
 								}
 						}
 						if (!find)
@@ -114,9 +96,6 @@ public class InventoryToJson
 					else
 					{
 						InventoryElement element = builder.getElement(id);
-						if (element instanceof InventorySpace)
-							if (obj.has("length"))
-								builder.allocLength((InventorySpace) element, obj.get("length").getAsInt());
 						builder.allocPos(element, x, y);
 						if (name != null)
 							builder.allocName(element, name);

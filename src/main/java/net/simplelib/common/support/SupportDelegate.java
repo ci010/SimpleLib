@@ -5,15 +5,14 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import api.simplelib.registry.ASMRegistryDelegate;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import api.simplelib.utils.LoaderStateUtil;
+import api.simplelib.LoadingDelegate;
 
 import java.util.List;
 
 /**
  * @author ci010
  */
-@ASMDelegate
+@LoadingDelegate
 public class SupportDelegate extends ASMRegistryDelegate<ModSupport>
 {
 	private List<ISupport> supports = Lists.newArrayList();
@@ -55,7 +54,7 @@ public class SupportDelegate extends ASMRegistryDelegate<ModSupport>
 
 	void load(FMLStateEvent event)
 	{
-		for (ISupport support : supports)
-			support.onModLoad(LoaderStateUtil.getState(event.getClass()));
+//		for (ISupport support : supports)
+//			support.onModLoad(LoaderStateUtil.getState(event.getClass()));
 	}
 }

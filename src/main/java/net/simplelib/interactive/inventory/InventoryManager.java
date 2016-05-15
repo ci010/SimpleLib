@@ -1,14 +1,14 @@
 package net.simplelib.interactive.inventory;
 
-import api.simplelib.Context;
+import test.interactive.Context;
 import api.simplelib.Var;
-import api.simplelib.interactive.Interactive;
-import api.simplelib.interactive.inventory.Inventory;
-import api.simplelib.minecraft.inventory.InventoryRule;
-import api.simplelib.interactive.inventory.SlotInfo;
-import api.simplelib.interactive.inventory.SpaceInfo;
-import api.simplelib.interactive.meta.InteractiveProperty;
-import api.simplelib.interactive.meta.ModInteractiveMeta;
+import test.interactive.Interactive;
+import test.interactive.inventory.Inventory;
+import api.simplelib.inventory.InventoryRule;
+import test.interactive.inventory.SlotInfo;
+import test.interactive.inventory.SpaceInfo;
+import test.interactive.meta.InteractiveProperty;
+import test.interactive.meta.ModInteractiveMeta;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.inventory.IInventory;
@@ -21,7 +21,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.simplelib.HelperMod;
 import net.simplelib.interactive.process.VarItemHolder;
-import api.simplelib.utils.ITagSerializable;
+import api.simplelib.seril.ITagSerializable;
 
 import java.util.List;
 import java.util.concurrent.Callable;

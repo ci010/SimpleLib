@@ -1,21 +1,20 @@
 package net.simplelib.common.registry.delegate;
 
 import api.simplelib.Local;
-import api.simplelib.command.ISimpleCommand;
-import api.simplelib.command.ModCommand;
+import api.simplelib.registry.command.ISimpleCommand;
+import api.simplelib.registry.command.ModCommand;
 import api.simplelib.registry.ASMRegistryDelegate;
 import net.minecraft.command.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.simplelib.common.CommonLogger;
 import net.simplelib.common.DebugLogger;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
+import api.simplelib.LoadingDelegate;
 
 /**
  * @author ci010
  */
-@ASMDelegate
+@LoadingDelegate
 public class CommandDelegate extends ASMRegistryDelegate<ModCommand>
 {
 	@Mod.EventHandler

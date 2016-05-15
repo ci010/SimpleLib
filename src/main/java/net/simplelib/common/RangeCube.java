@@ -5,9 +5,9 @@ package net.simplelib.common;
  */
 public class RangeCube
 {
-	Range x, y, z;
+	RangeBase x, y, z;
 
-	public RangeCube(Range x, Range y, Range z)
+	public RangeCube(RangeBase x, RangeBase y, RangeBase z)
 	{
 		this.x = x;
 		this.y = y;

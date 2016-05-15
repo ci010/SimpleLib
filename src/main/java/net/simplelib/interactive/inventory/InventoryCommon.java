@@ -1,7 +1,7 @@
 package net.simplelib.interactive.inventory;
 
-import api.simplelib.minecraft.inventory.InventoryRule;
-import api.simplelib.interactive.inventory.SlotInfo;
+import api.simplelib.inventory.InventoryRule;
+import test.interactive.inventory.SlotInfo;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -11,7 +11,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.simplelib.interactive.process.VarItemHolder;
-import api.simplelib.utils.ITagSerializable;
+import api.simplelib.seril.ITagSerializable;
 
 import java.util.List;
 

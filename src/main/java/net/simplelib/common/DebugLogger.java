@@ -1,16 +1,11 @@
 package net.simplelib.common;
 
-import api.simplelib.FileReference;
-import api.simplelib.common.ModHandler;
-import api.simplelib.utils.Assert;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.simplelib.event.ClientStopEvent;
+import api.simplelib.utils.FileReference;
+import api.simplelib.utils.Environment;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLogger;
 
 import java.io.*;
 
@@ -27,7 +22,7 @@ public class DebugLogger
 	public static void info(String message, Object... obj)
 	{
 		String msg = factory.newMessage(message, obj).getFormattedMessage();
-		if (Assert.debug())
+		if (Environment.debug())
 			logger.log(Level.INFO, msg);
 		try
 		{

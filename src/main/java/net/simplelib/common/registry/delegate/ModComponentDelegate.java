@@ -1,6 +1,6 @@
 package net.simplelib.common.registry.delegate;
 
-import api.simplelib.component.ComponentStruct;
+import api.simplelib.registry.components.ComponentStruct;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
@@ -9,13 +9,13 @@ import net.simplelib.RegistryHelper;
 import net.simplelib.common.CommonLogger;
 import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.registry.NamespaceMakerSimple;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
-import api.simplelib.component.ModComponent;
+import api.simplelib.LoadingDelegate;
+import api.simplelib.registry.components.ModComponent;
 
 /**
  * @author ci010
  */
-@ASMDelegate
+@LoadingDelegate
 public class ModComponentDelegate extends ASMRegistryDelegate<ModComponent>
 {
 	private NamespaceMakerSimple simpleMaker = new NamespaceMakerSimple().staticSensitve(false);

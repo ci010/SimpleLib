@@ -1,9 +1,8 @@
 package net.simplelib.inventory;
 
-import api.simplelib.minecraft.inventory.Inventory;
-import api.simplelib.minecraft.inventory.InventoryRule;
-import api.simplelib.minecraft.inventory.InventorySlot;
-import api.simplelib.minecraft.inventory.InventorySpace;
+import api.simplelib.inventory.Inventory;
+import api.simplelib.inventory.InventoryRule;
+import api.simplelib.inventory.InventorySpace;
 import com.google.common.base.Optional;
 import net.minecraft.item.ItemStack;
 
@@ -14,14 +13,14 @@ import java.util.Iterator;
  */
 public class InvSpaceImpl implements InventorySpace
 {
-	private int size, offset;
+	private int size, offset, xSize, ySize;
 	private InventoryRule rule = InventoryRule.COMMON;
 	private Inventory parent;
 	private String name;
 
-	public InvSpaceImpl(Inventory delegate, int id, int size)
+	public InvSpaceImpl(Inventory delegate, int id, int xSize, int ySize)
 	{
-		this.size = size;
+		this.size = xSize * ySize;
 		this.offset = id;
 		this.parent = delegate;
 	}
@@ -116,4 +115,15 @@ public class InvSpaceImpl implements InventorySpace
 		return parent.getStackInSlot(slot + offset);
 	}
 
+	@Override
+	public int xSize()
+	{
+		return xSize;
+	}
+
+	@Override
+	public int ySize()
+	{
+		return ySize;
+	}
 }

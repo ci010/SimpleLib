@@ -2,15 +2,11 @@ package net.simplelib.deprecated;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.simplelib.HelperMod;
-import api.simplelib.VarSync;
-import api.simplelib.container.ModGuiHandler;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package net.simplelib.sitting;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import api.simplelib.entity.ModEntity;
+import api.simplelib.registry.ModEntity;
 
 /**
  * @author CI010

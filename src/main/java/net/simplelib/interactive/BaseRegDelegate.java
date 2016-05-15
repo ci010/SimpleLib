@@ -1,13 +1,12 @@
 package net.simplelib.interactive;
 
-import api.simplelib.interactive.Interactive;
-import api.simplelib.interactive.base.wrapper.BaseHandler;
-import api.simplelib.interactive.base.wrapper.ModInteractiveBaseWrapper;
+import test.interactive.Interactive;
+import test.interactive.base.wrapper.BaseHandler;
+import test.interactive.base.wrapper.ModInteractiveBaseWrapper;
 import api.simplelib.registry.ASMRegistryDelegate;
 import api.simplelib.utils.GenericUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.simplelib.common.registry.annotation.type.ASMDelegate;
 
 /**
  * @author ci010

@@ -1,25 +1,27 @@
 package net.simplelib.common.registry;
 
-import api.simplelib.FileReference;
-import api.simplelib.utils.Assert;
+import api.simplelib.utils.FileReference;
+import api.simplelib.utils.Environment;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.simplelib.HelperMod;
-import api.simplelib.common.ModHandler;
+import api.simplelib.registry.ModHandler;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -33,27 +35,29 @@ public class ModelReporter
 	@SubscribeEvent
 	public void onModelPost(ModelBakeEvent event)
 	{
-		if (!Assert.debug())
+		if (!Environment.debug())
 			return;
-		List<StatesCollection> list = Lists.newArrayList();
+		Map<ResourceLocation, ModelStates> map = Maps.newHashMap();
+		List<ModelStates> list = Lists.newArrayList();
 		Set<ModelResourceLocation> set = ReflectionHelper.getPrivateValue(ModelLoader.class, event.modelLoader,
 				"missingVariants");
 //		IRegistry modelReg = event.modelRegistry;
-
 //		Object missingModel = modelReg.getObject(MISS);
 		for (ModelResourceLocation missing : set)
 		{
-			StatesCollection temp = new StatesCollection(missing.getResourceDomain(), missing
-					.getResourcePath());
-			if (list.contains(temp))
-				list.get(list.indexOf(temp)).addVar(missing.getVariant());
+			ResourceLocation location = new ResourceLocation(missing.getResourceDomain(), missing.getResourcePath());
+			if (map.containsKey(location))
+				map.get(location).addVariant(missing.getVariant());
 			else
-				list.add(temp.addVar(missing.getVariant()));
+			{
+				ModelStates temp = new ModelStates(missing);
+				map.put(location, temp);
+			}
 		}
 		Gson gson = this.buildGson();
 		try
 		{
-			for (final StatesCollection state : list)
+			for (final ModelStates state : list)
 				if (state.vars.size() == 1 && state.vars.get(0).equals("inventory"))
 					this.writeItem(state, gson);
 				else
@@ -66,35 +70,35 @@ public class ModelReporter
 		standard = null;
 	}
 
-	private void writeItem(StatesCollection state, Gson gson) throws IOException
+	private void writeItem(ModelStates state, Gson gson) throws IOException
 	{
-		FileReference refer = FileReference.getRefer(state.domain);
-		File modelItem = new File(refer.dirModelItem, state.path.concat(".json"));
+		FileReference refer = FileReference.getRefer(state.domain());
+		File modelItem = new File(refer.dirModelItem, state.path().concat(".json"));
 		if (standard != null)
 			FileUtils.write(new File(refer.dirModelItem, "standard.json"), gson.toJson(standard));
 		standard = null;
 		ItemModelSimpleInfo info = new ItemModelSimpleInfo();
-		info.parent = state.domain.concat(":item/standard");
-		info.texture = state.domain.concat(":item/").concat(state.path);
+		info.parent = state.domain().concat(":item/standard");
+		info.texture = state.domain().concat(":item/").concat(state.path());
 		FileUtils.write(modelItem, gson.toJson(info));
 	}
 
-	private void writeBlock(StatesCollection state, Gson gson) throws IOException
+	private void writeBlock(ModelStates state, Gson gson) throws IOException
 	{
-		FileReference refer = FileReference.getRefer(state.domain);
-		File stateFile = new File(refer.dirBlockState, state.path.concat(".json"));
-		File modelItem = new File(refer.dirModelItem, state.path.concat(".json"));
+		FileReference refer = FileReference.getRefer(state.domain());
+		File stateFile = new File(refer.dirBlockState, state.path().concat(".json"));
+		File modelItem = new File(refer.dirModelItem, state.path().concat(".json"));
 		FileUtils.write(stateFile, gson.toJson(state).replace('`', '='));
 		//Replace to prevent gson to transform that to something strange....
 		for (String s : state.varPath)
 		{
 			File modelFile = new File(refer.dirModelBlock, s.concat(".json"));
 			BlockModelSimpleInfo info = new BlockModelSimpleInfo();
-			info.texture = state.domain.concat(":").concat(s).concat("_").concat("texture");
+			info.texture = state.domain().concat(":").concat(s).concat("_").concat("texture");
 			FileUtils.write(modelFile, gson.toJson(info));
 		}
 		ItemModelSimpleInfo info = new ItemModelSimpleInfo();
-		info.parent = state.domain.concat(":").concat("block").concat("/").concat(state.path);
+		info.parent = state.domain().concat(":").concat("block").concat("/").concat(state.path());
 		info.thirdperson = new PersonView();
 		info.thirdperson.rotation = new int[]{10, -45, 170};
 		info.thirdperson.translation = new float[]{0f, 1.5f, -2.75f};
@@ -104,12 +108,11 @@ public class ModelReporter
 
 	private Gson buildGson()
 	{
-		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(StatesCollection.class,
-				new TypeAdapter<StatesCollection>()
+		GsonBuilder builder = new GsonBuilder()
+				.registerTypeAdapter(ModelStates.class, new TypeAdapter<ModelStates>()
 				{
 					@Override
-					public void write(JsonWriter out, StatesCollection value) throws IOException
+					public void write(JsonWriter out, ModelStates value) throws IOException
 					{
 						out.setIndent("  ");
 						out.beginObject();
@@ -120,15 +123,15 @@ public class ModelReporter
 							String varPth = value.varPath.get(i);
 							var = var.replace('=', '`');
 							out.name(var).beginObject();
-							out.name("model").value(value.domain.concat(":").concat(varPth)).endObject();
+							out.name("model").value(value.domain().concat(":").concat(varPth)).endObject();
 						}
 						out.endObject().endObject();
 					}
 
 					@Override
-					public StatesCollection read(JsonReader in) throws IOException {return null;}
-				}).registerTypeAdapter(BlockModelSimpleInfo.class,
-				new TypeAdapter<BlockModelSimpleInfo>()
+					public ModelStates read(JsonReader in) throws IOException {return null;}
+				})
+				.registerTypeAdapter(BlockModelSimpleInfo.class, new TypeAdapter<BlockModelSimpleInfo>()
 				{
 					@Override
 					public void write(JsonWriter out, BlockModelSimpleInfo value) throws IOException
@@ -143,8 +146,8 @@ public class ModelReporter
 
 					@Override
 					public BlockModelSimpleInfo read(JsonReader in) throws IOException {return null;}
-				}).registerTypeAdapter(ItemModelSimpleInfo.class,
-				new TypeAdapter<ItemModelSimpleInfo>()
+				})
+				.registerTypeAdapter(ItemModelSimpleInfo.class, new TypeAdapter<ItemModelSimpleInfo>()
 				{
 					@Override
 					public void write(JsonWriter out, ItemModelSimpleInfo value) throws IOException
@@ -227,22 +230,29 @@ public class ModelReporter
 		}
 	};
 
-	private static class StatesCollection
+	private static class ModelStates
 	{
-		String domain, path;
+		private ResourceLocation location;
 		List<String> vars;
 		List<String> varPath;
 
-		public StatesCollection(String domain, String path)
+		public ModelStates(ModelResourceLocation resourceLocation)
 		{
-			this.domain = domain;
-			this.path = path;
+			location = new ResourceLocation(resourceLocation.getResourceDomain(), resourceLocation.getResourcePath());
+			vars = Lists.newArrayList();
+			varPath = Lists.newArrayList();
+			this.addVariant(resourceLocation.getVariant());
+		}
+
+		public ModelStates(String domain, String path)
+		{
 			vars = Lists.newArrayList();
 			varPath = Lists.newArrayList();
 		}
 
-		StatesCollection addVar(String var)
+		public ModelStates addVariant(String var)
 		{
+			String path = location.getResourcePath();
 			this.vars.add(var);
 			int idx = var.indexOf("=");
 			if (idx != -1)
@@ -252,21 +262,20 @@ public class ModelReporter
 			return this;
 		}
 
-		@Override
-		public boolean equals(Object obj)
+		public String domain()
 		{
-			if (obj instanceof StatesCollection)
-			{
-				StatesCollection stat = (StatesCollection) obj;
-				return stat.domain.equals(domain) && stat.path.equals(path);
-			}
-			return super.equals(obj);
+			return location.getResourceDomain();
+		}
+
+		public String path()
+		{
+			return location.getResourcePath();
 		}
 
 		@Override
 		public String toString()
 		{
-			return domain.concat(":").concat(path);
+			return location.toString();
 		}
 	}
 

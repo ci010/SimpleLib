@@ -1,7 +1,8 @@
 package net.simplelib.time;
 
-import api.simplelib.FileReference;
+import api.simplelib.utils.FileReference;
 import api.simplelib.network.ModNetwork;
+import api.simplelib.seril.ITagSerializable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -14,7 +15,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import api.simplelib.utils.ITagSerializable;
 
 import java.io.File;
 import java.io.IOException;

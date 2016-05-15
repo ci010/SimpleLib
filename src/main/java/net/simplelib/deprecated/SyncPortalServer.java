@@ -1,11 +1,5 @@
 package net.simplelib.deprecated;
 
-import com.google.common.collect.Lists;
-import net.minecraft.entity.player.EntityPlayerMP;
-import api.simplelib.VarSync;
-
-import java.util.List;
-
 /**
  * @author ci010
  */

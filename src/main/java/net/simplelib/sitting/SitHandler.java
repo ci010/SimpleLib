@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import api.simplelib.common.ModHandler;
+import api.simplelib.registry.ModHandler;
 import api.simplelib.utils.GenericUtil;
 import api.simplelib.network.ModNetwork;
 

@@ -1,6 +1,6 @@
 package net.simplelib.command;
 
-import api.simplelib.command.ModCommand;
+import api.simplelib.registry.command.ModCommand;
 import com.google.common.collect.Lists;
 import net.minecraft.command.CommandGameMode;
 

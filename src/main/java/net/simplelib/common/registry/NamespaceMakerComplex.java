@@ -1,12 +1,12 @@
 package net.simplelib.common.registry;
 
-import api.simplelib.component.ComponentStruct;
+import api.simplelib.registry.components.ArgumentHelper;
+import api.simplelib.registry.components.ComponentStruct;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.simplelib.HelperMod;
 import net.simplelib.common.Maker;
-import api.simplelib.component.ArgumentHelper;
 import net.simplelib.common.registry.abstracts.ReflectionAnnotatedMaker;
 import net.simplelib.common.registry.annotation.field.OreDic;
 
