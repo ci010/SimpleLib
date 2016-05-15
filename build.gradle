@@ -31,7 +31,7 @@ minecraft {
 	} else {
 		runDir = "assets"
 	}
-    mappings = stable_22
+    mappings = "stable_22"
 }
 
 dependencies {
