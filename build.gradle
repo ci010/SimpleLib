@@ -21,11 +21,11 @@ plugins {
 }
 */
 version = "0.0.1beta"
-group= mod_group // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group= "ci010" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "simple_lib"
 
 minecraft {
-    version = minecraft_version + "-" + forge_version
+    version = "1.8.9" + "-" + "11.15.1.1722"
 	if (file('../minecraft').exists()){
 		runDir = "../minecraft"
 	} else {
