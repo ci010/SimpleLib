@@ -23,7 +23,7 @@ public class VarSyncPrimitive<T> extends VarSyncBase<T>
 	{
 		if (tag.getTag(id) == null)
 			return;
-		this.data = (GenericUtil.<T>cast(NBTBasement.instance().deserialize(tag.getTag(id))));
+		this.data = (GenericUtil.cast(NBTBasement.instance().deserialize(tag.getTag(id))));
 	}
 
 	@Override
