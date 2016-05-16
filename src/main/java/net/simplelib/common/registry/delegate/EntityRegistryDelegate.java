@@ -7,7 +7,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.simplelib.HelperMod;
-import net.simplelib.common.CommonLogger;
 import api.simplelib.utils.Local;
 import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.DebugLogger;
@@ -120,7 +119,7 @@ public class EntityRegistryDelegate extends ASMRegistryDelegate<ModEntity>
 			}
 			catch (NoSuchMethodException e)
 			{
-				CommonLogger.fatal("Cannot create the instance of {}'s renderer. There should be a " +
+				HelperMod.LOG.fatal("Cannot create the instance of {}'s renderer. There should be a " +
 						"constructor without any parameter for the renderer class. The entity {} won't be register a " +
 						"renderer.", name, name);
 			}

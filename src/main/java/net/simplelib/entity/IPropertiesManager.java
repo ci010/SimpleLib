@@ -11,7 +11,7 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.simplelib.common.CommonLogger;
+import net.simplelib.HelperMod;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class IPropertiesManager implements ITickable
 
 	public void registerStatus(EntityHandler property)
 	{
-		CommonLogger.info("Register EntityHandler: [{}]", property.getClass());
+		HelperMod.LOG.info("Register EntityHandler: [{}]", property.getClass());
 		handlers.add(property);
 	}
 

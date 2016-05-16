@@ -9,7 +9,6 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import net.simplelib.common.CommonLogger;
 import net.simplelib.common.registry.RegistryBufferManager;
 import net.simplelib.entity.IPropertiesManager;
 import net.simplelib.login.restriction.ModRestriction;
@@ -42,7 +41,6 @@ public class HelperMod
 		RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
 		List<String> inputArguments = bean.getInputArguments();
 		System.out.println(inputArguments);
-		CommonLogger.init();
 		RegistryHelper.INSTANCE.container = Loader.instance().activeModContainer();
 		RegistryBufferManager.instance().load(event.getASMHarvestedData());
 		RegistryBufferManager.instance().invoke(event);

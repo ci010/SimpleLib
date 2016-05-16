@@ -5,8 +5,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
+import net.simplelib.HelperMod;
 import net.simplelib.RegistryHelper;
-import net.simplelib.common.CommonLogger;
 import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.registry.NamespaceMakerSimple;
 import api.simplelib.LoadingDelegate;
@@ -35,7 +35,7 @@ public class ModComponentDelegate extends ASMRegistryDelegate<ModComponent>
 			else if (this.getAnnotatedClass().isAnnotationPresent(ComponentStruct.class))
 				RegistryHelper.INSTANCE.register(this.getModid(), simpleMaker.make(this.getAnnotatedClass().newInstance()));
 			else
-				CommonLogger.warn("The class {} is neither a block nor an item! Moreover, it not a ComponentStruct. " +
+				HelperMod.LOG.warn("The class {} is neither a block nor an item! Moreover, it not a ComponentStruct. " +
 						"It will not be registered!", this
 						.getAnnotatedClass().getName());
 		}

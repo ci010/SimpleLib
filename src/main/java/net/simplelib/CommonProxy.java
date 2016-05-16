@@ -8,7 +8,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.simplelib.common.CommonLogger;
 import net.simplelib.common.registry.ContainerMeta;
 import net.simplelib.common.registry.Namespace;
 import net.simplelib.common.registry.NamespaceMakerComplex;
@@ -49,7 +48,7 @@ public class CommonProxy
 		{
 			ContainerMeta meta = itr.next();
 			RegistryHelper.INSTANCE.start(meta);
-			CommonLogger.info("Start to register [".concat(meta.modid).concat("] mod."));
+			HelperMod.LOG.info("Start to register [".concat(meta.modid).concat("] mod."));
 			ImmutableSet<Namespace> cache;
 			for (Class c : meta.getRawContainer())
 				if ((cache = maker.make(c)) != null)

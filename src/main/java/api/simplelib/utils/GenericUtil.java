@@ -1,6 +1,6 @@
 package api.simplelib.utils;
 
-import net.simplelib.common.CommonLogger;
+import net.simplelib.HelperMod;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -31,7 +31,7 @@ public class GenericUtil
 		}
 		catch (Exception e)
 		{
-			CommonLogger.warn("Cannot found the generic type by superclass for {}. Now try to search from interface" +
+			HelperMod.LOG.warn("Cannot found the generic type by superclass for {}. Now try to search from interface" +
 					".", obj.getClass());
 			return getInterfaceGenericType(obj, null, parameter);
 		}
@@ -47,7 +47,7 @@ public class GenericUtil
 		}
 		catch (Exception e)
 		{
-			CommonLogger.warn("Cannot found the generic type by superclass for {}. Now try to search from interface" +
+			HelperMod.LOG.warn("Cannot found the generic type by superclass for {}. Now try to search from interface" +
 					".", clz);
 			return getInterfaceGenericType(clz, null, parameter);
 		}

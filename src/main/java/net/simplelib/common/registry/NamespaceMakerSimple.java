@@ -3,7 +3,7 @@ package net.simplelib.common.registry;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.simplelib.common.CommonLogger;
+import net.simplelib.HelperMod;
 import net.simplelib.common.Maker;
 import net.simplelib.common.registry.annotation.field.OreDic;
 
@@ -82,14 +82,14 @@ public class NamespaceMakerSimple implements Maker<Object, ImmutableSet<Namespac
 					else
 					{
 						//TODO handle this.
-						CommonLogger.fatal("Cannot register the {}.");
+						HelperMod.LOG.fatal("Cannot register the {}.");
 					}
 
 				}
 			}
 			if (!handled)
 			{
-				CommonLogger.fatal("The class {} is neither a block nor an item. Moreover, it doesn't contain any " +
+				HelperMod.LOG.fatal("The class {} is neither a block nor an item. Moreover, it doesn't contain any " +
 						"block or item");
 			}
 		}

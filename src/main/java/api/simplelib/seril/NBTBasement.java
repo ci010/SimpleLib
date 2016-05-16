@@ -62,7 +62,7 @@ public class NBTBasement implements NBTDeserializer.Base<Object>, NBTSerializer.
 			@Override
 			public NBTBase serialize(Void data)
 			{
-				return new NBTTagEnd();
+				return null;
 			}
 
 			@Override
