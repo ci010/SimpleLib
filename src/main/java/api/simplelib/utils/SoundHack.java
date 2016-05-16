@@ -1,20 +1,10 @@
 package api.simplelib.utils;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundCategory;
-import net.minecraft.client.audio.SoundEventAccessorComposite;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.audio.SoundManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.EnumHelperClient;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import paulscode.sound.Library;
-import paulscode.sound.SoundSystem;
-import paulscode.sound.Source;
 
 import javax.sound.midi.Sequencer;
 import java.util.Map;

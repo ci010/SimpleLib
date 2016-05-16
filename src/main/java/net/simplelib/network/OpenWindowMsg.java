@@ -1,8 +1,8 @@
 package net.simplelib.network;
 
-import api.simplelib.VarSync;
 import api.simplelib.network.AbstractClientMessage;
 import api.simplelib.network.NBTCoder;
+import api.simplelib.vars.VarSync;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -26,7 +26,6 @@ public class OpenWindowMsg extends AbstractClientMessage<NBTTagCompound>
 	@Override
 	public IMessage handleClientMessage(EntityPlayer player, NBTTagCompound data, MessageContext ctx)
 	{
-
 		return null;
 	}
 }

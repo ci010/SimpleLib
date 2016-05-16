@@ -2,7 +2,6 @@ package net.simplelib.common;
 
 import api.simplelib.UpdateSafe;
 import net.minecraft.util.ITickable;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.util.WeakHashMap;
 

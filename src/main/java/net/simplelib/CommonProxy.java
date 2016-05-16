@@ -2,7 +2,6 @@ package net.simplelib;
 
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -10,7 +9,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.simplelib.common.CommonLogger;
-import net.simplelib.common.TickServerSide;
 import net.simplelib.common.registry.ContainerMeta;
 import net.simplelib.common.registry.Namespace;
 import net.simplelib.common.registry.NamespaceMakerComplex;

@@ -1,11 +1,11 @@
 package api.simplelib.seril;
 
+import api.simplelib.utils.GenericUtil;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import api.simplelib.utils.GenericUtil;
 import api.simplelib.utils.NBTTagBuilder;
 
 import java.lang.reflect.Field;

@@ -5,7 +5,6 @@ import com.google.common.collect.Maps;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

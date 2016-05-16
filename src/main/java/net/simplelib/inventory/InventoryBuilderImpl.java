@@ -1,8 +1,7 @@
 package net.simplelib.inventory;
 
-import api.simplelib.utils.Nullable;
-import api.simplelib.inventory.InventoryBuilder;
 import api.simplelib.inventory.*;
+import api.simplelib.utils.Nullable;
 import api.simplelib.utils.ArrayUtils;
 import net.minecraft.util.EnumFacing;
 import net.simplelib.common.Vector2i;

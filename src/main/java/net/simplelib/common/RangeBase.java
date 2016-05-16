@@ -1,6 +1,5 @@
 package net.simplelib.common;
 
-import api.simplelib.gui.components.GuiComponent;
 import org.lwjgl.util.vector.Vector2f;
 
 /**
@@ -31,16 +30,16 @@ public class RangeBase extends Vector2i
 	}
 
 
-	/**
-	 * Maybe I could make an interface that has the standard to build all the elements fulfilling the requirement of
-	 * creating a new RangeSquare.
-	 *
-	 * @param gui
-	 * @return
-	 */
-	public static RangeSquare getRange(GuiComponent gui)
-	{
-		return new RangeSquare(new RangeBase(gui.getX(), gui.getX() + gui.getWidth()), new RangeBase(gui.getY(), gui.getY() + gui
-				.getHeight()));
-	}
+//	/**
+//	 * Maybe I could make an interface that has the standard to build all the elements fulfilling the requirement of
+//	 * creating a new RangeSquare.
+//	 *
+//	 * @param gui
+//	 * @return
+//	 */
+//	public static RangeSquare getRange(GuiComponent gui)
+//	{
+//		return new RangeSquare(new RangeBase(gui.getX(), gui.getX() + gui.getWidth()), new RangeBase(gui.getY(), gui.getY() + gui
+//				.getHeight()));
+//	}
 }

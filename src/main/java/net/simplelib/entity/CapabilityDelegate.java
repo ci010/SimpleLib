@@ -1,8 +1,8 @@
 package net.simplelib.entity;
 
-import api.simplelib.VarSync;
 import api.simplelib.utils.GenericUtil;
 import api.simplelib.seril.ITagSerializable;
+import api.simplelib.vars.VarSync;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;

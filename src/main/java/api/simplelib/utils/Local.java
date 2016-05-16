@@ -1,7 +1,6 @@
 package api.simplelib.utils;
 
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import net.simplelib.common.registry.LanguageReporter;

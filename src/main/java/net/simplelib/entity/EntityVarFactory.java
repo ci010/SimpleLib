@@ -1,11 +1,10 @@
 package net.simplelib.entity;
 
-import api.simplelib.Var;
-import api.simplelib.VarFactory;
-import api.simplelib.VarSync;
-import api.simplelib.VarSyncBase;
 import api.simplelib.seril.ITagSerializable;
 import api.simplelib.seril.ITagSerializer;
+import api.simplelib.vars.VarSync;
+import api.simplelib.vars.VarSyncBase;
+import api.simplelib.vars.VarSyncFactory;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,7 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 /**
  * @author ci010
  */
-public class EntityVarFactory implements VarFactory
+public class EntityVarFactory implements VarSyncFactory
 {
 	private ImmutableList.Builder<ITagSerializable> builder = ImmutableList.builder();
 	private Entity entity;

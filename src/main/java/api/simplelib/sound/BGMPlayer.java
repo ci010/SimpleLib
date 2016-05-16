@@ -1,5 +1,6 @@
 package api.simplelib.sound;
 
+import api.simplelib.LoadingDelegate;
 import api.simplelib.utils.FileReference;
 import api.simplelib.Instance;
 import api.simplelib.registry.ModHandler;
@@ -26,7 +27,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.simplelib.client.loading.ExternalResource;
 import net.simplelib.client.loading.PackBase;
-import api.simplelib.LoadingDelegate;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

@@ -1,9 +1,9 @@
 package net.simplelib.entity;
 
-import api.simplelib.Var;
-import api.simplelib.VarSyncBase;
 import api.simplelib.utils.GenericUtil;
 import api.simplelib.seril.ITagSerializable;
+import api.simplelib.vars.Var;
+import api.simplelib.vars.VarSyncBase;
 import net.minecraft.entity.DataWatcher;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

@@ -1,11 +1,14 @@
 package api.simplelib.minecraft;
 
-import api.simplelib.remote.Syncable;
-import api.simplelib.inventory.*;
+import api.simplelib.inventory.Inventory;
+import api.simplelib.inventory.InventoryRule;
+import api.simplelib.inventory.InventorySlot;
+import api.simplelib.inventory.InventorySpace;
 import api.simplelib.seril.ITagSerializer;
 import api.simplelib.vars.Var;
 import api.simplelib.vars.VarSync;
 import api.simplelib.vars.VarSyncBase;
+import api.simplelib.remote.Syncable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;

@@ -1,9 +1,9 @@
 package api.simplelib.minecraft;
 
+import api.simplelib.seril.ITagSerializer;
 import api.simplelib.vars.Var;
 import api.simplelib.vars.VarSyncBase;
 import net.simplelib.inventory.InventoryBuilderImpl;
-import api.simplelib.seril.ITagSerializer;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.NBTTagCompound;
 

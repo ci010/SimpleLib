@@ -1,9 +1,8 @@
 package net.simplelib.entity;
 
-import api.simplelib.Var;
-import api.simplelib.VarFactory;
 import api.simplelib.entity.IStatus;
 import api.simplelib.seril.ITagSerializable;
+import api.simplelib.vars.Var;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -75,5 +74,4 @@ public class Status implements IExtendedEntityProperties
 	{
 		return (Var) watching.get(idx);
 	}
-
 }

@@ -1,6 +1,5 @@
 package net.simplelib.inventory;
 
-import api.simplelib.inventory.InventoryBuilder;
 import api.simplelib.inventory.*;
 import com.google.common.base.Optional;
 import com.google.gson.*;

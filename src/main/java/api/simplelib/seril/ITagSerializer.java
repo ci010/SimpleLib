@@ -1,7 +1,7 @@
 package api.simplelib.seril;
 
-import api.simplelib.utils.NotNull;
 import api.simplelib.utils.Nullable;
+import api.simplelib.utils.NotNull;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**

@@ -1,9 +1,9 @@
 package api.simplelib.entity;
 
+import api.simplelib.seril.ITagSerializable;
 import api.simplelib.vars.VarSyncFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import api.simplelib.seril.ITagSerializable;
 
 /**
  * A easy interface to create a {@link net.minecraftforge.common.IExtendedEntityProperties}.

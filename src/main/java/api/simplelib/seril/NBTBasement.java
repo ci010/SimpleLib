@@ -1,9 +1,9 @@
 package api.simplelib.seril;
 
+import api.simplelib.utils.GenericUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.nbt.*;
-import api.simplelib.utils.GenericUtil;
 
 import java.lang.reflect.Field;
 import java.util.List;

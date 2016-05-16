@@ -1,11 +1,10 @@
 package net.simplelib.entity;
 
-import api.simplelib.Var;
-import api.simplelib.VarFactory;
-import api.simplelib.VarSync;
-import api.simplelib.VarSyncBase;
 import api.simplelib.seril.ITagSerializable;
 import api.simplelib.seril.ITagSerializer;
+import api.simplelib.vars.VarSync;
+import api.simplelib.vars.VarSyncBase;
+import api.simplelib.vars.VarSyncFactory;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.NBTTagCompound;
 import net.simplelib.common.VarSyncPrimitive;
@@ -13,7 +12,7 @@ import net.simplelib.common.VarSyncPrimitive;
 /**
  * @author ci010
  */
-public class TileEntityVarFactory implements VarFactory
+public class TileEntityVarFactory implements VarSyncFactory
 {
 	private ImmutableList.Builder<ITagSerializable> varCache = ImmutableList.builder();
 

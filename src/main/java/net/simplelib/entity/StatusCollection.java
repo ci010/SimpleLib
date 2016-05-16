@@ -2,7 +2,6 @@ package net.simplelib.entity;
 
 import api.simplelib.entity.EntityHandler;
 import api.simplelib.entity.IStatus;
-import api.simplelib.entity.IStatusUpdate;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 import net.minecraft.entity.Entity;

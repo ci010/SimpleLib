@@ -1,7 +1,6 @@
 package net.simplelib.network;
 
 import api.simplelib.remote.container.ContainerBase;
-import net.simplelib.deprecated.ContainerCommon;
 import api.simplelib.network.AbstractClientMessage;
 import api.simplelib.network.ModMessage;
 import api.simplelib.network.NBTCoder;
