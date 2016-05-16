@@ -3,7 +3,7 @@ package api.simplelib.gui;
 /**
  * @author ci010
  */
-public interface Drawable
+public interface Hub
 {
-	void draw(/*int x, int y*/);
+
 }

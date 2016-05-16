@@ -1,4 +1,6 @@
-package api.simplelib.gui;
+package api.simplelib.gui.mouse;
+
+import api.simplelib.gui.components.GuiBorderTexts;
 
 /**
  * Basic implementation of showing tooltip while mouse hovers.

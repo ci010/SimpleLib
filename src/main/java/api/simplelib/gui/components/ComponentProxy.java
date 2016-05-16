@@ -1,6 +1,9 @@
-package api.simplelib.gui;
+package api.simplelib.gui.components;
 
-import api.simplelib.StringSource;
+import api.simplelib.utils.StringSource;
+import api.simplelib.gui.mouse.Draggable;
+import api.simplelib.gui.mouse.HoverTooltip;
+import api.simplelib.gui.mouse.MouseProperty;
 
 /**
  * @author ci010
@@ -55,6 +58,7 @@ public class ComponentProxy extends GuiComponent
 		super.finalize();
 	}
 
+
 	@Override
 	public int getWidth()
 	{
@@ -67,9 +71,9 @@ public class ComponentProxy extends GuiComponent
 		return component.getHeight();
 	}
 
-	@Override
-	public void draw()
-	{
-		component.draw();
-	}
+//	@Override
+//	public void draw()
+//	{
+//		component.draw();
+//	}
 }

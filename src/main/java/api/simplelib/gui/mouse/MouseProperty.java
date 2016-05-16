@@ -1,4 +1,4 @@
-package api.simplelib.gui;
+package api.simplelib.gui.mouse;
 
 import com.google.common.collect.Lists;
 
@@ -17,11 +17,11 @@ public class MouseProperty
 	private List<MouseMove> moves;
 	private List<Drag> drags;
 
-	public void onClick(int mouseX, int mouseY, int button)
+	public void onClick(int mouseX, int mouseY, int button, boolean inRange)
 	{
 		if (click != null)
 			for (MouseClick mouseClick : click)
-				mouseClick.onClick(mouseX, mouseY, button);
+				mouseClick.onClick(mouseX, mouseY, button, inRange);
 	}
 
 	public void onRelease(int mouseX, int mouseY, int button)
@@ -138,7 +138,7 @@ public class MouseProperty
 		 * @param mouseY The current mouse position in Y.
 		 * @param button The mouse button being pressed.
 		 */
-		void onClick(int mouseX, int mouseY, int button);
+		void onClick(int mouseX, int mouseY, int button, boolean inRange);
 	}
 
 	/**

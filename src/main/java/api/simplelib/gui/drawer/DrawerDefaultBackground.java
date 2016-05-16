@@ -1,29 +1,23 @@
-package api.simplelib.gui;
+package api.simplelib.gui.drawer;
 
+import api.simplelib.gui.DrawNode;
+import api.simplelib.gui.ComponentAPI;
+import api.simplelib.gui.Properties;
+import api.simplelib.utils.GuiUtil;
+import api.simplelib.vars.VarOption;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * @author ci010
  */
-public class GuiDefaultBackground extends GuiComponent
+public class DrawerDefaultBackground extends Gui implements DrawNode
 {
-	private int width, height, xSize = 176, ySize = 166;
+	public static final DrawerDefaultBackground INSTANCE = new DrawerDefaultBackground();
 
-	public GuiDefaultBackground(int x, int y, int width, int height)
-	{
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-	}
-
-	public GuiDefaultBackground setSize(int xSize, int ySize)
-	{
-		this.xSize = xSize;
-		this.ySize = ySize;
-		return this;
-	}
+	private DrawerDefaultBackground() {}
 
 	/**
 	 * draw the background from samples resource
@@ -160,45 +154,11 @@ public class GuiDefaultBackground extends GuiComponent
 
 	}
 
-	/**
-	 * draw the default background sampled from inventory.png
-	 *
-	 * @param xPos   x Position on the Minecraft screen will start to draw
-	 * @param yPos   y Position on the Minecraft screen will start to draw
-	 * @param length the length of the background you want
-	 * @param height the length of the background you want
-	 */
-	public void draw(int xSize, int ySize, int xPos, int yPos, int length, int height)
-	{
-		this.draw(xSize, ySize,
-				xPos,
-				yPos,
-				length,
-				height,
-				new ResourceLocation("textures/gui/container/inventory.png"));
-	}
-
-
 	@Override
-	public int getWidth()
+	public void draw(int x, int y, Properties properties)
 	{
-		return width;
-	}
-
-	@Override
-	public int getHeight()
-	{
-		return height;
-	}
-
-	@Override
-	public void draw()
-	{
-		this.draw(xSize, ySize,
-				x,
-				y,
-				width,
-				height,
-				new ResourceLocation("textures/gui/container/inventory.png"));
+		VarOption<Pair<Integer, Integer>> varOption = properties.property(ComponentAPI.PROP_BACK_SIZE);
+		if (varOption.isPresent())
+			this.draw(176, 166, x, y, varOption.get().getLeft(), varOption.get().getRight(), GuiUtil.inv);
 	}
 }

@@ -1,5 +1,7 @@
 package api.simplelib.gui;
 
+import api.simplelib.gui.animation.Controller;
+import api.simplelib.gui.components.GuiComponent;
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.util.Timer;
@@ -17,13 +19,13 @@ public class GuiScreenCommon extends GuiScreen
 	protected boolean adjusted;
 	protected Timer timer = new Timer();
 
-	public GuiScreenCommon(GuiProvider provider)
+	public GuiScreenCommon(ComponentProvider provider)
 	{
 		List<GuiComponent> components = Lists.newArrayList();
 		provider.provideComponents(components);
 		List<GuiComponent> front = Lists.newArrayList();
 		for (GuiComponent component : components)
-			if (component.type() == GuiComponent.Type.front)
+			if (component.getProperties().property(ComponentAPI.PROP_ON_FRONT).get())
 			{
 				if (this.back == null)
 					this.back = Lists.newArrayList();
@@ -40,7 +42,7 @@ public class GuiScreenCommon extends GuiScreen
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		if (current != null)
 			if (current.hasMouseListener())
-				current.getMouseListener().onClick(mouseX, mouseY, mouseButton);
+				current.getMouseListener().onClick(mouseX, mouseY, mouseButton, this.include(current, mouseX, mouseY));
 	}
 
 	@Override
@@ -66,9 +68,9 @@ public class GuiScreenCommon extends GuiScreen
 	{
 		super.initGui();
 		if (!adjusted)
-		{
-			for (GuiComponent comp : back)
-				comp.setPos(comp.getX(), comp.getY()).initGui();
+		{//// FIXME: 2016/5/11 Fix this new init method
+//			for (GuiComponent comp : back)
+//				comp.setPos(comp.getX(), comp.getY()).initGui();
 			adjusted = true;
 		}
 	}
@@ -89,7 +91,11 @@ public class GuiScreenCommon extends GuiScreen
 				timer.reset();
 		for (GuiComponent component : back)
 		{
-			component.draw();
+			Controller controller = component.getController();
+			if (controller != null)
+				controller.draw(component);
+//			else
+//				component.draw();
 			if (component.hasMouseListener())
 				component.getMouseListener().onMove(mouseX, mouseY);
 			if (!checked)

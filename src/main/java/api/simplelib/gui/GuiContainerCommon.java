@@ -1,10 +1,13 @@
 package api.simplelib.gui;
 
+import api.simplelib.gui.animation.Controller;
+import api.simplelib.gui.components.GuiTextureBlock;
+import api.simplelib.utils.GuiUtil;
+import api.simplelib.gui.components.GuiComponent;
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import api.simplelib.utils.GuiUtil;
 import org.lwjgl.util.Timer;
 
 import java.io.IOException;
@@ -21,13 +24,47 @@ public class GuiContainerCommon extends GuiContainer
 	protected Timer timer = new Timer();
 	protected Controller controller;
 
-	public GuiContainerCommon(Container inventorySlotsIn, GuiProvider provider)
+	public GuiContainerCommon(Container container)
+	{
+		super(container);
+	}
+
+	public GuiContainerCommon loadGui(ComponentProvider provider)
+	{
+		if (front != null)
+			front.clear();
+		if (back != null)
+			back.clear();
+		List<GuiComponent> components = Lists.newArrayList();
+		provider.provideComponents(components);
+		for (GuiComponent component : components)
+			if (component.getProperties().property(ComponentAPI.PROP_ON_FRONT).get())
+			{
+				if (front == null)
+					front = Lists.newArrayList();
+				front.add(component);
+			}
+			else
+			{
+				if (back == null)
+					back = Lists.newArrayList();
+				back.add(component);
+			}
+		for (Object o : inventorySlots.inventorySlots)
+		{
+			Slot slot = (Slot) o;
+			back.add(new GuiTextureBlock(GuiUtil.slot, slot.xDisplayPosition, slot.yDisplayPosition));
+		}
+		return this;
+	}
+
+	public GuiContainerCommon(Container inventorySlotsIn, ComponentProvider provider)
 	{
 		super(inventorySlotsIn);
 		List<GuiComponent> components = Lists.newArrayList();
 		provider.provideComponents(components);
 		for (GuiComponent component : components)
-			if (component.type() == GuiComponent.Type.front)
+			if (component.getProperties().property(ComponentAPI.PROP_ON_FRONT).get())
 			{
 				if (front == null)
 					front = Lists.newArrayList();
@@ -42,7 +79,7 @@ public class GuiContainerCommon extends GuiContainer
 		for (Object o : inventorySlotsIn.inventorySlots)
 		{
 			Slot slot = (Slot) o;
-			back.add(new TileTexture(GuiUtil.slot, slot.xDisplayPosition, slot.yDisplayPosition));
+			back.add(new GuiTextureBlock(GuiUtil.slot, slot.xDisplayPosition, slot.yDisplayPosition));
 		}
 	}
 
@@ -57,7 +94,7 @@ public class GuiContainerCommon extends GuiContainer
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		if (current != null)
 			if (current.hasMouseListener())
-				current.getMouseListener().onClick(mouseX, mouseY, mouseButton);
+				current.getMouseListener().onClick(mouseX, mouseY, mouseButton, include(current, mouseX, mouseY));
 	}
 
 	@Override
@@ -84,10 +121,10 @@ public class GuiContainerCommon extends GuiContainer
 		super.initGui();
 		if (!adjusted)
 		{
-			for (GuiComponent comp : back)
-				comp.setPos(this.guiLeft + comp.getX() - 1, this.guiTop + comp.getY() - 1).initGui();
-			for (GuiComponent comp : front)
-				comp.setPos(this.guiLeft + comp.getX() - 1, this.guiTop + comp.getY() - 1).initGui();
+//			for (GuiComponent comp : back)
+//				comp.setPos(this.guiLeft + comp.getX() - 1, this.guiTop + comp.getY() - 1).initGui();
+//			for (GuiComponent comp : front)
+//				comp.setPos(this.guiLeft + comp.getX() - 1, this.guiTop + comp.getY() - 1).initGui();
 			adjusted = true;
 		}
 	}
@@ -111,9 +148,6 @@ public class GuiContainerCommon extends GuiContainer
 		if (component.getController() != null)
 			component.getController().draw(component);
 		else this.controller.draw(component);
-		if (component.children != null)
-			for (GuiComponent child : component.children)
-				drawComponent(child);
 	}
 
 	@Override
@@ -152,7 +186,6 @@ public class GuiContainerCommon extends GuiContainer
 					this.current = component;
 				}
 		}
-
 	}
 
 	protected boolean include(GuiComponent gui, int x, int y)
