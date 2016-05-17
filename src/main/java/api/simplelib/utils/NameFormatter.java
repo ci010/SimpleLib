@@ -3,7 +3,7 @@ package api.simplelib.utils;
 /**
  * @author ci010
  */
-public class NameFormattor
+public class NameFormatter
 {
 	public static String upperTo_(String name)
 	{
