@@ -1,12 +1,9 @@
 package api.simplelib.utils;
 
-import api.simplelib.seril.ITagSerializable;
-import net.minecraft.nbt.NBTTagCompound;
-
 /**
  * @author ci010
  */
-public class StringSource implements ITagSerializable
+public class StringSource implements CharSequence
 {
 	private String rawContent;
 	protected Source source;
@@ -22,16 +19,9 @@ public class StringSource implements ITagSerializable
 		return this;
 	}
 
-	@Override
-	public void readFromNBT(NBTTagCompound tag)
+	public Source source()
 	{
-
-	}
-
-	@Override
-	public void writeToNBT(NBTTagCompound tag)
-	{
-
+		return source;
 	}
 
 	public interface Source
@@ -40,8 +30,33 @@ public class StringSource implements ITagSerializable
 	}
 
 	@Override
+	public int length()
+	{
+		return rawContent.length();
+	}
+
+	@Override
+	public char charAt(int index)
+	{
+		return rawContent.charAt(index);
+	}
+
+	@Override
+	public CharSequence subSequence(int start, int end)
+	{
+		return rawContent.subSequence(start, end);
+	}
+
+	public String getRawContent()
+	{
+		return rawContent;
+	}
+
+	@Override
 	public String toString()
 	{
-		return String.format(rawContent, source.getSource());
+		if (source != null)
+			return String.format(rawContent, source.getSource());
+		else return rawContent;
 	}
 }

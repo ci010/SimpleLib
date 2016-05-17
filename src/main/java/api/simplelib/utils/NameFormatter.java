@@ -2,6 +2,7 @@ package api.simplelib.utils;
 
 /**
  * @author ci010
+ * @author Mickey
  */
 public class NameFormatter
 {
@@ -21,5 +22,13 @@ public class NameFormatter
 	public static String _toPoint(String name)
 	{
 		return name.replace("_", ".");
+	}
+
+	public static String _toUp(String str)
+	{
+		int i;
+		while ((i = str.indexOf('_')) != -1 && str.length() > i + 2)
+			str = str.substring(0, i).concat(str.substring(i + 1, i + 2).toUpperCase()).concat(str.substring(i + 2));
+		return str;
 	}
 }

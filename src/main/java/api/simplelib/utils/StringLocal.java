@@ -14,8 +14,17 @@ public class StringLocal extends StringSource
 	}
 
 	@Override
+	public StringLocal setSource(Source source)
+	{
+		this.source = source;
+		return this;
+	}
+
+	@Override
 	public String toString()
 	{
-		return String.format(localized, source.getSource());
+		if (source != null)
+			return String.format(localized, source.getSource());
+		else return localized;
 	}
 }

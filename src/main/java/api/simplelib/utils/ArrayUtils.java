@@ -46,7 +46,7 @@ public class ArrayUtils
 	{
 		int oldLength = arr.length;
 		int length = oldLength + arr.length;
-		arr = GenericUtil.cast(new Object[length]);
+		arr = TypeUtils.cast(new Object[length]);
 		int i;
 		for (i = 0; i < oldLength; ++i)
 			arr[i] = arr[i];
@@ -71,7 +71,7 @@ public class ArrayUtils
 
 	public static <T> T[] newArray(int size)
 	{
-		return GenericUtil.cast(new Object[size]);
+		return TypeUtils.cast(new Object[size]);
 	}
 
 	public static <T> T[] newArray(T... obj)

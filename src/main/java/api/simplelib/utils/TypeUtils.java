@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
  * @author ci010
  */
 @SuppressWarnings("unchecked")
-public class GenericUtil
+public class TypeUtils
 {
 	/**
 	 * Get the Type of an object's generic parameter.
