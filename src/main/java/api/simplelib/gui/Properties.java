@@ -1,25 +1,27 @@
 package api.simplelib.gui;
 
-import api.simplelib.vars.Var;
-import api.simplelib.vars.VarOption;
+import api.simplelib.vars.VarForward;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author ci010
  */
 public interface Properties
 {
-	<T> VarOption<T> property(Key<T> location);
+	<T> VarForward<T> property(Key<T> location);
 
-	<T> Var<T> cache(String id);
+	<T> T getCache(String id);
+
+	void putCache(String id, Object cache);
 
 	void clearCache();
 
-	List<String> allCaches();
+	Set<String> allCaches();
 
-	List<Key> allProperties();
+	Set<Key> allProperties();
 
 	interface Key<T>
 	{

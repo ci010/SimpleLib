@@ -1,13 +1,18 @@
 package api.simplelib.gui;
 
-import api.simplelib.gui.animation.Controller;
 import api.simplelib.gui.components.GuiTextureBlock;
+import api.simplelib.gui.event.ClickEvent;
+import api.simplelib.gui.event.DragEvent;
+import api.simplelib.gui.event.HoverEvent;
 import api.simplelib.utils.GuiUtil;
 import api.simplelib.gui.components.GuiComponent;
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.util.Timer;
 
 import java.io.IOException;
@@ -21,8 +26,7 @@ public class GuiContainerCommon extends GuiContainer
 	protected List<GuiComponent> front, back;
 	protected GuiComponent current;
 	protected boolean adjusted;
-	protected Timer timer = new Timer();
-	protected Controller controller;
+	protected MouseEvent currentState;
 
 	public GuiContainerCommon(Container container)
 	{
@@ -83,18 +87,12 @@ public class GuiContainerCommon extends GuiContainer
 		}
 	}
 
-	public void setController(Controller controller)
-	{
-		this.controller = controller;
-	}
-
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		if (current != null)
-			if (current.hasMouseListener())
-				current.getMouseListener().onClick(mouseX, mouseY, mouseButton, include(current, mouseX, mouseY));
+			MinecraftForge.EVENT_BUS.post(new ClickEvent(this.currentState, current, this));
 	}
 
 	@Override
@@ -102,8 +100,7 @@ public class GuiContainerCommon extends GuiContainer
 	{
 		super.mouseReleased(mouseX, mouseY, state);
 		if (current != null)
-			if (current.hasMouseListener())
-				current.getMouseListener().onRelease(mouseX, mouseY, state);
+			MinecraftForge.EVENT_BUS.post(new ClickEvent.Release(this.currentState, current, this));
 	}
 
 	@Override
@@ -111,8 +108,7 @@ public class GuiContainerCommon extends GuiContainer
 	{
 		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
 		if (current != null)
-			if (current.hasMouseListener())
-				current.getMouseListener().onDrag(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+			MinecraftForge.EVENT_BUS.post(new DragEvent(this.currentState, current, this));
 	}
 
 	@Override
@@ -133,21 +129,14 @@ public class GuiContainerCommon extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
 		for (GuiComponent guiComponent : front)
-			drawComponent(guiComponent);
+			guiComponent.draw();
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
 	{
 		for (GuiComponent guiComponent : back)
-			drawComponent(guiComponent);
-	}
-
-	private void drawComponent(GuiComponent component)
-	{
-		if (component.getController() != null)
-			component.getController().draw(component);
-		else this.controller.draw(component);
+			guiComponent.draw();
 	}
 
 	@Override
@@ -159,15 +148,12 @@ public class GuiContainerCommon extends GuiContainer
 			if (this.include(current, mouseX, mouseY))
 			{
 				checked = true;
-				if (current.hasMouseListener())
-					current.getMouseListener().onHovered(mouseX, mouseY, timer.getTime());
+				MinecraftForge.EVENT_BUS.post(new HoverEvent(currentState, current, this));
 			}
 			else
-				timer.reset();
+				MinecraftForge.EVENT_BUS.post(new HoverEvent.End(currentState, current, this));
 		for (GuiComponent component : front)
 		{
-			if (component.hasMouseListener())
-				component.getMouseListener().onMove(mouseX, mouseY);
 			if (!checked)
 				if (this.include(component, mouseX, mouseY))
 				{
@@ -177,8 +163,6 @@ public class GuiContainerCommon extends GuiContainer
 		}
 		for (GuiComponent component : back)
 		{
-			if (component.hasMouseListener())
-				component.getMouseListener().onMove(mouseX, mouseY);
 			if (!checked)
 				if (this.include(component, mouseX, mouseY))
 				{
@@ -191,5 +175,10 @@ public class GuiContainerCommon extends GuiContainer
 	protected boolean include(GuiComponent gui, int x, int y)
 	{
 		return this.isPointInRegion(gui.getX(), gui.getY(), gui.getWidth(), gui.getHeight(), x, y);
+	}
+
+	public void accept(MouseEvent event)
+	{
+		this.currentState = event;
 	}
 }

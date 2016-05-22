@@ -1,5 +1,7 @@
 package api.simplelib.gui.components;
 
+import api.simplelib.gui.ComponentAPI;
+import api.simplelib.utils.StringSource;
 import net.minecraft.inventory.Container;
 import api.simplelib.utils.GuiUtil;
 
@@ -11,26 +13,16 @@ import api.simplelib.utils.GuiUtil;
  */
 public class GuiString extends GuiComponent
 {
-	protected Object key;
-	protected int width = 0, height;
+	protected CharSequence key;
 
-	public GuiString(Object key, int x, int y)
+	public GuiString(CharSequence key, int x, int y)
 	{
 		this.key = key;
+		if (key instanceof StringSource)
+			this.getProperties().property(ComponentAPI.PROP_STRING_SRC).set(((StringSource) key).source().getSource());
+		this.getProperties().property(ComponentAPI.PROP_STRING).set(key);
 		this.setPos(x, y);
 		this.height = 8;
-	}
-
-	@Override
-	public int getWidth()
-	{
-		return width;
-	}
-
-	@Override
-	public int getHeight()
-	{
-		return height;
 	}
 
 	public void onLoad(Container container)
@@ -38,8 +30,7 @@ public class GuiString extends GuiComponent
 		String content = key.toString();
 		int width;
 		if (this.width != (width = GuiUtil.font().getStringWidth(content)))
-		{
 			this.width = width;
-		}
+		this.width = width;
 	}
 }

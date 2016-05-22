@@ -1,10 +1,10 @@
 package api.simplelib.gui;
 
-import api.simplelib.gui.animation.Controller;
+import api.simplelib.gui.node.DrawNode;
 import api.simplelib.utils.TextureInfo;
 import api.simplelib.gui.components.GuiBar;
 import api.simplelib.registry.ModProxy;
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -19,36 +19,35 @@ public interface ComponentAPI
 	ComponentRepository repository = null;
 
 	ResourceLocation
-			LOC_CTRL_FADE_IN = new ResourceLocation("ctrl:fade_in"),
-			LOC_CTRL_FADE_OUT = new ResourceLocation("ctrl:fade_out"),
-			LOC_CTRL_DEFAULT = new ResourceLocation("ctrl:default");
-
-	ResourceLocation
 			LOC_DRAW_TEXTURE = new ResourceLocation("draw:texture"),
 			LOC_DRAW_STRING = new ResourceLocation("draw:string"),
 			LOC_DRAW_BORDER_TEXTS = new ResourceLocation("draw:border_texts"),
 			LOC_DRAW_BACKGROUND = new ResourceLocation("draw:background"),
-			LOC_DRAW_PROGRESS = new ResourceLocation("draw:progress");
+			LOC_DRAW_PROGRESS = new ResourceLocation("draw:progress"),
+			LOC_ANIM_FADE_IN = new ResourceLocation("anim:fade_in"),
+			LOC_ANIM_FADE_OUT = new ResourceLocation("anim:fade_out");
 
 	DrawNode
-			DRAW_TEXTURE = repository.fetchDrawer(LOC_DRAW_TEXTURE),
-			DRAW_STRING = repository.fetchDrawer(LOC_DRAW_STRING),
-			DRAW_BORDER_TEXTS = repository.fetchDrawer(LOC_DRAW_BORDER_TEXTS),
-			DRAW_BACKGROUND = repository.fetchDrawer(LOC_DRAW_BACKGROUND),
-			DRAW_PROGRESS = repository.fetchDrawer(LOC_DRAW_PROGRESS);
+			DRAW_TEXTURE = repository.fetchNode(LOC_DRAW_TEXTURE),
+			DRAW_STRING = repository.fetchNode(LOC_DRAW_STRING),
+			DRAW_BORDER_TEXTS = repository.fetchNode(LOC_DRAW_BORDER_TEXTS),
+			DRAW_BACKGROUND = repository.fetchNode(LOC_DRAW_BACKGROUND),
+			DRAW_PROGRESS = repository.fetchNode(LOC_DRAW_PROGRESS);
 
-	Controller
-			CTRL_FADE_IN = repository.fetchController(LOC_CTRL_FADE_IN),
-			CTRL_FADE_OUT = repository.fetchController(LOC_CTRL_FADE_OUT),
-			CTRL_DEFAULT = repository.fetchController(LOC_CTRL_DEFAULT);
+	DrawNode
+			PRE = repository.fetchNode(new ResourceLocation("draw:pre")),
+			POST = repository.fetchNode(new ResourceLocation("draw:post"));
 
-	Properties.Key<List<String>> PROP_LIST_STRING = repository.fetchKey(DRAW_BORDER_TEXTS, GenericUtil.<List<String>>cast(List.class));
-	Properties.Key<Integer> PROP_FADE_TIME = repository.fetchKey(LOC_CTRL_FADE_IN, Integer.class);
-	Properties.Key<String> PROP_STRING = repository.fetchKey(DRAW_STRING, String.class);
+	Properties.Key<List<CharSequence>> PROP_LIST_STRING = repository.fetchKey(DRAW_BORDER_TEXTS, TypeUtils.<List<CharSequence>>cast(List.class));
+	Properties.Key<Integer> PROP_FADE_TIME = repository.fetchKey(LOC_ANIM_FADE_IN, Integer.class);
+	Properties.Key<CharSequence> PROP_STRING = repository.fetchKey(DRAW_STRING, CharSequence.class);
+	Properties.Key<Object[]> PROP_STRING_SRC = repository.fetchKey(DRAW_STRING, Object[].class);
 	Properties.Key<TextureInfo> PROP_TEXTURE = repository.fetchKey(DRAW_TEXTURE, TextureInfo.class);
-	Properties.Key<Pair<Integer, Integer>> PROP_BACK_SIZE = repository.fetchKey(DRAW_BACKGROUND, GenericUtil.<Pair<Integer, Integer>>cast(Pair.class));
+	Properties.Key<Pair<Integer, Integer>> PROP_BACK_SIZE = repository.fetchKey(DRAW_BACKGROUND, TypeUtils.<Pair<Integer, Integer>>cast(Pair.class));
 	Properties.Key<GuiBar.Direction> PROP_DIRECTION = repository.fetchKey(DRAW_PROGRESS, GuiBar.Direction.class);
+	Properties.Key<Float> PROP_PROGRESS = repository.fetchKey(DRAW_PROGRESS, Float.class);
 	Properties.Key<Boolean> PROP_ON_FRONT = repository.fetchKey(new ResourceLocation("container:front"), boolean.class);
+
 //	new Properties.Key<String>()
 //	{
 //		public IJsonSerializer<String> serializer()

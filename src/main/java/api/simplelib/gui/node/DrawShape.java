@@ -1,6 +1,6 @@
-package api.simplelib.gui.drawer;
+package api.simplelib.gui.node;
 
-import api.simplelib.gui.DrawNode;
+import api.simplelib.Pipeline;
 import api.simplelib.gui.Properties;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
@@ -26,7 +26,7 @@ public class DrawShape extends Gui implements DrawNode
 	}
 
 	@Override
-	public void draw(int x, int y, Properties properties)
+	public void draw(int x, int y, Pipeline<DrawNode> pipeline, Properties properties)
 	{
 		PathIterator pathIterator = shape.getPathIterator(new AffineTransform(0, 0, 0, 0, x, y));
 		Tessellator instance = Tessellator.getInstance();

@@ -2,6 +2,7 @@ package api.simplelib.gui.components;
 
 import api.simplelib.gui.ComponentAPI;
 import api.simplelib.utils.TextureInfo;
+import api.simplelib.vars.Var;
 import com.google.common.base.Supplier;
 
 /**
@@ -12,15 +13,12 @@ import com.google.common.base.Supplier;
  */
 public class GuiBar extends GuiComponent
 {
-	private GuiTextureBlock background;
-	private int x, y;
-
-	public GuiBar(Supplier<Float> target, TextureInfo bar, int x, int y)
+	public GuiBar(Var<Float> target, TextureInfo bar, int x, int y)
 	{
-		this.x = x;
-		this.y = y;
+		this.setPos(x, y);
+		this.setSize(bar.getWidth(), bar.getHeight());
 		this.getProperties().property(ComponentAPI.PROP_TEXTURE).set(bar);
-		this.getProperties().cache("supplier").set(target);
+		this.getProperties().property(ComponentAPI.PROP_PROGRESS).delegate(target);
 	}
 
 	/**
@@ -33,32 +31,8 @@ public class GuiBar extends GuiComponent
 		return this;
 	}
 
-	/**
-	 * @param background The texture of the background of the bar.
-	 * @param xOffset    The offset related to the x position of this bar.
-	 * @param yOffset    The offset related to the y position of this bar.
-	 * @return this
-	 */
-	public GuiBar setBackground(TextureInfo background, int xOffset, int yOffset)
-	{
-		this.background = new GuiTextureBlock(background, x + xOffset, y + yOffset);
-		return this;
-	}
-
-	@Override
-	public int getWidth()
-	{
-		return background.getWidth();
-	}
-
-	@Override
-	public int getHeight()
-	{
-		return background.getHeight();
-	}
-
 	public enum Direction
 	{
-		toRight, toLeft, toTop, toBottom;
+		RIGHT, LEFT, UP, DOWN;
 	}
 }

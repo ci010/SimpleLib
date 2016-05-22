@@ -1,7 +1,7 @@
 package api.simplelib.gui.components;
 
 import api.simplelib.gui.ComponentAPI;
-import api.simplelib.vars.VarOption;
+import api.simplelib.vars.VarForward;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import java.util.List;
 public class GuiBorderTexts extends GuiComponent
 {
 	//	private FontRenderer font;
-	protected int height, width, xLeft, yLeft;
-	protected List<Object> keyLines = Lists.newArrayList();
+	protected int xLeft, yLeft;
+	protected List<CharSequence> keyLines = Lists.newArrayList();
 
 	public GuiBorderTexts()
 	{
@@ -22,29 +22,17 @@ public class GuiBorderTexts extends GuiComponent
 //		this.getProperties().property(ComponentAPI.PROP_LIST_STRING).set(keyLines);
 	}
 
-	public GuiBorderTexts addTextLine(Object contentKey)
+	public GuiBorderTexts addTextLine(CharSequence contentKey)
 	{
-		VarOption<List<String>> property = this.getProperties().property(ComponentAPI.PROP_LIST_STRING);
+		VarForward<List<CharSequence>> property = this.getProperties().property(ComponentAPI.PROP_LIST_STRING);
 		if (!property.isPresent())
-			property.set(new ArrayList<String>());
+			property.set(new ArrayList<CharSequence>());
 		property.get().add(contentKey.toString());
 		//TODO consider about the sync...
 //		keyLines.add(contentKey);
 		return this;
 	}
 
-
-	@Override
-	public int getWidth()
-	{
-		return width;
-	}
-
-	@Override
-	public int getHeight()
-	{
-		return height;
-	}
 
 //	@Override
 //	public void initGui()

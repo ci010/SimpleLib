@@ -1,6 +1,7 @@
 package api.simplelib.gui;
 
-import api.simplelib.gui.animation.Controller;
+import api.simplelib.Pipeline;
+import api.simplelib.gui.node.DrawNode;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -8,13 +9,13 @@ import net.minecraft.util.ResourceLocation;
  */
 public interface ComponentRepository
 {
-	DrawNode fetchDrawer(ResourceLocation location);
-
-	Controller fetchController(ResourceLocation location);
+	DrawNode fetchNode(ResourceLocation location);
 
 	<T> Properties.Key<T> fetchKey(DrawNode node, Class<T> type);
 
-	<T> Properties.Key<T> fetchKey(Controller controller, Class<T> type);
-
 	<T> Properties.Key<T> fetchKey(ResourceLocation location, Class<T> type);
+
+	Properties newProperty();
+
+	Pipeline<DrawNode> newDrawPipe();
 }

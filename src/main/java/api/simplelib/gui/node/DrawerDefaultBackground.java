@@ -1,10 +1,10 @@
-package api.simplelib.gui.drawer;
+package api.simplelib.gui.node;
 
-import api.simplelib.gui.DrawNode;
+import api.simplelib.Pipeline;
 import api.simplelib.gui.ComponentAPI;
 import api.simplelib.gui.Properties;
 import api.simplelib.utils.GuiUtil;
-import api.simplelib.vars.VarOption;
+import api.simplelib.vars.VarForward;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
@@ -155,9 +155,9 @@ public class DrawerDefaultBackground extends Gui implements DrawNode
 	}
 
 	@Override
-	public void draw(int x, int y, Properties properties)
+	public void draw(int x, int y, Pipeline<DrawNode> pipeline, Properties properties)
 	{
-		VarOption<Pair<Integer, Integer>> varOption = properties.property(ComponentAPI.PROP_BACK_SIZE);
+		VarForward<Pair<Integer, Integer>> varOption = properties.property(ComponentAPI.PROP_BACK_SIZE);
 		if (varOption.isPresent())
 			this.draw(176, 166, x, y, varOption.get().getLeft(), varOption.get().getRight(), GuiUtil.inv);
 	}

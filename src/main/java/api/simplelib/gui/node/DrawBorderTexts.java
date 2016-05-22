@@ -1,11 +1,10 @@
-package api.simplelib.gui.drawer;
+package api.simplelib.gui.node;
 
+import api.simplelib.Pipeline;
 import api.simplelib.gui.ComponentAPI;
-import api.simplelib.gui.DrawNode;
 import api.simplelib.gui.Properties;
 import api.simplelib.vars.Var;
-import api.simplelib.vars.VarOption;
-import com.google.common.base.Optional;
+import api.simplelib.vars.VarForward;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,7 +22,7 @@ public class DrawBorderTexts extends Gui implements DrawNode
 
 	private DrawBorderTexts() {}
 
-	private int calculateHeight(List<String> contents)
+	private int calculateHeight(List<CharSequence> contents)
 	{
 		int height = 8;
 		if (contents.size() > 1)
@@ -31,12 +30,12 @@ public class DrawBorderTexts extends Gui implements DrawNode
 		return height;
 	}
 
-	private int calculateWidth(List<String> contents)
+	private int calculateWidth(List<CharSequence> contents)
 	{
 		int width = 0;
-		for (String s : contents)
+		for (CharSequence s : contents)
 		{
-			int sLength = Minecraft.getMinecraft().fontRendererObj.getStringWidth(s);
+			int sLength = Minecraft.getMinecraft().fontRendererObj.getStringWidth(s.toString());
 			if (sLength > width)
 				width = sLength;
 			//find the max length of string which will apply to frame's length.
@@ -45,19 +44,19 @@ public class DrawBorderTexts extends Gui implements DrawNode
 	}
 
 	@Override
-	public void draw(int x, int y, Properties properties)
+	public void draw(int x, int y, Pipeline<DrawNode> pipeline, Properties properties)
 	{
-		VarOption<List<String>> property = properties.property(ComponentAPI.PROP_LIST_STRING);
+		VarForward<List<CharSequence>> property = properties.property(ComponentAPI.PROP_LIST_STRING);
 		if (!property.isPresent())
 			return;
-		List<String> contents = property.get();
+		List<CharSequence> contents = property.get();
 		if (contents.isEmpty())
 			return;
 
 		String HEIGHT = "border_height";
 		String WIDTH = "border_width";
-		Var<Integer> heightContainer = properties.cache(HEIGHT),
-				widthContainer = properties.cache(WIDTH);
+		Var<Integer> heightContainer = properties.getCache(HEIGHT),
+				widthContainer = properties.getCache(WIDTH);
 		int height, width;
 		if (heightContainer.get() == null)
 			heightContainer.set(height = calculateHeight(contents));
@@ -147,7 +146,7 @@ public class DrawBorderTexts extends Gui implements DrawNode
 
 		for (int num = 0; num < contents.size(); ++num)
 		{
-			String text = contents.get(num);
+			String text = contents.get(num).toString();
 			Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(text, xLeft, yLeft, 0);
 			if (num == 0)
 				yLeft += 2;
