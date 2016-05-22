@@ -1,6 +1,6 @@
 package api.simplelib.seril;
 
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.NBTBase;
@@ -33,7 +33,7 @@ public class NBTSerial
 	public <T> Optional<T> fromTag(NBTTagCompound tag, Class<T> type)
 	{
 		if (deserializerMap.containsKey(type))
-			return Optional.fromNullable(GenericUtil.<NBTDeserializer<T>>cast(deserializerMap.get(type)).deserialize(tag));
+			return Optional.fromNullable(TypeUtils.<NBTDeserializer<T>>cast(deserializerMap.get(type)).deserialize(tag));
 		return Optional.absent();
 	}
 
@@ -54,7 +54,7 @@ public class NBTSerial
 	{
 		Class type = obj.getClass();
 		if (serializerMap.containsKey(obj.getClass()))
-			return GenericUtil.<NBTSerializer<T>>cast(serializerMap.get(obj.getClass())).serialize(obj);
+			return TypeUtils.<NBTSerializer<T>>cast(serializerMap.get(obj.getClass())).serialize(obj);
 		NBTBase base = NBTBasement.instance().serialize(obj);
 		if (base != null)
 			return base;
@@ -81,14 +81,14 @@ public class NBTSerial
 	public <T> NBTDeserializer<T> getDeserializer(Class<T> clz)
 	{
 		if (deserializerMap.containsKey(clz))
-			return GenericUtil.cast(deserializerMap.get(clz));
+			return TypeUtils.cast(deserializerMap.get(clz));
 		return null;
 	}
 
 	public <T> NBTSerializer<T> getSerializer(Class<T> clz)
 	{
 		if (serializerMap.containsKey(clz))
-			return GenericUtil.cast(serializerMap.get(clz));
+			return TypeUtils.cast(serializerMap.get(clz));
 		return null;
 	}
 

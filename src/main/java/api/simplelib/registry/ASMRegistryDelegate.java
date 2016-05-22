@@ -4,7 +4,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import api.simplelib.utils.ASMDataUtil;
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -79,7 +79,7 @@ public abstract class ASMRegistryDelegate<T extends Annotation>
 		if (modid == null)
 			modid = ASMDataUtil.getModId(data);
 		Class<?> clz = ASMDataUtil.getClass(data);
-		Class<? extends T> type = GenericUtil.getGenericTypeTo(this);
+		Class<? extends T> type = TypeUtils.getGenericTypeTo(this);
 		T annotation = ASMDataUtil.getAnnotation(data, type);
 		Optional<Field> f = Optional.fromNullable(ASMDataUtil.getField(data));
 		Optional<Object> o = ASMDataUtil.getObject(data);

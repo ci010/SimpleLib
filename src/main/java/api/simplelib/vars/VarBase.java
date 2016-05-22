@@ -7,6 +7,14 @@ public class VarBase<T> implements Var<T>
 {
 	protected T data;
 
+	public VarBase(T data)
+	{
+		this.data = data;
+	}
+
+	public VarBase()
+	{}
+
 	public T get()
 	{
 		return data;

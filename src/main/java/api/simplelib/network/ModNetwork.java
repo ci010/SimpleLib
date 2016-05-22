@@ -1,6 +1,6 @@
 package api.simplelib.network;
 
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -8,6 +8,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author coolAlias
@@ -17,6 +21,7 @@ public class ModNetwork
 {
 	private static ModNetwork instance;
 	private byte packetId = 0;
+	private List<Class> protocol = new ArrayList<Class>();
 	/**
 	 * The SimpleNetworkWrapper instance is used both to register and send
 	 * packets. Since I will be adding wrapper methods, this field is private,
@@ -42,19 +47,25 @@ public class ModNetwork
 	{
 		Class<Message> messageClass;
 		if (handler instanceof AbstractClientMessage)
-			dispatcher.registerMessage(handler, messageClass = GenericUtil.cast(handler.getClass()), packetId++, Side.CLIENT);
+			dispatcher.registerMessage(handler, messageClass = TypeUtils.cast(handler.getClass()), packetId++, Side.CLIENT);
 		else if (handler instanceof AbstractServerMessage)
-			dispatcher.registerMessage(handler, messageClass = GenericUtil.cast(handler.getClass()), packetId++, Side.SERVER);
+			dispatcher.registerMessage(handler, messageClass = TypeUtils.cast(handler.getClass()), packetId++, Side.SERVER);
 		else if (handler instanceof AbstractBiMessage)
 		{
-			dispatcher.registerMessage(handler, messageClass = GenericUtil.cast(handler.getClass()), packetId, Side.CLIENT);
-			dispatcher.registerMessage(handler, messageClass = GenericUtil.cast(handler.getClass()), packetId++, Side.SERVER);
+			dispatcher.registerMessage(handler, messageClass = TypeUtils.cast(handler.getClass()), packetId, Side.CLIENT);
+			dispatcher.registerMessage(handler, messageClass = TypeUtils.cast(handler.getClass()), packetId++, Side.SERVER);
 		}
 		else
 		{
 			throw new IllegalArgumentException("Cannot register " + handler.getClass().getName() +
 					". Not Support type ModHandler maybe?");
 		}
+		protocol.add(messageClass);
+	}
+
+	public List<Class> getProtocol()
+	{
+		return Collections.unmodifiableList(protocol);
 	}
 
 	/**

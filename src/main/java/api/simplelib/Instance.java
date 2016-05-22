@@ -1,6 +1,6 @@
 package api.simplelib;
 
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 import com.google.common.base.Optional;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.simplelib.HelperMod;
@@ -41,7 +41,7 @@ public @interface Instance
 					else
 						try
 						{
-							return Optional.fromNullable(GenericUtil.<T>cast(field.get(null)));
+							return Optional.fromNullable(TypeUtils.<T>cast(field.get(null)));
 						}
 						catch (IllegalAccessException e)
 						{

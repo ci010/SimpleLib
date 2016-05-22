@@ -1,6 +1,6 @@
 package api.simplelib.seril;
 
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.nbt.*;
@@ -36,7 +36,7 @@ public class NBTBasement implements NBTDeserializer.Base<Object>, NBTSerializer.
 			throw new IllegalArgumentException("Cannot directly deserialize an NBTTagCompound!");
 		if (base.getId() == 9)
 			throw new IllegalArgumentException("Cannot directly deserialize an NBTTagList!");
-		return GenericUtil.<NBTDeserializer.Base<Object>>cast(built_in.get(base.getId())).deserialize(base);
+		return TypeUtils.<NBTDeserializer.Base<Object>>cast(built_in.get(base.getId())).deserialize(base);
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class NBTBasement implements NBTDeserializer.Base<Object>, NBTSerializer.
 	{
 		FullSerializer serializer = built_in_map.get(data.getClass());
 		if (serializer != null)
-			return GenericUtil.<NBTSerializer<Object>>cast(serializer).serialize(data);
+			return TypeUtils.<NBTSerializer<Object>>cast(serializer).serialize(data);
 		return null;
 	}
 
@@ -232,7 +232,7 @@ public class NBTBasement implements NBTDeserializer.Base<Object>, NBTSerializer.
 		});
 		built_in = listBuilder.build();
 		for (FullSerializer fullSerializer : built_in)
-			mapBuilder.put(GenericUtil.getInterfaceGenericTypeTo(fullSerializer), fullSerializer);
+			mapBuilder.put(TypeUtils.getInterfaceGenericTypeTo(fullSerializer), fullSerializer);
 		built_in_map = mapBuilder.build();
 	}
 }

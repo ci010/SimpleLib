@@ -18,7 +18,7 @@ public enum FinalFieldUtils
 			staticFieldOffsetMethod,
 			staticFieldBaseMethod;
 
-	FinalFieldUtils() throws ReflectiveOperationException
+	FinalFieldUtils() throws ClassNotFoundException, IllegalAccessException, NoSuchMethodException, NoSuchFieldException
 	{
 		final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
 

@@ -2,10 +2,12 @@ package api.simplelib.remote.container;
 
 import api.simplelib.Callback;
 import api.simplelib.gui.ComponentProvider;
+import api.simplelib.gui.Properties;
 import api.simplelib.inventory.Inventory;
 import api.simplelib.network.ModNetwork;
 import api.simplelib.remote.Syncable;
 import api.simplelib.remote.capabilities.CapabilitiesCommon;
+import api.simplelib.vars.VarForward;
 import api.simplelib.vars.VarSync;
 import api.simplelib.gui.components.GuiComponent;
 import api.simplelib.inventory.InventoryElement;
@@ -28,6 +30,7 @@ import net.simplelib.network.SyncMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,17 +38,9 @@ import java.util.List;
  */
 public class ContainerBase extends Container implements Callback<VarSync>//, SyncHub.Portal
 {
-	private ImmutableList<VarSync> syncs;
+	private ImmutableList<? extends VarSync> syncs;
 	private ImmutableList<GuiComponent> components;
 	private String ownerId;
-
-	public ContainerBase load(List<VarSync> syncs)
-	{
-		this.syncs = ImmutableList.copyOf(syncs);
-		for (VarSync sync : this.syncs)
-			sync.add(this);
-		return this;
-	}
 
 	public ContainerBase load(World world, ICapabilityProvider provider)
 	{
@@ -64,11 +59,32 @@ public class ContainerBase extends Container implements Callback<VarSync>//, Syn
 		if (!world.isRemote)
 		{
 			for (GuiComponent component : components)
-			{
-			}
+				for (Properties.Key key : component.getProperties().allProperties())
+				{
+					VarForward prop = component.getProperties().property(key);
+					Object v = prop.get();
+					if (v instanceof Object[])
+						for (Object o : (Object[]) v)
+							revolveConnection(o);
+					else if (v instanceof Iterable)
+						for (Object o : ((Iterable) v))
+							revolveConnection(o);
+					else revolveConnection(prop.delegate());
+				}
 			//send component, syncable, inventory to client
 		}
 		return this;
+	}
+
+	private void revolveConnection(Object o)
+	{
+		if (!(o instanceof VarSync))
+			return;
+		int i = syncs.indexOf(o);
+		if (i != -1)
+		{
+			//TODO link the resource
+		}
 	}
 
 	public ContainerBase loadPlayer(EntityPlayer player)
@@ -91,12 +107,21 @@ public class ContainerBase extends Container implements Callback<VarSync>//, Syn
 	}
 
 
-	public ContainerBase loadSlots(List<? extends Slot> slots)
+	private ContainerBase loadSlots(List<? extends Slot> slots)
 	{
 		for (Slot slot : slots)
 			this.addSlotToContainer(slot);
 		return this;
 	}
+
+	private ContainerBase load(List<VarSync> syncs)
+	{
+		this.syncs = ImmutableList.copyOf(syncs);
+		for (VarSync sync : syncs)
+			sync.add(this);
+		return this;
+	}
+
 
 	public List<EntityPlayerMP> getPlayers()
 	{
