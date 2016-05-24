@@ -14,7 +14,7 @@ import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import api.simplelib.registry.ModHandler;
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 import api.simplelib.network.ModNetwork;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class SitHandler
 		PropertyDirection dir = null;
 		for (Object o : block.getDefaultState().getProperties().entrySet())
 		{
-			Map.Entry<Object, Object> entry = GenericUtil.cast(o);
+			Map.Entry<Object, Object> entry = TypeUtils.cast(o);
 			if (entry.getKey() instanceof PropertyDirection)
 				dir = (PropertyDirection) entry.getKey();
 		}

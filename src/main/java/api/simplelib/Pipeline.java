@@ -28,7 +28,8 @@ public interface Pipeline<T> extends Iterable<T>
 	/**
 	 * This method will make sure the element is after the target. If not, the element will be moved after to the
 	 * target.
-	 * <p>If there is no this element, the element will be add into pipe.</p>
+	 * <p>If pipe doesn't contain this element, the element will be add into pipe.</p>
+	 * <p>If there are multiple targets in the pipe, make sure to put the element after all of them.<p/>
 	 *
 	 * @param target  The target element.
 	 * @param element The element might be moved.
@@ -39,7 +40,8 @@ public interface Pipeline<T> extends Iterable<T>
 	/**
 	 * This method will make sure the element is before the target. If not, the element will be moved before to the
 	 * target.
-	 * <p>If there is no this element, the element will be add into pipe.</p>
+	 * <p>If pipe doesn't contain this element, the element will be add into pipe.</p>
+	 * <p>If there are multiple targets in the pipe, make sure to put the element before all of them.<p/>
 	 *
 	 * @param target  The target element.
 	 * @param element The element might be moved.
@@ -63,6 +65,8 @@ public interface Pipeline<T> extends Iterable<T>
 	 * @return The size of this pipeline.
 	 */
 	int size();
+
+	boolean contains(Object o);
 
 	/**
 	 * Copy all the contents of another pipe to this pipe. This method will overlap all the current elements in this

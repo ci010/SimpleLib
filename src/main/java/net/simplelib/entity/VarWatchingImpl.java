@@ -1,6 +1,6 @@
 package net.simplelib.entity;
 
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 import api.simplelib.seril.ITagSerializable;
 import api.simplelib.vars.Var;
 import api.simplelib.vars.VarSyncBase;
@@ -49,7 +49,7 @@ public abstract class VarWatchingImpl<T> extends VarSyncBase<T> implements Var<T
 	@Override
 	public void readFromNBT(NBTTagCompound tag)
 	{
-		this.set(GenericUtil.<T>cast(NBTBasement.instance().deserialize(tag.getTag(this.name))));
+		this.set(TypeUtils.<T>cast(NBTBasement.instance().deserialize(tag.getTag(this.name))));
 	}
 
 	@Override
@@ -58,5 +58,11 @@ public abstract class VarWatchingImpl<T> extends VarSyncBase<T> implements Var<T
 		NBTBase base = NBTBasement.instance().serialize(this.get());
 		if (base != null)
 			tag.setTag(this.name, base);
+	}
+
+	@Override
+	public String toString()
+	{
+		return this.get().toString();
 	}
 }

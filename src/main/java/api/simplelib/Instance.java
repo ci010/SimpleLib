@@ -28,7 +28,8 @@ public @interface Instance
 		{
 			for (Field field : clz.getDeclaredFields())
 			{
-				if (field.isAnnotationPresent(Instance.class))
+				Instance annotation = field.getAnnotation(Instance.class);
+				if (annotation != null)
 				{
 					int modifiers = field.getModifiers();
 					if (!Modifier.isStatic(modifiers))
@@ -36,17 +37,38 @@ public @interface Instance
 						HelperMod.LOG.fatal("The field annotated by Instance should be static! cannot grab the instance.");
 						return Optional.absent();
 					}
+					if (!field.getType().isAssignableFrom(clz))
+					{
+						HelperMod.LOG.fatal("Illegal field type! The type {} cannot cast to type {}", clz, field.getType());
+						return Optional.absent();
+					}
+					T o = null;
 					if (Modifier.isPrivate(modifiers))
-						return ReflectionHelper.getPrivateValue(clz, null, field.getName());
+						o = ReflectionHelper.getPrivateValue(clz, null, field.getName());
 					else
 						try
 						{
-							return Optional.fromNullable(TypeUtils.<T>cast(field.get(null)));
+							o = TypeUtils.cast(field.get(null));
 						}
 						catch (IllegalAccessException e)
 						{
 							e.printStackTrace();
 						}
+					if (o == null)
+						if (!annotation.weak())
+							try
+							{
+								o = clz.newInstance();
+							}
+							catch (InstantiationException e)
+							{
+								e.printStackTrace();
+							}
+							catch (IllegalAccessException e)
+							{
+								e.printStackTrace();
+							}
+					return Optional.fromNullable(o);
 				}
 			}
 			return Optional.absent();

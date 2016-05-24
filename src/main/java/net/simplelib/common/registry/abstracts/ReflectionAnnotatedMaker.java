@@ -1,10 +1,10 @@
 package net.simplelib.common.registry.abstracts;
 
 import api.simplelib.registry.components.ArgumentHelper;
+import api.simplelib.utils.TypeUtils;
 import net.simplelib.HelperMod;
 import net.simplelib.common.Maker;
 import api.simplelib.registry.components.Construct;
-import api.simplelib.utils.GenericUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -76,7 +76,7 @@ public abstract class ReflectionAnnotatedMaker<Input, Output> implements Maker<F
 			}
 			try
 			{
-				Class<? extends Input> temp = GenericUtil.cast(ctr.value());
+				Class<? extends Input> temp = TypeUtils.cast(ctr.value());
 				item = temp.getConstructor(argType).newInstance(args);
 			}
 			catch (InstantiationException e1)
@@ -114,9 +114,9 @@ public abstract class ReflectionAnnotatedMaker<Input, Output> implements Maker<F
 			try
 			{
 				if (obj == null)
-					item = GenericUtil.cast(f.get(null));
+					item = TypeUtils.cast(f.get(null));
 				else
-					item = GenericUtil.cast(f.get(obj));
+					item = TypeUtils.cast(f.get(obj));
 				needSetValue = false;
 			}
 			catch (IllegalArgumentException e)

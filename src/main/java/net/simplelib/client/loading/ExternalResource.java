@@ -1,7 +1,7 @@
 package net.simplelib.client.loading;
 
 import api.simplelib.utils.FileReference;
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -32,17 +32,6 @@ public class ExternalResource implements IResourcePack, FMLContainerHolder
 	private ModContainer container;
 
 	private static Map<String, Pack> delegate = Maps.newHashMap();
-
-	{
-		register(new PackBase(FileReference.getDir(FileReference.mc, "cache"))
-		{
-			@Override
-			public Set<String> domain()
-			{
-				return Sets.newHashSet("cache");
-			}
-		});
-	}
 
 	public static void register(Pack pack)
 	{
@@ -80,7 +69,7 @@ public class ExternalResource implements IResourcePack, FMLContainerHolder
 	public <T extends IMetadataSection> T getPackMetadata(IMetadataSerializer metadataSerializer, String
 			metadataSectionName) throws IOException
 	{
-		GenericUtil.cast(new ByteArrayInputStream(("{\n" +
+		TypeUtils.cast(new ByteArrayInputStream(("{\n" +
 				" \"pack\": {\n" +
 				"   \"description\": \"dummy FML pack for " + container.getName() + "\",\n" +
 				"   \"pack_format\": 1\n" +

@@ -1,6 +1,6 @@
 package net.simplelib.entity;
 
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 import api.simplelib.seril.ITagSerializable;
 import api.simplelib.vars.VarSync;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,7 +47,7 @@ public class CapabilityDelegate implements ICapabilitySerializable<NBTTagCompoun
 	{
 		for (int i = 0; i < types.length; i++)
 			if (types[i] == capability)
-				return GenericUtil.cast(tagSerializables[i]);
+				return TypeUtils.cast(tagSerializables[i]);
 		return null;
 	}
 

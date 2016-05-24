@@ -1,6 +1,6 @@
 package net.simplelib.common;
 
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 
 /**
  * @author ci010
@@ -18,7 +18,7 @@ public class RegionalCacheGeneric<T>
 	public RegionalCacheGeneric(int radius, OffsetMapping mapping, ValueReplacement<T> delegate)
 	{
 		this.diameter = radius * 2 + 1;
-		this.cache = GenericUtil.cast(new Object[diameter][diameter]);
+		this.cache = TypeUtils.cast(new Object[diameter][diameter]);
 		this.mapping = mapping;
 		this.radius = radius;
 		this.centerX = Integer.MIN_VALUE;
@@ -36,7 +36,7 @@ public class RegionalCacheGeneric<T>
 
 	public T[][] getCache()
 	{
-		T[][] temp = GenericUtil.cast(new Object[this.diameter][this.diameter]);
+		T[][] temp = TypeUtils.cast(new Object[this.diameter][this.diameter]);
 		System.arraycopy(cache, 0, temp, 0, this.diameter);
 		return temp;
 	}
@@ -129,7 +129,7 @@ public class RegionalCacheGeneric<T>
 					@Override
 					public void move(int xOffset, int zOffset)
 					{
-						T[][] temp = GenericUtil.cast(new Object[diameter][diameter]);
+						T[][] temp = TypeUtils.cast(new Object[diameter][diameter]);
 						int range = diameter - xOffset;
 						if (xOffset < 0)
 							for (int x = 0; x < range; x++)

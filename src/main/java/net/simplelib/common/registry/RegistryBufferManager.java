@@ -2,8 +2,10 @@ package net.simplelib.common.registry;
 
 import api.simplelib.registry.ModProxy;
 import api.simplelib.Instance;
+import api.simplelib.utils.TypeUtils;
 import com.google.common.base.Optional;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import net.minecraftforge.fml.common.Mod;
@@ -12,8 +14,8 @@ import net.minecraftforge.fml.common.event.*;
 import api.simplelib.registry.ASMRegistryDelegate;
 import api.simplelib.LoadingDelegate;
 import api.simplelib.utils.ASMDataUtil;
-import api.simplelib.utils.GenericUtil;
 import api.simplelib.utils.PackageModIdMap;
+import net.minecraftforge.fml.relauncher.Side;
 import net.simplelib.HelperMod;
 import net.simplelib.common.DebugLogger;
 
@@ -22,8 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author ci010
@@ -63,12 +64,12 @@ public final class RegistryBufferManager
 	private class ClassKey
 	{
 		Class<?> clz;
-		Class<?> superClass;
+		Class<?> genericType;
 
-		public ClassKey(Class<?> clz, Class<?> superClass)
+		ClassKey(Class<?> clz, Class<?> superClass)
 		{
 			this.clz = clz;
-			this.superClass = superClass;
+			this.genericType = superClass;
 		}
 
 		@Override
@@ -76,17 +77,17 @@ public final class RegistryBufferManager
 		{
 			if (o == null)
 				return false;
-			if (superClass == Object.class)
+			if (genericType == Object.class)
 				return clz == o;
 			else
-				return superClass == o;
+				return genericType == o;
 		}
 
 		@Override
 		public int hashCode()
 		{
-			if (superClass != Object.class)
-				return superClass.hashCode();
+			if (genericType != Object.class)
+				return genericType.hashCode();
 			else
 				return clz.hashCode();
 		}
@@ -94,15 +95,21 @@ public final class RegistryBufferManager
 
 	private void loadProxy(ASMDataTable table)
 	{
-		Map<ClassKey, Class> proxyClasses = Maps.newHashMap();
+		Map<ClassKey, Object> proxyClasses = Maps.newHashMap();
 		Set<ASMDataTable.ASMData> proxyClassData = table.getAll(ModProxy.class.getName());
 		for (ASMDataTable.ASMData data : proxyClassData)
 		{
 			ModProxy modProxy = ASMDataUtil.getAnnotation(data, ModProxy.class);
-			if (modProxy.side() == HelperMod.proxy.getSide())
+			if (modProxy.side() == HelperMod.proxy.getSide() || modProxy.side() == Side.SERVER)
 			{
 				Class<?> clz = ASMDataUtil.getClass(data);
-				proxyClasses.put(new ClassKey(clz, clz.getSuperclass()), clz);
+				Optional<?> grab = Instance.Utils.grab(clz);
+				if (grab.isPresent())
+					proxyClasses.put(new ClassKey(clz, modProxy.genericType() == Void.class ? clz.getSuperclass()
+							: modProxy.genericType()), grab.get());
+				else
+					proxyClasses.put(new ClassKey(clz, modProxy.genericType() == Void.class ? clz.getSuperclass()
+							: modProxy.genericType()), clz);
 			}
 		}
 		Set<ASMDataTable.ASMData> injectClass = table.getAll(ModProxy.Inject.class.getName());
@@ -115,28 +122,36 @@ public final class RegistryBufferManager
 			}
 			if (Modifier.isStatic(field.getModifiers()) && field.isAccessible())
 			{
-				Class clz = proxyClasses.get(field.getType());
-				if (clz == null)
+				Object o = proxyClasses.get(field.getType());
+				if (o == null)
 				{
 					DebugLogger.fatal("Cannot find the proxy with type of {}", field.getType());
 					return;
 				}
-//				if (!field.getType().isAnnotationPresent(clz))
-//				{
-//					DebugLogger.fatal("The field type doesn't match {}", field.getType());
-//					return;
-//				}
+				if (o instanceof Class)
+				{
+					Class clz = (Class) o;
+					try
+					{
+						o = clz.newInstance();
+					}
+					catch (InstantiationException e)
+					{
+						e.printStackTrace();
+					}
+					catch (IllegalAccessException e)
+					{
+						e.printStackTrace();
+					}
+				}
+
 				try
 				{
-					if(!field.isAccessible())
+					if (!field.isAccessible())
 						field.setAccessible(true);
-					field.set(null, clz.newInstance());
+					field.set(null, o);
 				}
 				catch (IllegalAccessException e)
-				{
-					e.printStackTrace();
-				}
-				catch (InstantiationException e)
 				{
 					e.printStackTrace();
 				}
@@ -150,7 +165,8 @@ public final class RegistryBufferManager
 			rootMap.put(ASMDataUtil.getClass(data).getPackage()
 					.getName(), data.getAnnotationInfo().get("modid").toString());
 
-		loadProxy(table);
+		this.loadProxy(table);
+
 		for (ASMDataTable.ASMData data : table.getAll(LoadingDelegate.class.getName()))
 		{
 			Class<?> registryDelegateType = ASMDataUtil.getClass(data);
@@ -161,24 +177,9 @@ public final class RegistryBufferManager
 //					throw new UnsupportedOperationException("The ASMRegistryDelegate class need to handle an " +
 //							"annotation type");
 			Optional<?> optional = Instance.Utils.grab(registryDelegateType);
-			Object delegate = null;
 			if (!optional.isPresent())
-				try
-				{
-					delegate = registryDelegateType.newInstance();
-				}
-				catch (InstantiationException e)
-				{
-					e.printStackTrace();
-				}
-				catch (IllegalAccessException e)
-				{
-					e.printStackTrace();
-				}
-			else
-				delegate = optional.get();
-			if (delegate == null)
 				return;
+			Object delegate = optional.get();
 
 			for (Method method : registryDelegateType.getDeclaredMethods())
 			{
@@ -195,12 +196,21 @@ public final class RegistryBufferManager
 				if (methodParam == FMLServerStoppedEvent.class && methodParam == FMLServerStoppingEvent.class)
 					throw new UnsupportedOperationException("Not support FMLServerStoppedEvent and FMLServerStoppingEvent");
 
-				Class<? extends FMLStateEvent> state = GenericUtil.cast(methodParam);
+				Class<? extends FMLStateEvent> state = TypeUtils.cast(methodParam);
 				if (asmType)
 				{
 					ASMRegistryDelegate asmDelegate = (ASMRegistryDelegate) delegate;
-					Class<? extends Annotation> target = GenericUtil.getGenericTypeTo(asmDelegate);
-					for (ASMDataTable.ASMData meta : table.getAll(target.getName()))
+					Class<? extends Annotation> target = TypeUtils.getGenericTypeTo(asmDelegate);
+					ArrayList<ASMDataTable.ASMData> list = Lists.newArrayList(table.getAll(target.getName()));
+					Collections.sort(list, new Comparator<ASMDataTable.ASMData>()
+					{
+						@Override
+						public int compare(ASMDataTable.ASMData o1, ASMDataTable.ASMData o2)
+						{
+							return o1.getClassName().compareTo(o2.getClassName());
+						}
+					});
+					for (ASMDataTable.ASMData meta : list)
 					{
 						Package pkg = ASMDataUtil.getClass(meta).getPackage();
 						String modid = rootMap.getModid(pkg.getName());

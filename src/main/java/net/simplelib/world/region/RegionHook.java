@@ -1,7 +1,7 @@
 package net.simplelib.world.region;
 
 import api.simplelib.registry.ModHandler;
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 import com.google.common.base.Optional;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
@@ -92,7 +92,7 @@ public class RegionHook
 			@Override
 			public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 			{
-				return GenericUtil.cast(capability == REGION_MANAGER ? manager : null);
+				return TypeUtils.cast(capability == REGION_MANAGER ? manager : null);
 			}
 		});
 	}

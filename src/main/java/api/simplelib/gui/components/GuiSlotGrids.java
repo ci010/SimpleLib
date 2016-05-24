@@ -36,7 +36,7 @@ public class GuiSlotGrids extends GuiComponent
 //	{
 //		TextureInfo slot = GuiUtil.slot;
 //		int length = slot.getWidth(), height = slot.getHeight();
-//		GuiUtil.bindToTexture(slot);
+//		GuiUtil.bindTexture(slot);
 //		for (int xi = 0; xi < this.xCount; ++xi)
 //			for (int yi = 0; yi < this.yCount; ++yi)
 //				this.drawTexturedModalRect(xi * length, yi * height, slot.getU(), slot.getV(), length, height);

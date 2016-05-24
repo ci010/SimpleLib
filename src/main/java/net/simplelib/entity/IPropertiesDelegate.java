@@ -25,7 +25,7 @@ public class IPropertiesDelegate extends ASMRegistryDelegate<ModEntityHandler>
 				IPropertiesManager.instance().registerStatus(hook);
 
 //				CommonLogger.info("Register AI {} to entity {} by mod [{}]", this.getAnnotatedClass().getSimpleName(),
-//						GenericUtil.getGenericType(provider), this.getModid());
+//						TypeUtils.getGenericType(provider), this.getModid());
 			}
 			catch (InstantiationException e)
 			{

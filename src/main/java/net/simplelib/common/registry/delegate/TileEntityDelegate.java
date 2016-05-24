@@ -1,5 +1,6 @@
 package net.simplelib.common.registry.delegate;
 
+import api.simplelib.utils.TypeUtils;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -9,7 +10,6 @@ import api.simplelib.registry.ASMRegistryDelegate;
 import net.simplelib.common.DebugLogger;
 import api.simplelib.LoadingDelegate;
 import api.simplelib.registry.ModTileEntity;
-import api.simplelib.utils.GenericUtil;
 
 /**
  * @author ci010
@@ -20,7 +20,7 @@ public class TileEntityDelegate extends ASMRegistryDelegate<ModTileEntity>
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		Class<? extends net.minecraft.tileentity.TileEntity> tile = GenericUtil.cast(this.getAnnotatedClass());
+		Class<? extends net.minecraft.tileentity.TileEntity> tile = TypeUtils.cast(this.getAnnotatedClass());
 		String name = this.getAnnotation().value().equals("") ? tile.getName() : this
 				.getAnnotation().value();
 		ModTileEntity.Render render = this.getAnnotatedClass().getAnnotation(ModTileEntity.Render.class);

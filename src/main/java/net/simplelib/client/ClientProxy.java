@@ -8,7 +8,7 @@ import net.simplelib.common.registry.ContainerMeta;
 import api.simplelib.utils.FileReference;
 import net.simplelib.common.registry.LanguageReporter;
 import net.simplelib.common.registry.Namespace;
-import api.simplelib.utils.NameFormattor;
+import api.simplelib.utils.NameFormatter;
 
 public class ClientProxy extends CommonProxy
 {
@@ -24,7 +24,7 @@ public class ClientProxy extends CommonProxy
 		super.register(meta);
 		for (Namespace namespace : meta.getUnregistered())
 			if (meta.getModelHandler() == null || !meta.getModelHandler().handle(namespace.getComponent()))
-				namespace.getComponent().registerModel(NameFormattor.upperTo_(namespace.toString()));
+				namespace.getComponent().registerModel(NameFormatter.upperTo_(namespace.toString()));
 		if (Environment.debug())
 		{
 			FileReference.registerFile("all");

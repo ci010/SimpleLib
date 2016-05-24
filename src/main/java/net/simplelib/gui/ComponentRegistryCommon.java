@@ -1,15 +1,17 @@
-package api.simplelib.gui;
+package net.simplelib.gui;
 
-import api.simplelib.gui.animation.Controller;
-import api.simplelib.gui.components.GuiComponent;
+import api.simplelib.Pipeline;
+import api.simplelib.gui.ComponentAPI;
+import api.simplelib.gui.ComponentRepository;
+import api.simplelib.gui.Properties;
+import api.simplelib.gui.node.DrawNode;
 import api.simplelib.registry.ModProxy;
 import api.simplelib.seril.IJsonSerializer;
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -31,7 +33,6 @@ public class ComponentRegistryCommon implements ComponentRepository
 																				Integer.class, Boolean.class,
 																				Enum.class});
 	private BiMap<ResourceLocation, DrawNode> map = HashBiMap.create();
-	private BiMap<ResourceLocation, Controller> controllerMap = HashBiMap.create();
 	private Map<ResourceLocation, Properties.Key> propMap = Maps.newHashMap();
 	private Map<Class, IJsonSerializer> serializableMap = Maps.newHashMap();
 
@@ -42,39 +43,41 @@ public class ComponentRegistryCommon implements ComponentRepository
 		registerDrawNode(ComponentAPI.LOC_DRAW_BORDER_TEXTS, null);
 		registerDrawNode(ComponentAPI.LOC_DRAW_STRING, null);
 
-		registerController(ComponentAPI.LOC_CTRL_FADE_OUT, null);
-		registerController(ComponentAPI.LOC_CTRL_FADE_OUT, null);
-		registerController(ComponentAPI.LOC_CTRL_DEFAULT, null);
+		registerDrawNode(ComponentAPI.LOC_ANIM_FADE_IN, null);
+		registerDrawNode(ComponentAPI.LOC_ANIM_FADE_IN, null);
+
+		registerDrawNode(new ResourceLocation("draw:pre"), null);
+		registerDrawNode(new ResourceLocation("draw:post"), null);
 	}
 
-	public DrawNode fetchDrawer(ResourceLocation location)
+	public DrawNode fetchNode(ResourceLocation location)
 	{
 		return map.get(location);
-	}
-
-	public Controller fetchController(ResourceLocation location)
-	{
-		return controllerMap.get(location);
 	}
 
 	@Override
 	public <T> Properties.Key<T> fetchKey(DrawNode node, Class<T> type)
 	{
-		Gson gson;
 		return fetchKey(map.inverse().get(node), type);
-	}
-
-	@Override
-	public <T> Properties.Key<T> fetchKey(Controller controller, Class<T> type)
-	{
-		return fetchKey(controllerMap.inverse().get(controller), type);
 	}
 
 	@Override
 	public <T> Properties.Key<T> fetchKey(ResourceLocation location, Class<T> type)
 	{
-		return GenericUtil.cast(propMap.get(new ResourceLocation(location.toString().concat(".")
+		return TypeUtils.cast(propMap.get(new ResourceLocation(location.toString().concat(".")
 				.concat(type.getSimpleName().toLowerCase()))));
+	}
+
+	@Override
+	public Properties newProperty()
+	{
+		return new PropertiesImpl();
+	}
+
+	@Override
+	public Pipeline<DrawNode> newDrawPipe()
+	{
+		return null;
 	}
 
 	public void registerDrawNode(ResourceLocation location, DrawNode drawable)
@@ -92,17 +95,7 @@ public class ComponentRegistryCommon implements ComponentRepository
 		serializableMap.put(type, serializer);
 	}
 
-	public void registerController(ResourceLocation location, Controller controller)
-	{
-		if (controllerMap.containsKey(location))
-			throw new IllegalArgumentException("duplicate key");
-		if (this.getClass() == ComponentRegistryCommon.class)
-			controllerMap.put(location, new ClientElement(location));
-		else
-			controllerMap.put(location, controller);
-	}
-
-	class ClientElement implements DrawNode, Controller
+	class ClientElement implements DrawNode
 	{
 		ResourceLocation loc;
 
@@ -112,17 +105,7 @@ public class ComponentRegistryCommon implements ComponentRepository
 		}
 
 		@Override
-		public void draw(int x, int y, Properties properties) {}
+		public void draw(int x, int y, Pipeline<DrawNode> pipeline, Properties properties) {}
 
-		@Override
-		public void onLoad(GuiComponent component)
-		{}
-
-		@Override
-		public void draw(GuiComponent component) {}
-
-		@Override
-		public void onRemoved(GuiComponent component)
-		{}
 	}
 }

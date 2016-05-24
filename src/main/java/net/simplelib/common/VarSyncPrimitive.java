@@ -1,6 +1,6 @@
 package net.simplelib.common;
 
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 import api.simplelib.vars.VarSyncBase;
 import net.minecraft.nbt.NBTTagCompound;
 import api.simplelib.seril.NBTBasement;
@@ -23,7 +23,7 @@ public class VarSyncPrimitive<T> extends VarSyncBase<T>
 	{
 		if (tag.getTag(id) == null)
 			return;
-		this.data = (GenericUtil.cast(NBTBasement.instance().deserialize(tag.getTag(id))));
+		this.data = (TypeUtils.cast(NBTBasement.instance().deserialize(tag.getTag(id))));
 	}
 
 	@Override

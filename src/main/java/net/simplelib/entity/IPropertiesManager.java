@@ -1,7 +1,9 @@
 package net.simplelib.entity;
 
 import api.simplelib.Instance;
+import api.simplelib.entity.StatusHook;
 import api.simplelib.registry.ModHandler;
+import api.simplelib.registry.ModProxy;
 import api.simplelib.utils.Nullable;
 import api.simplelib.entity.EntityHandler;
 import api.simplelib.entity.IStatus;
@@ -11,6 +13,7 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import net.simplelib.HelperMod;
 
 import java.util.ArrayList;
@@ -21,7 +24,8 @@ import java.util.WeakHashMap;
  * @author ci010
  */
 @ModHandler
-public class IPropertiesManager implements ITickable
+@ModProxy(side = Side.SERVER, genericType = StatusHook.class)
+public class IPropertiesManager implements ITickable, StatusHook
 {
 	@Instance(weak = true)
 	private static IPropertiesManager instance;
@@ -55,6 +59,7 @@ public class IPropertiesManager implements ITickable
 	}
 
 	@Nullable
+	@Override
 	public IStatus getStatus(Entity entity, String id)
 	{
 		IExtendedEntityProperties p = get(entity, id);

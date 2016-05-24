@@ -3,7 +3,7 @@ package net.simplelib.time;
 import api.simplelib.utils.FileReference;
 import api.simplelib.registry.command.ModCommand;
 import api.simplelib.network.ModNetwork;
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import net.minecraft.client.AnvilConverterException;
@@ -145,7 +145,7 @@ public class TimeMod extends DummyModContainer
 			{
 				try
 				{
-					List<SaveFormatComparator> saveList = GenericUtil.cast(Minecraft.getMinecraft().getSaveLoader().getSaveList());
+					List<SaveFormatComparator> saveList = TypeUtils.cast(Minecraft.getMinecraft().getSaveLoader().getSaveList());
 					for (SaveFormatComparator token : saveList)
 						if (event.world.getWorldInfo().getWorldName().equals(token.getDisplayName()))
 							saveDir = new File(FileReference.getSave(), token.getFileName());

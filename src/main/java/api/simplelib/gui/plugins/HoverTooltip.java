@@ -2,6 +2,7 @@ package api.simplelib.gui.plugins;
 
 import api.simplelib.gui.components.GuiComponent;
 import api.simplelib.gui.event.HoverEvent;
+import com.mojang.realmsclient.client.FileDownload;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

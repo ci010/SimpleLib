@@ -25,7 +25,7 @@ public class DrawProgress extends Gui implements DrawNode
 		VarForward<TextureInfo> texture = properties.property(ComponentAPI.PROP_TEXTURE);
 		if (!texture.isPresent())
 			return;
-		GuiUtil.bindToTexture(texture.get());
+		GuiUtil.bindTexture(texture.get());
 		VarForward<GuiBar.Direction> dir = properties.property(ComponentAPI.PROP_DIRECTION);
 		if (!dir.isPresent())
 			dir.set(GuiBar.Direction.RIGHT);

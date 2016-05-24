@@ -11,28 +11,48 @@ public enum FinalFieldUtils
 {
 	INSTANCE;
 
-	private final Object unsafeObj;
-	private final Method
+	private Object unsafeObj;
+	private Method
 			putObjectMethod,
 			objectFieldOffsetMethod,
 			staticFieldOffsetMethod,
 			staticFieldBaseMethod;
 
-	FinalFieldUtils() throws ClassNotFoundException, IllegalAccessException, NoSuchMethodException, NoSuchFieldException
+	FinalFieldUtils()
 	{
-		final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+		try
+		{
+			final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
 
-		final Field unsafeField = Tools.setAccessible(unsafeClass.getDeclaredField("theUnsafe"));
+			final Field unsafeField = Tools.setAccessible(unsafeClass.getDeclaredField("theUnsafe"));
 
-		unsafeObj = unsafeField.get(null);
+			unsafeObj = unsafeField.get(null);
 
-		putObjectMethod = unsafeClass.getMethod("putObject", Object.class, long.class, Object.class);
+			putObjectMethod = unsafeClass.getMethod("putObject", Object.class, long.class, Object.class);
 
-		objectFieldOffsetMethod = unsafeClass.getMethod("objectFieldOffset", Field.class);
+			objectFieldOffsetMethod = unsafeClass.getMethod("objectFieldOffset", Field.class);
 
-		staticFieldOffsetMethod = unsafeClass.getMethod("staticFieldOffset", Field.class);
+			staticFieldOffsetMethod = unsafeClass.getMethod("staticFieldOffset", Field.class);
 
-		staticFieldBaseMethod = unsafeClass.getMethod("staticFieldBase", Field.class);
+			staticFieldBaseMethod = unsafeClass.getMethod("staticFieldBase", Field.class);
+		}
+		catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		catch (NoSuchMethodException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IllegalAccessException e)
+		{
+			e.printStackTrace();
+		}
+		catch (NoSuchFieldException e)
+		{
+			e.printStackTrace();
+		}
+
 	}
 
 	public void set(final Object o, final Field field, final Object value) throws Exception

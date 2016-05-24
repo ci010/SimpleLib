@@ -1,5 +1,6 @@
 package net.simplelib.common.registry.delegate;
 
+import api.simplelib.utils.TypeUtils;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -9,7 +10,6 @@ import api.simplelib.registry.ASMRegistryDelegate;
 import api.simplelib.registry.key.KeyHandler;
 import api.simplelib.LoadingDelegate;
 import api.simplelib.registry.key.ModKeyBinding;
-import api.simplelib.utils.GenericUtil;
 
 /**
  * @author ci010
@@ -31,7 +31,7 @@ public class KeyRegisterDelegate extends ASMRegistryDelegate<ModKeyBinding>
 		{
 			try
 			{
-				final KeyHandler handler = GenericUtil.cast(this.getAnnotatedClass().newInstance());
+				final KeyHandler handler = TypeUtils.cast(this.getAnnotatedClass().newInstance());
 				KeyBindingHandler.add(
 						new KeyPair(anno.id(), anno.keyCode())
 						{

@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.simplelib.common.registry.ContainerMeta;
 import net.simplelib.common.registry.Namespace;
 import net.simplelib.common.registry.NamespaceMakerComplex;
-import api.simplelib.utils.NameFormattor;
+import api.simplelib.utils.NameFormatter;
 import net.simplelib.login.restriction.ModRestriction;
 
 import java.util.Iterator;
@@ -75,8 +75,8 @@ public class CommonProxy
 		String unlocalizedName;
 		for (Namespace namespace : meta.getUnregistered())
 		{
-			registerName = NameFormattor.upperTo_(namespace.toString());
-			unlocalizedName = registerName;//NameFormattor._toPoint(registerName);
+			registerName = NameFormatter.upperTo_(namespace.toString());
+			unlocalizedName = registerName;//NameFormatter._toPoint(registerName);
 			namespace.getComponent().setUnlocalizedName(unlocalizedName);
 			namespace.getComponent().register(registerName);
 			if (namespace.needRegOre())

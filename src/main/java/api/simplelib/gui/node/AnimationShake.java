@@ -12,6 +12,15 @@ public class AnimationShake implements DrawNode
 	@Override
 	public void draw(int x, int y, Pipeline<DrawNode> pipeline, Properties properties)
 	{
-		GlStateManager.translate(1, 0, 0);
+		Boolean last = properties.getCache("last-shake");
+		if (last == null)
+		{
+			properties.putCache("last-shake", Boolean.FALSE);
+			last = Boolean.FALSE;
+		}
+		if (last)
+			GlStateManager.translate(1, 0, 0);
+		else
+			GlStateManager.translate(-1, 0, 0);
 	}
 }

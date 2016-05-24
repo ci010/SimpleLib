@@ -1,5 +1,6 @@
 package net.simplelib.common.registry.delegate;
 
+import api.simplelib.utils.TypeUtils;
 import com.google.common.collect.Maps;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -13,7 +14,6 @@ import net.simplelib.common.DebugLogger;
 import api.simplelib.LoadingDelegate;
 import api.simplelib.registry.ModEntity;
 import api.simplelib.utils.FMLLoadingUtil;
-import api.simplelib.utils.GenericUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +45,7 @@ public class EntityRegistryDelegate extends ASMRegistryDelegate<ModEntity>
 	{
 		String modid = this.getModid();
 		ModEntity anno = this.getAnnotation();
-		Class<? extends net.minecraft.entity.Entity> clz = GenericUtil.cast(this.getAnnotatedClass());
+		Class<? extends net.minecraft.entity.Entity> clz = TypeUtils.cast(this.getAnnotatedClass());
 		String info = "Register Entity: [{}] <- [{}]| id <- {}";
 		String name = anno.name();
 		System.out.println(modid);

@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.simplelib.RegistryHelper;
 import api.simplelib.registry.ASMRegistryDelegate;
 import api.simplelib.LoadingDelegate;
-import api.simplelib.utils.GenericUtil;
+import api.simplelib.utils.TypeUtils;
 
 import java.lang.annotation.Annotation;
 
@@ -21,7 +21,7 @@ public class ConstructOptionDelegate extends ASMRegistryDelegate<Construct.Optio
 	{
 		try
 		{
-			RegistryHelper.INSTANCE.registerAnnotation(GenericUtil.<Annotation>cast(this.getAnnotatedClass()),
+			RegistryHelper.INSTANCE.registerAnnotation(TypeUtils.<Annotation>cast(this.getAnnotatedClass()),
 					this.getAnnotation().value().newInstance());
 		}
 		catch (InstantiationException e)

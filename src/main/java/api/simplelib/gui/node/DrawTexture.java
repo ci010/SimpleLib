@@ -24,7 +24,7 @@ public class DrawTexture extends Gui implements DrawNode
 		if (property.isPresent())
 		{
 			TextureInfo texture = property.get();
-			GuiUtil.bindToTexture(texture);
+			GuiUtil.bindTexture(texture);
 			this.drawTexturedModalRect(x, y,
 					texture.getU(), texture.getV(), texture.getHeight(), texture.getHeight());
 		}

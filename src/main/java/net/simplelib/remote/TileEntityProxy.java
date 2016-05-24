@@ -1,4 +1,4 @@
-package api.simplelib.remote;
+package net.simplelib.remote;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -23,11 +23,11 @@ public class TileEntityProxy extends TileEntity
 	private IBakedModel model;
 	private String id;
 
-	private Block delegate;
+	private Block blockProperty;
 
 	public Block getDelegateBlock()
 	{
-		return delegate;
+		return blockProperty;
 	}
 
 	@SideOnly(Side.CLIENT)

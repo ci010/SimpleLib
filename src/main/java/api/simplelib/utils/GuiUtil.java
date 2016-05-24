@@ -24,7 +24,7 @@ public class GuiUtil
 	public static final TextureInfo slot = new TextureInfo(
 			new ResourceLocation("textures/gui/container/inventory.png"), 7, 141, 18, 18);
 
-	public static void bindToTexture(TextureInfo info)
+	public static void bindTexture(TextureInfo info)
 	{
 		Minecraft.getMinecraft().getTextureManager().bindTexture(info.getTexture());
 	}

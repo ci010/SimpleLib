@@ -1,4 +1,4 @@
-package api.simplelib.remote;
+package net.simplelib.remote;
 
 import com.google.common.base.Predicate;
 import net.minecraft.block.Block;
@@ -20,6 +20,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.IPlantable;
+import net.simplelib.remote.TileEntityProxy;
 
 import java.util.List;
 
