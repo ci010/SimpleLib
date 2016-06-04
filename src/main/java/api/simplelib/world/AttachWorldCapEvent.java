@@ -1,8 +1,7 @@
-package net.simplelib.world;
+package api.simplelib.world;
 
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
 
 /**
  * @author ci010
